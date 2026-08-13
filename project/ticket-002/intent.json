@@ -1,0 +1,71 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-002",
+  "summary": "Twin observation compatibility decision",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "201708c82da161bf1f514da015ec95b2964b8347",
+    "targetBranch": "main",
+    "outcome": "Publish one pinned, evidence-backed compatibility decision for subactor/twin Observation and EvidenceRef.",
+    "nonGoals": [
+      "Modify subactor/twin, wellmanifest/dsl, or any repository other than data2dsl.",
+      "Implement product behavior, a final DSL, an adapter, or a schema."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record the compatibility verdict in one decision document; do not create or modify a product contract.",
+      "components": [
+        {
+          "name": "compatibility-decision",
+          "paths": ["docs/decisions/ADR-001-twin-observation-evidence-compatibility.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove the decision document and return the capability to CANDIDATE pending new evidence."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-02",
+        "commands": ["rg -n 'proto|standard|validator|profile|test' docs/decisions/ADR-001-twin-observation-evidence-compatibility.md"],
+        "evidence": "The decision cites every required evidence class."
+      },
+      {
+        "criterion": "AC-04",
+        "commands": ["rg -n '^## Verdict|^EXTEND$' docs/decisions/ADR-001-twin-observation-evidence-compatibility.md"],
+        "evidence": "The document contains one explicit verdict."
+      },
+      {
+        "criterion": "AC-06",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance gate records the result."
+      }
+    ]
+  },
+  "allowedPaths": ["project/ticket-002/**", "TODO.md", "project/TICKETS.md", "docs/decisions/ADR-001-twin-observation-evidence-compatibility.md"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

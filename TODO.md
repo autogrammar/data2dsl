@@ -12,3 +12,12 @@
   authority and repository visibility were supplied.
 
 No functional implementation is authorized in Phase 0.
+
+## Phase 1A: contract decision
+
+- [ ] Decide compatibility of `subactor/twin` `Observation` and `EvidenceRef`
+  for `data2dsl` in [`ticket-002`](project/ticket-002/README.md).
+- [ ] Publish the pinned evidence and consequences as a decision document.
+
+No implementation or changes to external repositories are authorized by this
+ticket.
