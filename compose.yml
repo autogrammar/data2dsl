@@ -1,0 +1,7 @@
+services:
+  phase0-check:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: none
+    read_only: true
