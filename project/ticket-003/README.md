@@ -19,13 +19,19 @@ recorded in evidence documents.
 
 ## Acceptance criteria
 
-- [ ] AC-01: README explains the problem and intended users.
-- [ ] AC-02: README defines inputs, outputs and the golden case concretely.
-- [ ] AC-03: README distinguishes responsibilities and non-goals.
-- [ ] AC-04: README presents the reuse-first composition and staged roadmap.
-- [ ] AC-05: Claims remain consistent with the capability map and no product
+- [x] AC-01: README explains the problem and intended users.
+- [x] AC-02: README defines inputs, outputs and the golden case concretely.
+- [x] AC-03: README distinguishes responsibilities and non-goals.
+- [x] AC-04: README presents the reuse-first composition and staged roadmap.
+- [x] AC-05: Claims remain consistent with the capability map and no product
   implementation is introduced.
-- [ ] AC-06: Governance passes and no other repository is modified.
+- [x] AC-06: Governance passes and no other repository is modified.
+
+## Result
+
+The root README is now the canonical onboarding description of the planned
+product. It distinguishes intended behavior from unimplemented contracts and
+links detailed capability evidence rather than duplicating it.
 
 ## Participants
 

@@ -1,0 +1,26 @@
+2026-08-13 project-overview evidence log
+
+Pre-change audit:
+- README described Phase 0 and the reuse-first invariant.
+- The concrete problem, users, inputs, outputs, golden case, boundaries and
+  delivery roadmap were absent or distributed across technical evidence.
+
+Changed path:
+- README.md
+
+Cross-check source:
+- docs/CAPABILITY_MAP.md
+
+No executable source, schema, dependency or external repository was changed.
+
+First governance result:
+GOV-DELIVERY-001 required an explicit bounded delivery contract for README.md.
+Added a one-file, one-component, zero-interface, zero-dependency contract
+against the fetched target head without changing the authorized outcome.
+
+Final validation:
+- all required README sections present;
+- all local README link targets present;
+- git diff --check passed;
+- GOV-PASS: 0 errors, 0 warnings;
+- subactor/twin, wellmanifest/dsl and semcod/todo2code clean.

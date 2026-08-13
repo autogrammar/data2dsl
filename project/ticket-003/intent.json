@@ -8,6 +8,60 @@
     "priority": "P2",
     "origin": "health"
   },
+  "delivery": {
+    "acceptedBaseSha": "067b76b67802b17084c1209a5e96121dec5b8a2f",
+    "targetBranch": "main",
+    "outcome": "Make the root README the canonical, concrete onboarding description of the planned data2dsl product.",
+    "nonGoals": [
+      "Implement product behavior, schemas, APIs, adapters, or dependencies.",
+      "Modify any repository other than data2dsl or replace technical evidence documents."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use the root README as the discoverable product overview and link detailed evidence instead of duplicating it.",
+      "components": [
+        {
+          "name": "project-onboarding",
+          "paths": ["README.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the README expansion and return the project description to Phase 0 wording."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-02",
+        "commands": ["rg -n 'Golden case|Planned inputs|Planned outputs' README.md"],
+        "evidence": "README contains concrete input, output and golden-case sections."
+      },
+      {
+        "criterion": "AC-04",
+        "commands": ["rg -n 'Planned composition|Reuse-first strategy|Delivery roadmap' README.md"],
+        "evidence": "README contains composition, reuse and staged-delivery guidance."
+      },
+      {
+        "criterion": "AC-06",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance gate records the result."
+      }
+    ]
+  },
   "allowedPaths": ["project/ticket-003/**", "README.md", "TODO.md", "project/TICKETS.md"],
   "forbiddenPaths": ["project/ticket-*/user-*.md"],
   "stacks": [],

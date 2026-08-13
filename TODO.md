@@ -24,5 +24,5 @@ ticket.
 
 ## Project communication
 
-- [ ] Explain the concrete data2dsl product vision, boundaries, golden case and
+- [x] Explain the concrete data2dsl product vision, boundaries, golden case and
   roadmap in the root README under [`ticket-003`](project/ticket-003/README.md).

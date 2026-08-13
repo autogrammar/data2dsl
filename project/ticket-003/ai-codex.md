@@ -26,6 +26,12 @@ behavior without presenting unimplemented contracts as available features.
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
 - No executable implementation or external-repository change is authorized.
+- Replaced the Phase 0-only README with a contributor-oriented product
+  description covering the problem, users, bounded inputs, factual outputs,
+  golden case, composition, ownership boundary, non-goals, reuse strategy,
+  roadmap, current state and governance.
+- Marked conceptual examples and the composition graph as non-final so the
+  README does not overstate implementation maturity.
 
 ## Blockers
 
