@@ -21,3 +21,8 @@ No functional implementation is authorized in Phase 0.
 
 No implementation or changes to external repositories are authorized by this
 ticket.
+
+## Project communication
+
+- [ ] Explain the concrete data2dsl product vision, boundaries, golden case and
+  roadmap in the root README under [`ticket-003`](project/ticket-003/README.md).
