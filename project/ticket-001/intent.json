@@ -8,6 +8,60 @@
     "priority": "P2",
     "origin": "health"
   },
+  "delivery": {
+    "acceptedBaseSha": "1fa1c0c65a86a36f45dc4d0a622bda15720bc474",
+    "targetBranch": "main",
+    "outcome": "Publish an evidence-backed Phase 0 capability inventory and provisional composition graph.",
+    "nonGoals": [
+      "Implement product behavior, extraction, adapters, schemas, or the golden case.",
+      "Add runtime dependencies or change public interfaces."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Keep Phase 0 evidence in one documentation artifact; all architecture in it is provisional and creates no product contract.",
+      "components": [
+        {
+          "name": "phase0-evidence",
+          "paths": ["docs/CAPABILITY_MAP.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the documentation artifact and return the ticket to capability discovery."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-03",
+        "commands": ["rg -n 'Capability|Repo|Input|Output|Coupling|Evidence|Status|Integration' docs/CAPABILITY_MAP.md"],
+        "evidence": "The required capability-map dimensions are present."
+      },
+      {
+        "criterion": "AC-05",
+        "commands": ["rg -n 'REUSE|EXTRACT|EXTEND|MISSING|REJECTED|Composition graph' docs/CAPABILITY_MAP.md"],
+        "evidence": "Reuse-first decisions and the composition graph are recorded."
+      },
+      {
+        "criterion": "AC-06",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance report records the result."
+      }
+    ]
+  },
   "allowedPaths": ["project/ticket-001/**", "TODO.md", "project/TICKETS.md", "docs/CAPABILITY_MAP.md"],
   "forbiddenPaths": ["project/ticket-*/user-*.md"],
   "stacks": [],

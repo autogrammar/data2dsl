@@ -4,9 +4,11 @@
 
 - [x] Allocate and link [`ticket-001`](project/ticket-001/README.md).
 - [x] Record bounded intent, risks, and acceptance criteria.
-- [ ] Inventory candidate capabilities with concrete evidence.
-- [ ] Publish [`docs/CAPABILITY_MAP.md`](docs/CAPABILITY_MAP.md) with a composition graph.
-- [ ] Run the deterministic governance gate.
-- [ ] Validate the Docker environment when the engine is available.
+- [x] Inventory candidate capabilities with concrete evidence.
+- [x] Publish [`docs/CAPABILITY_MAP.md`](docs/CAPABILITY_MAP.md) with a composition graph.
+- [x] Run the deterministic governance gate.
+- [x] Build and run the pinned Docker bootstrap without a host fallback.
+- [x] Create public `semcod/data2dsl` after explicit external-coordination
+  authority and repository visibility were supplied.
 
 No functional implementation is authorized in Phase 0.

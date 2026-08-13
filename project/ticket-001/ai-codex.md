@@ -55,11 +55,22 @@ No trusted human identity has been supplied; the human response route remains
 - Adopted published `wellmanifest/new-project` v0.16.2 at revision
   `63a03d0c2ec417f8eab9a6edb3c4ed654937a1ac` through public Goal 2.1.300.
 - Prepared governance-only root and Docker bootstrap carriers.
+- Scanned 78 `semcod`, 60 `subactor`, and 15 `wellmanifest` Git repositories,
+  then verified shortlisted candidates against their implementation, public
+  surface, package metadata and tests.
+- Published `docs/CAPABILITY_MAP.md` with evidence-backed reuse, extraction,
+  extension, missing and rejected decisions plus a provisional composition
+  graph.
+- Ran the deterministic governance gate: `GOV-PASS` with zero errors and zero
+  warnings.
+- Built the pinned Docker image and ran the isolated read-only Compose check;
+  both completed successfully without a host-runtime fallback.
+- Received explicit authority to create a public repository and publish the
+  Phase 0 results, then created `semcod/data2dsl` and configured it as `origin`.
 
-## Blockers
+## Remaining authority boundaries
 
-- Docker CLI exists, but the Docker Desktop Linux engine is not responding.
-- `semcod/data2dsl` does not yet exist on GitHub; remote creation is separate
-  external coordination and is not assumed from local execution authority.
 - New authority remains required for destructive action, secret access, new
   external coordination, material objective expansion and trusted merge.
+- The user explicitly prohibited implementation and changes in other
+  repositories during this publication step.

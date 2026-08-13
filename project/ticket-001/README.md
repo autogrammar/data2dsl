@@ -19,13 +19,19 @@ GitHub clients, runtime dependencies, and golden-case implementation.
 
 ## Acceptance criteria
 
-- [ ] AC-01: Published immutable governance is adopted with a valid lock.
-- [ ] AC-02: Repository bootstrap includes Docker configuration and no product implementation.
-- [ ] AC-03: `docs/CAPABILITY_MAP.md` records input, output, coupling, evidence, status, and integration for every required capability class.
-- [ ] AC-04: Every decision is supported by current file, API, CLI, package, or test evidence; unknowns remain explicit.
-- [ ] AC-05: The composition graph prefers reuse, then extraction, then extension, and identifies genuine missing capability only when proven.
-- [ ] AC-06: The deterministic governance gate is run and its result is recorded.
-- [ ] AC-07: Docker validation is run, or the unavailable engine is reported as a blocker without host-runtime substitution.
+- [x] AC-01: Published immutable governance is adopted with a valid lock.
+- [x] AC-02: Repository bootstrap includes Docker configuration and no product implementation.
+- [x] AC-03: `docs/CAPABILITY_MAP.md` records input, output, coupling, evidence, status, and integration for every required capability class.
+- [x] AC-04: Every decision is supported by current file, API, CLI, package, or test evidence; unknowns remain explicit.
+- [x] AC-05: The composition graph prefers reuse, then extraction, then extension, and identifies genuine missing capability only when proven.
+- [x] AC-06: The deterministic governance gate is run and its result is recorded.
+- [x] AC-07: Docker validation is run, or the unavailable engine is reported as a blocker without host-runtime substitution.
+
+## Phase result
+
+All Phase 0 acceptance criteria pass. The user explicitly authorized creation
+and publication of the public `semcod/data2dsl` GitHub repository on
+2026-08-13. No product code, final DSL, extraction or refactor was introduced.
 
 ## Participants
 

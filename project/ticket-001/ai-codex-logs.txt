@@ -1,0 +1,61 @@
+2026-08-13 Phase 0 evidence log (sanitized; repository-relative paths only)
+
+$ goal --version
+goal, version 2.1.300
+
+$ goal governance adopt --source-revision 63a03d0c2ec417f8eab9a6edb3c4ed654937a1ac --target-root .
+Adoption completed; .governance/lock.json records published v0.16.2 and the
+immutable source revision.
+
+$ git rev-parse HEAD
+1fa1c0c65a86a36f45dc4d0a622bda15720bc474
+
+Inventory population and verified revisions:
+semcod repositories: 78
+subactor repositories: 60
+wellmanifest repositories: 15
+semcod/todo2code fb05e99e50c5fd20f911423c0ffd2416a7688378 clean
+semcod/mdflow f87c89ddfca7f95a29ccbb19c8d47bbb0ada6b32 clean
+semcod/nlp2dsl 80fb9081462cbd54164a027c3a5a6b0db5cdc7be clean
+semcod/code2logic ba93489b56f51af31206671a1f55ab860bb725c2 clean
+semcod/code2schema 5a34e88ad962815247007c904b172ee9d7d6d175 clean
+semcod/rebuild b4588ef2190249d030ed2d28ee9f0f57c39072a2 clean
+semcod/regres 79c37e762039d86e00a76fc8d5437216c9f890e5 clean
+semcod/curllm b9d2b570f3ca0efaef8c97014382f10104dc9752 clean
+semcod/sumd 672c699db6110b678260ccd729617e0b5772a6f0 clean
+subactor/diagit f4fdfd958b21904c0e26ec6ffa98841644ee9117 clean
+subactor/github-com bc1b98c31f662bb31036bdcbb2b6df1bba568378 clean
+subactor/twin 6e53bc33a219d6a99b480e3203d40352ff63ce5f clean
+wellmanifest/dsl 550e5f441c709e15f2679c1af151352d1eba2f1e clean
+
+$ git diff --check
+(no errors)
+
+$ project/governance-check.bat --actor agent
+GOV-PASS: passed (0 errors, 0 warnings)
+
+$ docker compose config
+name: data2dsl
+services:
+  phase0-check:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: none
+    read_only: true
+
+$ docker compose build --pull
+Image data2dsl-phase0-check Built
+Pinned base resolved: alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1
+
+$ docker compose run --rm phase0-check
+Container created; command completed with exit code 0.
+
+$ gh repo view semcod/data2dsl --json nameWithOwner,visibility,url
+Repository did not exist before publication.
+
+User authorization received: create public semcod/data2dsl and push the
+current Phase 0 results; do not implement or modify other repositories.
+
+$ gh repo create semcod/data2dsl --public --source . --remote origin
+https://github.com/semcod/data2dsl
