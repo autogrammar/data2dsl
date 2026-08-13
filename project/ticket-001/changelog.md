@@ -12,3 +12,4 @@
   and container run.
 - Received explicit external-coordination authority and created the public
   `semcod/data2dsl` GitHub repository for Phase 0 publication.
+- Closed the completed Phase 0 ticket from the integrated default branch.

@@ -59,3 +59,13 @@ current Phase 0 results; do not implement or modify other repositories.
 
 $ gh repo create semcod/data2dsl --public --source . --remote origin
 https://github.com/semcod/data2dsl
+
+$ git push -u origin main
+main -> origin/main
+
+Publication verification:
+visibility=PUBLIC
+defaultBranch=main
+local=067b76b67802b17084c1209a5e96121dec5b8a2f
+remote=067b76b67802b17084c1209a5e96121dec5b8a2f
+governance=GOV-PASS (0 errors, 0 warnings)

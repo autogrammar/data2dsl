@@ -2,8 +2,8 @@
 
 - **ID**: ticket-001
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-13
 
 ## Goal and scope
@@ -32,6 +32,9 @@ GitHub clients, runtime dependencies, and golden-case implementation.
 All Phase 0 acceptance criteria pass. The user explicitly authorized creation
 and publication of the public `semcod/data2dsl` GitHub repository on
 2026-08-13. No product code, final DSL, extraction or refactor was introduced.
+The published default branch contains the exact Phase 0 result at commit
+`067b76b67802b17084c1209a5e96121dec5b8a2f`; this governance-only update closes
+the completed ticket.
 
 ## Participants
 
