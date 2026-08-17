@@ -38,3 +38,8 @@ contract sources and validation tools.
   roadmap in the root README under [`ticket-003`](project/ticket-003/README.md).
 - [x] Generate [`project/README.md`](project/README.md) with the repository-owned
   ticket-index generator under [`ticket-005`](project/ticket-005/README.md).
+
+## Repository governance
+
+- [x] Publish ticket 005 through the protected Validator App boundary and
+  record its closure in [`ticket-006`](project/ticket-006/README.md).

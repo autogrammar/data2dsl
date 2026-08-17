@@ -32,3 +32,10 @@ Validation:
 - data2dsl ruleset: 20938649 (active, no bypass)
 - required hosted check: governance / remote lifecycle
 - trusted validator app: ifuri-validator-agent[bot]
+
+Publication receipt:
+- pull request: autogrammar/data2dsl#6
+- exact approved head: 2d0d5230c0846bcef9cad14678a8b13bec799343
+- merge commit: adc3015e284a3b8970bfb36f6681205ec16e9f79
+- merged by: app/ifuri-validator-agent
+- remote ticket branch after merge: deleted

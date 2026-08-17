@@ -1,0 +1,44 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-006",
+  "summary": "Close published ticket 005",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P3",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "adc3015e284a3b8970bfb36f6681205ec16e9f79",
+    "targetBranch": "main",
+    "outcome": "Close ticket-005 from protected, integrated publication evidence.",
+    "nonGoals": ["Change product behavior or GitHub policy.", "Modify repositories other than data2dsl."],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {"maxImplementationFiles": 2, "maxAffectedComponents": 1, "maxPublicInterfaceChanges": 0, "maxRuntimeDependencies": 0},
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use GitHub exact-head review, merge and branch readback as the closure authority.",
+      "components": [{"name": "ticket-publication-receipt", "paths": ["project/**", "TODO.md"]}],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Reopen ticket-005 only if the recorded GitHub receipt is disproved."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-01", "commands": ["gh pr view 6 --repo autogrammar/data2dsl"], "evidence": "PR #6 is merged by the trusted Validator App."},
+      {"criterion": "AC-02", "commands": ["gh pr view 6 --repo autogrammar/data2dsl"], "evidence": "The App review is bound to the recorded exact head."},
+      {"criterion": "AC-03", "commands": ["gh api repos/autogrammar/data2dsl/branches/agent/generate-project-readme"], "evidence": "GitHub returns HTTP 404 for the merged ticket branch."},
+      {"criterion": "AC-04", "commands": ["git diff -- project/ticket-005/README.md"], "evidence": "This governance-only closure changes ticket 005 to DONE / DONE."},
+      {"criterion": "AC-05", "commands": ["project\\governance-check.bat --actor agent"], "evidence": "The deterministic governance gate passes."}
+    ]
+  },
+  "allowedPaths": ["project/ticket-006/**", "project/ticket-005/README.md", "project/ticket-005/ai-codex-logs.txt", "TODO.md", "project/TICKETS.md", "project/README.md"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

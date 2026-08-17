@@ -1,0 +1,10 @@
+2026-08-17 ticket-005 closure evidence
+
+- repository: autogrammar/data2dsl
+- pull request: 6
+- approved head: 2d0d5230c0846bcef9cad14678a8b13bec799343
+- validator: ifuri-validator-agent[bot]
+- merge actor: app/ifuri-validator-agent
+- merge commit: adc3015e284a3b8970bfb36f6681205ec16e9f79
+- remote branch agent/generate-project-readme: absent (HTTP 404)
+- ruleset: 20938649, active, no bypass
