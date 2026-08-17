@@ -1,0 +1,25 @@
+2026-08-17 generated project README evidence
+
+Generator:
+- path: project/readme.sh
+- requested output: project/README.md
+- supported input: T2C_TICKET_INDEX_FILE=project/README.md
+- generator implementation unchanged
+
+Results:
+- generated rows: ticket-001 through ticket-005
+- checked link targets: 25
+- missing link targets: 0
+- generated SHA-256 after first run:
+  bce44a1137d406179938f9f6275ea96c3479ba405df25d83d3260092813cb93c
+- generated SHA-256 after second run:
+  bce44a1137d406179938f9f6275ea96c3479ba405df25d83d3260092813cb93c
+- idempotent: true
+
+Root README preservation:
+- before SHA-256: c47c0b258c30dd6d06079a6a2d68d4aa18b5653473285cef458c225b4abd5054
+- after SHA-256: c47c0b258c30dd6d06079a6a2d68d4aa18b5653473285cef458c225b4abd5054
+- unchanged: true
+
+Validation:
+- project/governance-check.bat --actor agent: GOV-PASS, 0 errors, 0 warnings
