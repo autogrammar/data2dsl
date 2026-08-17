@@ -24,3 +24,8 @@ Final validation:
 - git diff --check passed;
 - GOV-PASS: 0 errors, 0 warnings;
 - subactor/twin, wellmanifest/dsl and semcod/todo2code clean.
+
+Closure evidence:
+- integrated default branch head: ef910bcddd3ef491ac631bda7453d4ae7cf65309
+- GitHub PR 1 state: MERGED
+- closure changes are governance-only

@@ -2,8 +2,8 @@
 
 - **ID**: ticket-003
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-13
 
 ## Goal and scope
@@ -32,6 +32,9 @@ recorded in evidence documents.
 The root README is now the canonical onboarding description of the planned
 product. It distinguishes intended behavior from unimplemented contracts and
 links detailed capability evidence rather than duplicating it.
+
+The result is integrated on the default branch at
+`ef910bcddd3ef491ac631bda7453d4ae7cf65309`.
 
 ## Participants
 
