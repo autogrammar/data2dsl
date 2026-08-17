@@ -32,3 +32,10 @@ Local validation:
 - exact verdict search: passed (`## Verdict` followed by `EXTEND`)
 - git diff --check: passed
 - project/governance-check.bat --actor agent: GOV-PASS, 0 errors, 0 warnings
+
+Closure evidence:
+- GitHub PR 2 state: MERGED
+- integrated default branch head: 6444365ea6bdb1ff0ae1ef5a850cdb497aa744c0
+- remote lifecycle check: passed after enabling delete_branch_on_merge and
+  removing the already merged agent/project-overview branch
+- closure changes are governance-only
