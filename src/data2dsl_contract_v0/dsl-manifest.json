@@ -1,0 +1,135 @@
+{
+  "$schema": "https://wellmanifest.dev/schemas/dsl-manifest/v1",
+  "schema": "wellmanifest.dsl/manifest/v1",
+  "id": "autogrammar.data2dsl.comparison",
+  "name": "data2dsl deterministic comparison contract",
+  "version": "0.1.0-dev",
+  "status": "experimental",
+  "purpose": "Effect-free comparison of evidence-bearing observations with explicit comparability, outcomes and deltas",
+  "domain": "data-comparison",
+  "owners": [
+    {
+      "kind": "repository",
+      "id": "github:autogrammar/data2dsl",
+      "responsibilities": ["semantics", "validation", "compatibility"]
+    }
+  ],
+  "source": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "path": "src/data2dsl_contract_v0/comparison.schema.json",
+    "declaredVersion": "v0",
+    "canonical": "json-ast",
+    "mediaType": "application/schema+json",
+    "selectors": []
+  },
+  "ownedPaths": ["src/data2dsl_contract_v0/**"],
+  "artifacts": [
+    {
+      "path": "src/data2dsl_contract_v0/comparison.schema.json",
+      "role": "normative-source",
+      "digest": "sha256:9d2d9141317edc4b00a0391af89171fb7be581b0672d604b04dc97e9f4cbe105"
+    },
+    {
+      "path": "src/data2dsl_contract_v0/validate.py",
+      "role": "parser-contract",
+      "digest": "sha256:a99152961b1be16e47e3caa434b108894e000c21249c90cc8b19234ba6421498"
+    },
+    {
+      "path": "src/data2dsl_contract_v0/examples/work-summary-github-conflict.json",
+      "role": "example",
+      "digest": "sha256:9d3c6fdb1a4c88dc28f343dd620994a9ed36ef9a2bd91b2e92bb5989653fa361"
+    },
+    {
+      "path": "src/data2dsl_contract_v0/examples/work-summary-github-match.json",
+      "role": "example",
+      "digest": "sha256:bf7e387da807a8b3df7eff842015e61d571b0c93897ec16a68f73518cf481747"
+    }
+  ],
+  "namespaces": [
+    {"prefix": "data2dsl", "uri": "https://autogrammar.dev/data2dsl/"},
+    {"prefix": "wellmanifest", "uri": "https://wellmanifest.dev/"}
+  ],
+  "projections": [],
+  "lifecycle": {
+    "compatibility": "semver",
+    "stability": "experimental",
+    "breaking": "major",
+    "additive": "minor",
+    "fix": "patch"
+  },
+  "semantics": {
+    "effectModel": "descriptive",
+    "unknownPolicy": "preserve",
+    "authoritySchema": null
+  },
+  "llm": {
+    "mode": "none",
+    "requestSchemas": [],
+    "responseSchemas": [],
+    "naturalLanguage": "forbidden",
+    "sourceSchema": null,
+    "modelAuthority": "none",
+    "strict": true
+  },
+  "documentation": {
+    "vocabularyKind": "documents",
+    "commandRoot": "docs",
+    "errorRoot": "docs/ERROR",
+    "criticalRoot": "docs/CRITICAL",
+    "commands": [],
+    "errorCodes": [],
+    "criticalCodes": []
+  },
+  "findingPolicy": {
+    "schema": "wellmanifest.dsl/findings/v1",
+    "requiredProducers": ["autogrammar.data2dsl-contract-check"],
+    "securityProducers": ["autogrammar.data2dsl-contract-check"],
+    "blockingSeverities": ["critical"],
+    "requireEvaluable": true,
+    "blockUnresolvedSecurity": true
+  },
+  "publicationPolicy": {
+    "declaredTier": "basic",
+    "deterministic": true,
+    "independentReview": false,
+    "externalAuthority": false,
+    "runtimeIsolation": false
+  },
+  "conformance": {
+    "levels": ["manifest", "contract"],
+    "commands": [
+      "python src/data2dsl_contract_v0/validate.py --self-test",
+      "python ${WELLMANIFEST_DSL_ROOT}/src/dsl_check.py validate src/data2dsl_contract_v0/dsl-manifest.json"
+    ],
+    "validExamples": [
+      "src/data2dsl_contract_v0/examples/work-summary-github-conflict.json",
+      "src/data2dsl_contract_v0/examples/work-summary-github-match.json"
+    ],
+    "invalidExamples": []
+  },
+  "mappings": [
+    {
+      "standard": "wellmanifest/dsl",
+      "version": "0.1.0-dev",
+      "relation": "compatible-with",
+      "uri": "https://github.com/wellmanifest/dsl"
+    }
+  ],
+  "standardsLock": {
+    "schema": "wellmanifest.standards-lock/v1",
+    "entries": [
+      {
+        "standard": "wellmanifest.dsl.profiles",
+        "version": "0.1.0-dev",
+        "repository": "https://github.com/wellmanifest/dsl",
+        "revision": "0e088f9efa06a903d1674f42b8ac6afaa0fdf071",
+        "contracts": [
+          {
+            "ref": "schema://wellmanifest.dev/dsl/profiles/v1",
+            "digest": "sha256:85010d33a3a1a5a311ad73591b0676b184f475d2aa5323bd2e32ef6d7aca3bd1"
+          }
+        ]
+      }
+    ]
+  }
+}

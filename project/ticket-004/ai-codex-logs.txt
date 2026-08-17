@@ -1,0 +1,28 @@
+2026-08-17 contract-v0 evidence log
+
+External contract source (read-only):
+- repository: wellmanifest/dsl
+- revision: 0e088f9efa06a903d1674f42b8ac6afaa0fdf071
+- profile schema blob: 1875866bca7753f885fe81f42af5ebc913fa5294
+- normative profile digest: sha256:85010d33a3a1a5a311ad73591b0676b184f475d2aa5323bd2e32ef6d7aca3bd1
+- reused profiles: query/v1, observation/v1, result/v1
+- external worktree remained unmodified
+
+Implemented component:
+- src/data2dsl_contract_v0/comparison.schema.json
+- src/data2dsl_contract_v0/dsl-manifest.json
+- src/data2dsl_contract_v0/validate.py
+- two work-summary/GitHub golden fixtures
+
+Validation:
+- jsonschema conformance version: 4.26.0 (validation only; no runtime dependency)
+- python src/data2dsl_contract_v0/validate.py --self-test
+  CONTRACT-V0-PASS: 5 positive outcomes, 5 negative invariants
+- pinned dsl_check.py validate: DSL-PASS, 0 errors
+- pinned dsl_check.py standards: DSL-PASS, 0 errors
+- project/governance-check.bat --actor agent: GOV-PASS, 0 errors, 0 warnings
+
+Scope:
+- no subactor/twin, wellmanifest/dsl or other external repository was modified
+- no source adapter, network access, reasoning or enforcing behavior was added
+- contract status remains experimental

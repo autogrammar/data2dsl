@@ -1,0 +1,132 @@
+{
+  "schema": "autogrammar.data2dsl/comparison-bundle/v0",
+  "profile_bindings": {
+    "query": "wellmanifest.dsl/profile/query/v1",
+    "observation": "wellmanifest.dsl/profile/observation/v1",
+    "result": "wellmanifest.dsl/profile/result/v1",
+    "revision": "0e088f9efa06a903d1674f42b8ac6afaa0fdf071",
+    "contract_digest": "sha256:85010d33a3a1a5a311ad73591b0676b184f475d2aa5323bd2e32ef6d7aca3bd1"
+  },
+  "query": {
+    "schema": "autogrammar.data2dsl/query/v0",
+    "query_id": "query:work-summary:week-2026-08-10:match",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "github:matthiaslew"
+    },
+    "metric": {
+      "id": "git.commit.count",
+      "version": "v1",
+      "value_kind": "integer",
+      "unit": "count"
+    },
+    "window": {
+      "start": "2026-08-10T00:00:00Z",
+      "end": "2026-08-17T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "left_source": {"id": "source:work-summary", "kind": "markdown"},
+    "right_source": {"id": "source:github", "kind": "github"},
+    "comparison": {
+      "equality": "integer-exact",
+      "delta_direction": "right-minus-left",
+      "missing_is_zero": false
+    }
+  },
+  "observations": [
+    {
+      "schema": "autogrammar.data2dsl/observation/v0",
+      "observation_id": "observation:claim:10:match",
+      "query_id": "query:work-summary:week-2026-08-10:match",
+      "side": "left",
+      "subject": {
+        "repository": "https://github.com/autogrammar/data2dsl",
+        "actor": "github:matthiaslew"
+      },
+      "metric": {
+        "id": "git.commit.count",
+        "version": "v1",
+        "value_kind": "integer",
+        "unit": "count"
+      },
+      "window": {
+        "start": "2026-08-10T00:00:00Z",
+        "end": "2026-08-17T00:00:00Z",
+        "semantics": "half-open-utc"
+      },
+      "state": "OBSERVED",
+      "value": {"kind": "integer", "value": "10"},
+      "evidence": [
+        {
+          "evidence_id": "evidence:work-summary:match",
+          "target_uri": "https://github.com/autogrammar/data2dsl",
+          "source_uri": "https://github.com/autogrammar/data2dsl/blob/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb/work-summary.md",
+          "source_revision": "git:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "media_type": "text/markdown",
+          "digest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "extractor": {"id": "semcod.mdflow", "version": "0.1.0"},
+          "location": {
+            "kind": "markdown-lines",
+            "path": "work-summary.md",
+            "start_line": 10,
+            "end_line": 12
+          }
+        }
+      ]
+    },
+    {
+      "schema": "autogrammar.data2dsl/observation/v0",
+      "observation_id": "observation:github:10:match",
+      "query_id": "query:work-summary:week-2026-08-10:match",
+      "side": "right",
+      "subject": {
+        "repository": "https://github.com/autogrammar/data2dsl",
+        "actor": "github:matthiaslew"
+      },
+      "metric": {
+        "id": "git.commit.count",
+        "version": "v1",
+        "value_kind": "integer",
+        "unit": "count"
+      },
+      "window": {
+        "start": "2026-08-10T00:00:00Z",
+        "end": "2026-08-17T00:00:00Z",
+        "semantics": "half-open-utc"
+      },
+      "state": "OBSERVED",
+      "value": {"kind": "integer", "value": "10"},
+      "evidence": [
+        {
+          "evidence_id": "evidence:github:match",
+          "target_uri": "https://github.com/autogrammar/data2dsl",
+          "source_uri": "https://api.github.com/repos/autogrammar/data2dsl/commits",
+          "source_revision": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+          "media_type": "application/json",
+          "digest_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+          "extractor": {"id": "subactor.diagit", "version": "0.1.0"},
+          "location": {
+            "kind": "github-page",
+            "endpoint": "/repos/autogrammar/data2dsl/commits",
+            "page": 1,
+            "cursor": null
+          }
+        }
+      ]
+    }
+  ],
+  "result": {
+    "schema": "autogrammar.data2dsl/comparison-result/v0",
+    "query_id": "query:work-summary:week-2026-08-10:match",
+    "outcome": "MATCH",
+    "left_observation_id": "observation:claim:10:match",
+    "right_observation_id": "observation:github:10:match",
+    "delta": null,
+    "evidence_ids": ["evidence:github:match", "evidence:work-summary:match"],
+    "comparison": {
+      "equality": "integer-exact",
+      "delta_direction": "right-minus-left",
+      "missing_is_zero": false
+    }
+  }
+}

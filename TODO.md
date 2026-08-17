@@ -22,6 +22,16 @@ No functional implementation is authorized in Phase 0.
 No implementation or changes to external repositories are authorized by this
 ticket.
 
+## Phase 1B: comparison contract v0
+
+- [x] Define the local experimental query/observation/result contract in
+  [`ticket-004`](project/ticket-004/README.md).
+- [x] Pin and compose the existing `wellmanifest/dsl` reusable profiles.
+- [x] Validate golden conflict/match fixtures and negative invariants.
+
+All writes remain inside `data2dsl`; neighboring repositories are read-only
+contract sources and validation tools.
+
 ## Project communication
 
 - [x] Explain the concrete data2dsl product vision, boundaries, golden case and
