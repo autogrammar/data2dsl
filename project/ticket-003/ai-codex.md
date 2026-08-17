@@ -32,6 +32,8 @@ behavior without presenting unimplemented contracts as available features.
   roadmap, current state and governance.
 - Marked conceptual examples and the composition graph as non-final so the
   README does not overstate implementation maturity.
+- Verified the result is integrated on the default branch and closed the
+  completed ticket through a governance-only update.
 
 ## Blockers
 

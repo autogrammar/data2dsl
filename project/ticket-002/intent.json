@@ -9,7 +9,7 @@
     "origin": "health"
   },
   "delivery": {
-    "acceptedBaseSha": "201708c82da161bf1f514da015ec95b2964b8347",
+    "acceptedBaseSha": "ef910bcddd3ef491ac631bda7453d4ae7cf65309",
     "targetBranch": "main",
     "outcome": "Publish one pinned, evidence-backed compatibility decision for subactor/twin Observation and EvidenceRef.",
     "nonGoals": [
