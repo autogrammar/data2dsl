@@ -36,3 +36,5 @@ contract sources and validation tools.
 
 - [x] Explain the concrete data2dsl product vision, boundaries, golden case and
   roadmap in the root README under [`ticket-003`](project/ticket-003/README.md).
+- [x] Generate [`project/README.md`](project/README.md) with the repository-owned
+  ticket-index generator under [`ticket-005`](project/ticket-005/README.md).
