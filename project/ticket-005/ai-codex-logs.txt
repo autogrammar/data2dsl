@@ -23,3 +23,12 @@ Root README preservation:
 
 Validation:
 - project/governance-check.bat --actor agent: GOV-PASS, 0 errors, 0 warnings
+
+2026-08-17 publication-boundary evidence
+
+- Validator registry PR: subactor/validator-agent#92
+- Validator registry exact head: b208e1f57b3c6985361f963eb04a06c5a1790587
+- Validator registry merge: de1eac5c13a2461082bdfda877db9e56cdc4928a
+- data2dsl ruleset: 20938649 (active, no bypass)
+- required hosted check: governance / remote lifecycle
+- trusted validator app: ifuri-validator-agent[bot]

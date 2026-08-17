@@ -31,6 +31,8 @@ Inspection showed that the script is a ticket-index generator with a deliberate
 - Verified all generated links, byte-identical second generation and unchanged
   root README digest.
 - Passed the deterministic governance gate.
+- Entered `PUBLICATION` only after the protected Validator Agent registry and
+  the no-bypass `main` ruleset were active for `autogrammar/data2dsl`.
 
 ## Blockers
 
