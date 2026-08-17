@@ -1,0 +1,34 @@
+2026-08-17 compatibility decision evidence log
+
+Pinned source:
+- repository: subactor/twin
+- revision: a3a8b759dc87bc4398f86bf8df25a16f1309314e
+- worktree: clean before and after inspection
+
+Evidence blobs:
+- proto/twin/v1/twin.proto: 03cd991fd42c9e57bc587dcac403b466b60e5e6e
+- spec/TWIN_STANDARD.md: 78e87890c6b4937840930aa059b079402095b192
+- profiles/generic-twin.json: 167e6560660d53a56aa47ecb9ef1014941c97ffe
+- src/twin_standard.py: dbc3919bbe47be0fe4b4dae2ac67898b8571e97e
+- tests/test_twin_standard.py: a6cbec3febc8ee3c1938764b0a958ce3ad5ad877
+- pyproject.toml: 1df981ce8f924da1cdca17a3201cf2125c255211
+- README.md: f759b2af7eb34c9f25163e9e4bd5577d41b028bb
+- VERSION: 0d4d1249434dba8d7fcb8949a2e361f70308cc48
+
+External validation:
+- command: PYTHONPATH=src python -m pytest -q -p no:cacheprovider
+- result: 73 passed, 7 subtests passed, 1 failed
+- failure: Windows path separator mismatch in
+  test_generation_emits_only_declared_contract_files
+- relevance: unrelated to Observation/EvidenceRef semantics; recorded in ADR
+
+Decision:
+- verdict: EXTEND
+- no external repository was modified
+- no runtime dependency or product implementation was added
+
+Local validation:
+- ADR evidence-class search: passed
+- exact verdict search: passed (`## Verdict` followed by `EXTEND`)
+- git diff --check: passed
+- project/governance-check.bat --actor agent: GOV-PASS, 0 errors, 0 warnings

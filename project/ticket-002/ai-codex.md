@@ -27,7 +27,14 @@ from the stronger semantics actually enforced by the validator and tests.
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
-- No product or external-repository changes are authorized.
+- Pinned the clean `subactor/twin` checkout at
+  `a3a8b759dc87bc4398f86bf8df25a16f1309314e`.
+- Inspected and recorded immutable evidence for the protobuf contract,
+  normative standard, generic profile, validator, tests and maturity markers.
+- Published `ADR-001` with the single verdict `EXTEND`, field-by-field gaps,
+  the required additive boundary and explicit prohibitions for `data2dsl`.
+- Ran the external Twin test suite and the local governance gate. No product
+  code, dependency or external repository was modified.
 
 ## Blockers
 

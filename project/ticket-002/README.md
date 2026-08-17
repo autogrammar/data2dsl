@@ -3,7 +3,7 @@
 - **ID**: ticket-002
 - **Owner**: unresolved:human
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: VALIDATION
 - **Created**: 2026-08-13
 
 ## Goal and scope
@@ -20,15 +20,23 @@ changes, and external coordination.
 
 ## Acceptance criteria
 
-- [ ] AC-01: The decision pins the inspected `subactor/twin` revision.
-- [ ] AC-02: Evidence covers protobuf, normative contract, validator code,
+- [x] AC-01: The decision pins the inspected `subactor/twin` revision.
+- [x] AC-02: Evidence covers protobuf, normative contract, validator code,
   reference profile and relevant tests.
-- [ ] AC-03: Field-level fit and gaps for both `Observation` and `EvidenceRef`
+- [x] AC-03: Field-level fit and gaps for both `Observation` and `EvidenceRef`
   are explicit.
-- [ ] AC-04: Exactly one verdict among `REUSE AS-IS`, `EXTEND`, and `REJECT` is
+- [x] AC-04: Exactly one verdict among `REUSE AS-IS`, `EXTEND`, and `REJECT` is
   selected with rationale.
-- [ ] AC-05: Consequences and prohibited assumptions for `data2dsl` are stated.
-- [ ] AC-06: No other repository is modified and the governance gate passes.
+- [x] AC-05: Consequences and prohibited assumptions for `data2dsl` are stated.
+- [x] AC-06: No other repository is modified and the governance gate passes.
+
+## Result
+
+The accepted decision is
+[`ADR-001`](../../docs/decisions/ADR-001-twin-observation-evidence-compatibility.md):
+**EXTEND**. The Twin messages remain the preferred lineage, but deterministic
+typed values and reproducible evidence resolution require a separately
+authorized, additive contract extension before implementation.
 
 ## Participants
 
