@@ -2,8 +2,8 @@
 
 - **ID**: ticket-005
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-17
 
 ## Goal and scope
@@ -29,6 +29,10 @@ replace the root product `README.md`.
 contains the complete tracked ticket index through ticket-005. The canonical
 root product overview was intentionally preserved because the generator
 rejects output outside `project/`.
+
+Publication completed through protected PR #6. Validator App approved exact
+head `2d0d5230c0846bcef9cad14678a8b13bec799343`, merged it as
+`adc3015e284a3b8970bfb36f6681205ec16e9f79`, and deleted the ticket branch.
 
 ## Participants
 
