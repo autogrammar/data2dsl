@@ -10,3 +10,5 @@
   deterministic conformance validator and two golden fixtures.
 - Proved all comparison outcomes and negative invariants without adding a
   runtime dependency or changing another repository.
+- Closed the completed ticket after the contract was integrated through
+  GitHub PR 4.

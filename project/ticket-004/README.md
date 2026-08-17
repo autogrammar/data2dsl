@@ -2,8 +2,8 @@
 
 - **ID**: ticket-004
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-17
 
 ## Goal and scope
@@ -45,6 +45,9 @@ the immutable Wellmanifest query, observation and result profiles, defines a
 closed data2dsl comparison bundle, and proves all five outcomes plus five
 negative invariants without accessing a source network or changing another
 repository.
+
+The contract is integrated on the default branch at
+`3c747c1b1d79426196fd4bb0b5dc42360d88a066` through GitHub PR 4.
 
 ## Participants
 

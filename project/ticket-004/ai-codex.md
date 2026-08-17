@@ -36,6 +36,8 @@ comparison semantics.
   missing-evidence and set-canonicalization invariants.
 - Passed the local self-test, both pinned Wellmanifest checker modes and the
   repository governance gate.
+- Verified GitHub PR 4 was merged into the default branch and closed the
+  completed ticket through a governance-only update.
 
 ## Blockers
 
