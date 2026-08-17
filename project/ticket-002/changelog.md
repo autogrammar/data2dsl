@@ -12,3 +12,4 @@
 - Accepted ADR-001 with the unambiguous compatibility verdict `EXTEND`.
 - Documented field-level fit, required additions, test evidence and prohibited
   assumptions without changing another repository or implementing behavior.
+- Closed the completed ticket after ADR-001 was integrated through GitHub PR 2.

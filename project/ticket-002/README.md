@@ -2,8 +2,8 @@
 
 - **ID**: ticket-002
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: VALIDATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-13
 
 ## Goal and scope
@@ -37,6 +37,9 @@ The accepted decision is
 **EXTEND**. The Twin messages remain the preferred lineage, but deterministic
 typed values and reproducible evidence resolution require a separately
 authorized, additive contract extension before implementation.
+
+The decision is integrated on the default branch at
+`6444365ea6bdb1ff0ae1ef5a850cdb497aa744c0` through GitHub PR 2.
 
 ## Participants
 
