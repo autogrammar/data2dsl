@@ -1,0 +1,66 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-004",
+  "summary": "Define data comparison contract v0",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "5ce62ce3e85e4381239e4345110f4a2c5ebfb9c5",
+    "targetBranch": "main",
+    "outcome": "Publish an experimental, deterministic data comparison contract v0 with golden-case fixtures and conformance evidence.",
+    "nonGoals": [
+      "Modify subactor/twin, wellmanifest/dsl, or any repository other than data2dsl.",
+      "Implement acquisition adapters, GitHub access, reasoning, enforcement, or a stable public API."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Own only a local effect-free comparison profile and compose immutable Wellmanifest profile contracts by reference; do not copy or change external contracts.",
+      "components": [
+        {
+          "name": "comparison-contract-v0",
+          "paths": ["src/data2dsl_contract_v0/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove the experimental contract directory and return Phase 1B to planning; no runtime data migration is required."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-05",
+        "commands": ["python src/data2dsl_contract_v0/validate.py --self-test"],
+        "evidence": "Both golden fixtures and embedded negative cases are checked deterministically."
+      },
+      {
+        "criterion": "AC-07",
+        "commands": ["python <pinned-wellmanifest-dsl>/src/dsl_check.py validate src/data2dsl_contract_v0/dsl-manifest.json", "project\\governance-check.bat --actor agent"],
+        "evidence": "The external pinned checker accepts the local manifest and governance remains green."
+      }
+    ]
+  },
+  "allowedPaths": ["project/ticket-004/**", "TODO.md", "project/TICKETS.md", "src/data2dsl_contract_v0/**"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-002"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

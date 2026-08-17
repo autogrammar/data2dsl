@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://autogrammar.dev/data2dsl/comparison-bundle/v0/schema.json",
+  "title": "data2dsl comparison bundle v0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "profile_bindings", "query", "observations", "result"],
+  "properties": {
+    "schema": {"const": "autogrammar.data2dsl/comparison-bundle/v0"},
+    "profile_bindings": {"$ref": "#/$defs/profileBindings"},
+    "query": {"$ref": "#/$defs/query"},
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/observation"}
+    },
+    "result": {"$ref": "#/$defs/result"}
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9._:-]*$"
+    },
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "profileBindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["query", "observation", "result", "revision", "contract_digest"],
+      "properties": {
+        "query": {"const": "wellmanifest.dsl/profile/query/v1"},
+        "observation": {"const": "wellmanifest.dsl/profile/observation/v1"},
+        "result": {"const": "wellmanifest.dsl/profile/result/v1"},
+        "revision": {"const": "0e088f9efa06a903d1674f42b8ac6afaa0fdf071"},
+        "contract_digest": {"const": "sha256:85010d33a3a1a5a311ad73591b0676b184f475d2aa5323bd2e32ef6d7aca3bd1"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "actor"],
+      "properties": {
+        "repository": {"type": "string", "format": "uri", "maxLength": 320},
+        "actor": {"$ref": "#/$defs/stableId"}
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "value_kind", "unit"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "version": {"type": "string", "pattern": "^v[1-9][0-9]*$"},
+        "value_kind": {"enum": ["integer", "string", "string-set"]},
+        "unit": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "semantics"],
+      "properties": {
+        "start": {"type": "string", "format": "date-time"},
+        "end": {"type": "string", "format": "date-time"},
+        "semantics": {"const": "half-open-utc"}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "kind": {"enum": ["markdown", "github"]}
+      }
+    },
+    "comparisonPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["equality", "delta_direction", "missing_is_zero"],
+      "properties": {
+        "equality": {"enum": ["integer-exact", "string-exact", "string-set-exact"]},
+        "delta_direction": {"const": "right-minus-left"},
+        "missing_is_zero": {"const": false}
+      }
+    },
+    "query": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "query_id", "subject", "metric", "window", "left_source", "right_source", "comparison"],
+      "properties": {
+        "schema": {"const": "autogrammar.data2dsl/query/v0"},
+        "query_id": {"$ref": "#/$defs/stableId"},
+        "subject": {"$ref": "#/$defs/subject"},
+        "metric": {"$ref": "#/$defs/metric"},
+        "window": {"$ref": "#/$defs/window"},
+        "left_source": {"$ref": "#/$defs/source"},
+        "right_source": {"$ref": "#/$defs/source"},
+        "comparison": {"$ref": "#/$defs/comparisonPolicy"}
+      }
+    },
+    "integerValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "integer"},
+        "value": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)$"}
+      }
+    },
+    "stringValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "string"},
+        "value": {"type": "string", "maxLength": 4096}
+      }
+    },
+    "stringSetValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "items"],
+      "properties": {
+        "kind": {"const": "string-set"},
+        "items": {
+          "type": "array",
+          "maxItems": 10000,
+          "uniqueItems": true,
+          "items": {"type": "string", "maxLength": 4096}
+        }
+      }
+    },
+    "value": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/integerValue"},
+        {"$ref": "#/$defs/stringValue"},
+        {"$ref": "#/$defs/stringSetValue"}
+      ]
+    },
+    "extractor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"$ref": "#/$defs/stableId"},
+        "version": {"type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"}
+      }
+    },
+    "location": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "path", "start_line", "end_line"],
+          "properties": {
+            "kind": {"const": "markdown-lines"},
+            "path": {"type": "string", "minLength": 1, "maxLength": 320},
+            "start_line": {"type": "integer", "minimum": 1},
+            "end_line": {"type": "integer", "minimum": 1}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "endpoint", "page"],
+          "properties": {
+            "kind": {"const": "github-page"},
+            "endpoint": {"type": "string", "minLength": 1, "maxLength": 320},
+            "page": {"type": "integer", "minimum": 1},
+            "cursor": {"type": ["string", "null"], "maxLength": 320}
+          }
+        }
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "target_uri", "source_uri", "source_revision", "media_type", "digest_sha256", "extractor", "location"],
+      "properties": {
+        "evidence_id": {"$ref": "#/$defs/stableId"},
+        "target_uri": {"type": "string", "format": "uri", "maxLength": 320},
+        "source_uri": {"type": "string", "format": "uri", "maxLength": 320},
+        "source_revision": {"type": "string", "pattern": "^(git:[a-f0-9]{40}|sha256:[a-f0-9]{64})$"},
+        "media_type": {"type": "string", "pattern": "^[a-z0-9!#$&^_.+-]+/[a-z0-9!#$&^_.+-]+$"},
+        "digest_sha256": {"$ref": "#/$defs/sha256"},
+        "extractor": {"$ref": "#/$defs/extractor"},
+        "location": {"$ref": "#/$defs/location"}
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "observation_id", "query_id", "side", "subject", "metric", "window", "state", "value", "evidence"],
+      "properties": {
+        "schema": {"const": "autogrammar.data2dsl/observation/v0"},
+        "observation_id": {"$ref": "#/$defs/stableId"},
+        "query_id": {"$ref": "#/$defs/stableId"},
+        "side": {"enum": ["left", "right"]},
+        "subject": {"$ref": "#/$defs/subject"},
+        "metric": {"$ref": "#/$defs/metric"},
+        "window": {"$ref": "#/$defs/window"},
+        "state": {"enum": ["OBSERVED", "UNEVALUABLE", "EXPIRED"]},
+        "value": {"$ref": "#/$defs/value"},
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {"$ref": "#/$defs/evidence"}
+        }
+      }
+    },
+    "integerDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "integer"},
+        "value": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)$"}
+      }
+    },
+    "stringSetDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "added", "removed"],
+      "properties": {
+        "kind": {"const": "string-set"},
+        "added": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "removed": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    },
+    "delta": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/integerDelta"},
+        {"$ref": "#/$defs/stringSetDelta"}
+      ]
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "query_id", "outcome", "left_observation_id", "right_observation_id", "delta", "evidence_ids", "comparison"],
+      "properties": {
+        "schema": {"const": "autogrammar.data2dsl/comparison-result/v0"},
+        "query_id": {"$ref": "#/$defs/stableId"},
+        "outcome": {"enum": ["MATCH", "CONFLICT", "MISSING_LEFT", "MISSING_RIGHT", "UNEVALUABLE"]},
+        "left_observation_id": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9._:-]*$"},
+        "right_observation_id": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9._:-]*$"},
+        "delta": {"$ref": "#/$defs/delta"},
+        "evidence_ids": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/stableId"}
+        },
+        "comparison": {"$ref": "#/$defs/comparisonPolicy"}
+      }
+    }
+  }
+}
