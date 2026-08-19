@@ -1,0 +1,67 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-008",
+  "summary": "Docker test environment for golden case validation",
+  "workstream": "infrastructure",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "495064b38d38ca8dc7d7ad183060c5cf5e799298",
+    "targetBranch": "main",
+    "outcome": "Update Dockerfile and compose.yml to support containerized test execution and contract self-test in an isolated network-free environment.",
+    "nonGoals": [
+      "Modify application source code or public interfaces.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Configure python:3.12-alpine Dockerfile and compose.yml service to run pytest and contract validation without network access.",
+      "components": [
+        {
+          "name": "docker-infrastructure",
+          "paths": ["Dockerfile", "compose.yml"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert Dockerfile and compose.yml to Phase 0 versions."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-008/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "Dockerfile",
+    "compose.yml"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
