@@ -1,0 +1,68 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-010",
+  "summary": "Close published tickets 007, 008, and 009",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P3",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "62adaf432d6dcce7fe9307f59d56214bc1bb7f44",
+    "targetBranch": "main",
+    "outcome": "Close ticket-007, ticket-008, and ticket-009 from protected, integrated publication evidence.",
+    "nonGoals": [
+      "Change product behavior or GitHub policy.",
+      "Modify repositories other than data2dsl."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use GitHub exact-head review, merge and branch readback as the closure authority.",
+      "components": [
+        {
+          "name": "ticket-publication-receipt",
+          "paths": ["project/**", "TODO.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Reopen ticket-007, ticket-008, and ticket-009."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-010/**",
+    "project/ticket-007/README.md",
+    "project/ticket-008/README.md",
+    "project/ticket-009/README.md",
+    "TODO.md",
+    "project/TICKETS.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

@@ -43,6 +43,8 @@ contract sources and validation tools.
 
 - [x] Publish ticket 005 through the protected Validator App boundary and
   record its closure in [`ticket-006`](project/ticket-006/README.md).
+- [x] Publish tickets 007, 008, and 009 through the protected Validator App boundary and
+  record their closure in [`ticket-010`](project/ticket-010/README.md).
 
 ## Phase 2A: GitHub metrics acquisition (`subactor/diagit` extension & adapter)
 
