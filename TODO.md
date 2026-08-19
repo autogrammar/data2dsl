@@ -53,7 +53,7 @@ contract sources and validation tools.
 - [x] Link and define [`ticket-007`](project/ticket-007/README.md) for GitHub metric source adapter.
 - [x] Implement `data2dsl` read-only source adapter for extended `diagit` metrics in [`src/data2dsl_adapters.py`](src/data2dsl_adapters.py).
 - [x] Unit test adapter with mock responses and `EvidenceRef` provenance envelope in [`tests/test_golden_case_e2e.py`](tests/test_golden_case_e2e.py).
-- [ ] Propose and merge upstream read-only provider extension in `subactor/diagit` repository.
+- [x] Propose and merge upstream read-only provider extension in `subactor/diagit` repository (PR [subactor/diagit#16](https://github.com/subactor/diagit/pull/16)).
 
 ## Phase 2B: Golden-case end-to-end implementation (`work-summary.md` vs GitHub)
 
