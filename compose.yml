@@ -1,5 +1,5 @@
 services:
-  phase0-check:
+  test:
     build:
       context: .
       dockerfile: Dockerfile

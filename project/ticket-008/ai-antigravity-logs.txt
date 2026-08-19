@@ -1,0 +1,4 @@
+[2026-08-19T11:20:48Z] Ticket ticket-008 scaffolded for Docker test environment.
+[2026-08-19T11:21:31Z] Updated Dockerfile
+[2026-08-19T11:21:34Z] Updated compose.yml
+[2026-08-19T11:21:58Z] Updated ticket documentation (README.md, intent.json, ai-antigravity.md, changelog.md)
