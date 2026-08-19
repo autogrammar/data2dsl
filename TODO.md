@@ -43,3 +43,30 @@ contract sources and validation tools.
 
 - [x] Publish ticket 005 through the protected Validator App boundary and
   record its closure in [`ticket-006`](project/ticket-006/README.md).
+
+## Phase 2A: GitHub metrics acquisition (`subactor/diagit` extension & adapter)
+
+- [x] Link and define [`ticket-007`](project/ticket-007/README.md) for GitHub metric source adapter.
+- [x] Implement `data2dsl` read-only source adapter for extended `diagit` metrics in [`src/data2dsl_adapters.py`](src/data2dsl_adapters.py).
+- [x] Unit test adapter with mock responses and `EvidenceRef` provenance envelope in [`tests/test_golden_case_e2e.py`](tests/test_golden_case_e2e.py).
+- [ ] Propose and merge upstream read-only provider extension in `subactor/diagit` repository.
+
+## Phase 2B: Golden-case end-to-end implementation (`work-summary.md` vs GitHub)
+
+- [x] Implement explicit mapping from Markdown facts to `data2dsl` metric keys in [`src/data2dsl_adapters.py`](src/data2dsl_adapters.py).
+- [x] Implement deterministic comparator with typed deltas in [`src/data2dsl_comparator.py`](src/data2dsl_comparator.py).
+- [x] Verify `MATCH`, `CONFLICT`, `MISSING_LEFT`, `MISSING_RIGHT`, and `UNEVALUABLE` outcomes with integrity digests in [`tests/test_golden_case_e2e.py`](tests/test_golden_case_e2e.py).
+
+
+
+## Phase 3: Git factual seam extraction & multi-source fact adapters
+
+- [x] Evaluate extraction of minimal factual Git seam from `semcod/todo2code` (retained in todo2code until second consumer requires it per [`docs/CAPABILITY_MAP.md`](docs/CAPABILITY_MAP.md#L30)).
+- [x] Provide optional fact adapters for code analyzers (`code2logic`, `code2schema`) in [`src/data2dsl_adapters.py`](src/data2dsl_adapters.py).
+
+
+## Phase 4: Reasoning consumer integration (`todo2code`)
+
+- [ ] Feed structured `data2dsl` factual outcomes and deltas into `todo2code`.
+- [ ] Maintain strict separation of concerns: `data2dsl` provides facts and deltas; `todo2code` handles reasoning and policy decisions.
+
