@@ -1,0 +1,73 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-011",
+  "summary": "CLI interface and JSON bundle exporter for consumer tools",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "f352d5a20789df97748c5e415313e147b33a0dad",
+    "targetBranch": "main",
+    "outcome": "Implement public CLI and JSON exporter in src/data2dsl_cli.py and src/__main__.py for consumer tools, with full test coverage.",
+    "nonGoals": [
+      "Modify external repositories.",
+      "Add non-deterministic reasoning to data2dsl."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Provide CLI entrypoint supporting compare, compare-golden, validate, and self-test operations with validated bundle outputs.",
+      "components": [
+        {
+          "name": "cli-interface",
+          "paths": ["src/data2dsl_cli.py", "src/__main__.py", "tests/test_cli.py"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove CLI modules and tests."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance gate passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python -m pytest"],
+        "evidence": "All unit tests pass."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-011/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_cli.py",
+    "src/__main__.py",
+    "tests/test_cli.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

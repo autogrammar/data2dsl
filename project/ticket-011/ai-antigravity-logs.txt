@@ -1,0 +1,5 @@
+[2026-08-19T13:00:39Z] Scaffolded ticket-011 for CLI interface and bundle exporter.
+[2026-08-19T13:00:45Z] Created src/data2dsl_cli.py
+[2026-08-19T13:00:48Z] Created src/__main__.py
+[2026-08-19T13:00:51Z] Created tests/test_cli.py
+[2026-08-19T13:03:54Z] All 10 unit and CLI tests passed.
