@@ -1,0 +1,5 @@
+[2026-08-19T13:12:06Z] Scaffolded ticket-012 for closure of published tickets 010 and 011.
+[2026-08-19T13:12:18Z] Verified merge receipts:
+- PR #11 (ticket-010): f352d5a20789df97748c5e415313e147b33a0dad
+- PR #12 (ticket-011): b35acfe2bb0e7168d1847e1fa6770fcfd1d23aa3
+[2026-08-19T13:12:25Z] Updated tickets 010, 011 to DONE/DONE.
