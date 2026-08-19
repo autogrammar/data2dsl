@@ -1,0 +1,70 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-013",
+  "summary": "Phase 2A: record upstream diagit extension completion",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P3",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "7131b1e39fdd48bed5163e9ee7b063dd7d8d8251",
+    "targetBranch": "main",
+    "outcome": "Record completion and merge of upstream diagit commit metric acquisition extension (PR subactor/diagit#16) in Phase 2A roadmap.",
+    "nonGoals": [
+      "Modify external repositories from within this ticket boundary.",
+      "Change internal data2dsl comparator logic."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record completion of upstream Phase 2A provider extension in subactor/diagit#16.",
+      "components": [
+        {
+          "name": "phase-2a-roadmap",
+          "paths": ["TODO.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Uncheck Phase 2A task."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "The deterministic governance gate passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python -m pytest"],
+        "evidence": "All unit and CLI tests pass."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-013/**",
+    "TODO.md",
+    "project/TICKETS.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
