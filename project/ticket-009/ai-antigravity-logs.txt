@@ -1,0 +1,3 @@
+[2026-08-19T11:29:21Z] Ticket ticket-009 scaffolded for ADR-002.
+[2026-08-19T11:29:30Z] Created docs/decisions/ADR-002-deterministic-comparison-and-adapters.md
+[2026-08-19T11:29:40Z] Updated ticket documentation (README.md, intent.json, ai-antigravity.md, changelog.md)
