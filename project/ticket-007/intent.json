@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-007",
+  "summary": "Phase 2: Implement source adapters and deterministic golden-case comparator",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "eb6dbd1de28be4725bf35921f5a0e2453daf6bc5",
+    "targetBranch": "main",
+    "outcome": "Implement read-only GitHub and Markdown source adapters, explicit golden-case metric mapping, and deterministic comparator for work-summary vs GitHub.",
+    "nonGoals": [
+      "Modify external repositories directly in this checkout.",
+      "Implement an LLM reasoning engine or mutating runtime."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Implement deterministic source adapters and comparator in src/data2dsl_adapters.py and src/data2dsl_comparator.py producing autogrammar.data2dsl comparison bundles.",
+      "components": [
+        {
+          "name": "data2dsl-adapters",
+          "paths": ["src/data2dsl_adapters.py"]
+        },
+        {
+          "name": "data2dsl-comparator",
+          "paths": ["src/data2dsl_comparator.py", "tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove src/data2dsl_adapters.py, src/data2dsl_comparator.py and tests/test_golden_case_e2e.py; return Phase 2 to planning."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python -m pytest tests/test_golden_case_e2e.py"],
+        "evidence": "All unit and E2E tests pass with MATCH, CONFLICT, MISSING, and UNEVALUABLE outcomes validated against contract schema."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project\\governance-check.bat --actor agent"],
+        "evidence": "Governance check passes with 0 errors."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-007/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_adapters.py",
+    "src/data2dsl_comparator.py",
+    "tests/**"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-004"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
