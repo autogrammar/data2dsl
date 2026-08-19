@@ -73,6 +73,6 @@ contract sources and validation tools.
 
 ## Phase 4: Reasoning consumer integration (`todo2code`)
 
-- [ ] Feed structured `data2dsl` factual outcomes and deltas into `todo2code`.
-- [ ] Maintain strict separation of concerns: `data2dsl` provides facts and deltas; `todo2code` handles reasoning and policy decisions.
+- [x] Feed structured `data2dsl` factual outcomes and deltas into `todo2code` in [`src/data2dsl_consumer.py`](src/data2dsl_consumer.py) and CLI `feed-consumer`.
+- [x] Maintain strict separation of concerns: `data2dsl` provides facts and deltas; `todo2code` handles reasoning and policy decisions.
 
