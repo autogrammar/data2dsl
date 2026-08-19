@@ -71,6 +71,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--bundle", required=True, type=Path, help="Path to bundle JSON."
     )
 
+    # feed-consumer
+    feed_parser = subparsers.add_parser(
+        "feed-consumer", help="Export comparison bundle into structured reasoning fact feed."
+    )
+    feed_parser.add_argument(
+        "--bundle", required=True, type=Path, help="Path to comparison bundle JSON."
+    )
+    feed_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+
     return parser
 
 
@@ -183,6 +194,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         bundle_doc = json.loads(args.bundle.read_text(encoding="utf-8"))
         validate_document(bundle_doc)
         print(f"VALID: {args.bundle}")
+        return 0
+
+    if args.command == "feed-consumer":
+        from data2dsl_consumer import ConsumerFactFeed
+
+        bundle_doc = json.loads(args.bundle.read_text(encoding="utf-8"))
+        payload = ConsumerFactFeed.export_reasoning_payload(bundle_doc)
+        output_str = json.dumps(payload.to_dict(), indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
         return 0
 
     parser.print_help()
