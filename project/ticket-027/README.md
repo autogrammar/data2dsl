@@ -2,8 +2,8 @@
 
 - **ID**: ticket-027
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -17,6 +17,12 @@ with query context.
 - [x] AC-01: `src/data2dsl_skill.py` implements `_normalize_raw` correctly.
 - [x] AC-02: All 15 tests in `tests/` pass with `pytest`.
 - [x] AC-03: The deterministic governance gate passes.
+
+## Result
+
+Ticket 027 closed from integrated evidence:
+- PR #28 approved at `ac1f1fa054b93f006ca2bbe36c8d14e386e45cb8` (Decision `D-027-9712`), merged as `ad53f7915309605cb4c55209c1221bca961a5b82`.
+- Branch `agent/fix-skill-adapter-027` deleted upon merge.
 
 ## Participants
 
