@@ -1,0 +1,68 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-017",
+  "summary": "Governance housekeeping: close ticket-016, update CHANGELOG, README and ticket index",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "59167343e9aa9cdfbe482578513e0f26d967f449",
+    "targetBranch": "main",
+    "outcome": "Close ticket-016, update CHANGELOG.md with Phase 1-4 history, update README.md current state, regenerate ticket index, update TODO.md with Phase 5 proposals.",
+    "nonGoals": [
+      "Change product behavior or source code.",
+      "Modify repositories other than data2dsl."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Governance-only documentation and status updates from integrated default branch evidence.",
+      "components": [
+        {
+          "name": "governance-docs",
+          "paths": ["TODO.md", "CHANGELOG.md", "README.md", "project/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert documentation changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-017/**",
+    "project/ticket-016/README.md",
+    "project/TICKETS.md",
+    "TODO.md",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
