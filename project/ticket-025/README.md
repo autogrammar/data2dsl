@@ -2,8 +2,8 @@
 
 - **ID**: ticket-025
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -19,6 +19,12 @@ The skill exposes `compare_observations(query_or_path, left_path, right_path, ..
 - [x] AC-02: Unit tests in `tests/test_cli.py` verify skill execution and error handling.
 - [x] AC-03: The deterministic governance gate passes.
 - [x] AC-04: The full test suite passes.
+
+## Result
+
+Ticket 025 closed from integrated evidence:
+- PR #26 approved at `e10c8bfee2ffe92f574a8c6088e5447bf2d1d630` (Decision `D-025-2270`), merged as `e99be3e27161b369c36ec3c6ee29f7cf7fbc840f`.
+- Branch `agent/skill-interface-025` deleted upon merge.
 
 ## Participants
 
