@@ -1,0 +1,71 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-019",
+  "summary": "Add Curllm browser source adapter and unit tests",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "6ee6132e4de88aa45768645578cef6298e44911d",
+    "targetBranch": "main",
+    "outcome": "Implement CurllmAdapter in src/data2dsl_adapters.py for browser-backed BQL facts and add unit tests.",
+    "nonGoals": [
+      "Embed live browser or network execution inside data2dsl.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Provide thin CurllmAdapter converting structured BQL browser execution results into data2dsl observation envelopes with page hash evidence.",
+      "components": [
+        {
+          "name": "source-adapters",
+          "paths": ["src/data2dsl_adapters.py", "tests/test_golden_case_e2e.py"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert CurllmAdapter additions."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["pytest tests/test_golden_case_e2e.py"],
+        "evidence": "CurllmAdapter unit tests pass."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-019/**",
+    "project/TICKETS.md",
+    "src/data2dsl_adapters.py",
+    "tests/test_golden_case_e2e.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
