@@ -120,3 +120,47 @@ def test_cli_compare_observations(tmp_path: Path) -> None:
     assert data["result"]["outcome"] == "CONFLICT"
     assert data["result"]["delta"] == {"kind": "integer", "value": "2"}
 
+
+def test_skill_definitions_and_execution() -> None:
+    from data2dsl_skill import Data2DslSkill
+
+    tools = Data2DslSkill.get_tool_definitions()
+    assert len(tools) == 2
+    tool_names = [t["name"] for t in tools]
+    assert "data2dsl_compare" in tool_names
+    assert "data2dsl_self_test" in tool_names
+
+    test_res = Data2DslSkill.self_test()
+    assert test_res["status"] == "PASS"
+
+    query = {
+        "schema": "autogrammar.data2dsl/query/v0",
+        "query_id": "query:skill-test",
+        "subject": {"repository": "https://github.com/owner/repo", "actor": "github:alice"},
+        "metric": {"id": "git.commit.count", "version": "v1", "value_kind": "integer", "unit": "count"},
+        "window": {"start": "2026-08-01T00:00:00Z", "end": "2026-08-02T00:00:00Z", "semantics": "half-open-utc"},
+        "left_source": {"kind": "markdown-work-summary", "uri": "https://github.com/owner/repo/blob/abc/work-summary.md", "revision": "sha256:aaa", "extractor": {"id": "mdflow", "version": "0.1.0"}},
+        "right_source": {"kind": "github-commit-query", "uri": "https://api.github.com/repos/owner/repo/commits", "revision": "sha256:ddd", "extractor": {"id": "diagit", "version": "0.1.0"}},
+        "comparison": {"delta_kind": "integer", "tolerance": "0", "direction": "exact"},
+    }
+
+    # Error case: missing observations
+    err_res = Data2DslSkill.execute_compare(query=query)
+    assert err_res["status"] == "ERROR"
+    assert err_res["error_code"] == "MISSING_LEFT_OBSERVATION"
+
+    # Execution with raw adapter inputs
+    raw_left = {"markdown_content": "# Summary\n- alice: 10 commits\n", "source_uri": "https://github.com/owner/repo/blob/abc/work-summary.md"}
+    raw_right = {"repository": "owner/repo", "actor": "alice", "time_window_start": "2026-08-01T00:00:00Z", "time_window_end": "2026-08-02T00:00:00Z", "commit_count": 10}
+
+    exec_res = Data2DslSkill.execute_compare(
+        query=query,
+        left_raw=raw_left,
+        left_source_type="markdown",
+        right_raw=raw_right,
+        right_source_type="github"
+    )
+    assert exec_res["status"] == "OK"
+    assert exec_res["result"]["outcome"] == "MATCH"
+
+
