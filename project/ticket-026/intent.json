@@ -54,6 +54,7 @@
   },
   "allowedPaths": [
     "project/ticket-026/**",
+    "project/ticket-023/README.md",
     "project/ticket-025/README.md",
     "project/TICKETS.md"
   ],

@@ -2,8 +2,8 @@
 
 - **ID**: ticket-023
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -25,6 +25,8 @@ approvals, merge commits, and branch-deletion receipts. Do not change product be
 Tickets 021 and 022 are closed from integrated evidence:
 - PR #22 approved at `ed0457b5a0d5c8a465ac869b97278bef0a7f9402` (Decision `D-021-4597`), merged as `e2fcddbc3a7abe52cc06dd46336fcc10920052f0`.
 - PR #23 approved at `6099068c42643c27686bdc6a19dcf8fbe8c4e753` (Decision `D-022-8684`), merged as `ee232e67df1bb746a51d95eeaa2d86161feee7d0`.
+- PR #24 approved at `7bf5f65b3263e95fa2e2f510d4dd45bc92c92b7e` (Decision `D-023-9387`), merged as `6a4bd53b39a967dad9c5c62ecf041757ebde4757`.
+- Branch `agent/close-tickets-021-022` deleted upon merge.
 
 ## Participants
 
