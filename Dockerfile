@@ -1,4 +1,4 @@
-FROM python:3.12-alpine
+FROM python:3.12-alpine@sha256:d8c55e9b897e68fa7bb8e37682337772656910cb13c38b25be24b3353ae41088
 
 WORKDIR /workspace
 

@@ -1,0 +1,65 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-021",
+  "summary": "Pin Docker base image to immutable SHA-256 digest",
+  "workstream": "infrastructure",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P3",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "9b58c94fc8fe5c095e170391f8e74512c87647a2",
+    "targetBranch": "main",
+    "outcome": "Pin Dockerfile python:3.12-alpine base image to an immutable SHA-256 digest satisfying GOV-DOCKER-002.",
+    "nonGoals": [
+      "Change application logic or source code.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use immutable SHA-256 digest for container base image.",
+      "components": [
+        {
+          "name": "docker-infrastructure",
+          "paths": ["Dockerfile"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert Dockerfile base image pin."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-021/**",
+    "project/TICKETS.md",
+    "Dockerfile"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
