@@ -78,3 +78,59 @@ contract sources and validation tools.
 - [x] Feed structured `data2dsl` factual outcomes and deltas into `todo2code` in [`src/data2dsl_consumer.py`](src/data2dsl_consumer.py) and CLI `feed-consumer`.
 - [x] Maintain strict separation of concerns: `data2dsl` provides facts and deltas; `todo2code` handles reasoning and policy decisions.
 
+
+---
+
+## Zadania na dziś — 2026-08-20
+
+Proponowane na podstawie analizy repozytorium i ekosystemu
+`semcod/*`, `autogrammar/*`, `subactor/*`, `wellmanifest/*`.
+
+### Governance housekeeping (workstream: `governance`)
+
+- [ ] **Zamknij ticket-016**: Zweryfikuj integrację na `main`, ustaw
+  `DONE / DONE`. Zregeneruj `project/README.md` (ticket index zatrzymany na
+  ticket-006).
+- [ ] **Zaktualizuj CHANGELOG.md**: Uzupełnij wpisy za Phase 1A–4 z datami
+  merge'ów PR #6–#16 (aktualnie wymieniony tylko Phase 0 bootstrap).
+- [ ] **Zaktualizuj README.md sekcja "Current state"**: Odzwierciedl faktyczny
+  stan — pełna implementacja golden case, CLI, konsumer feed, testy E2E.
+
+### Release preparation (workstream: `integration`)
+
+- [ ] **Bump VERSION do `0.1.0`**: Obecne `0.0.0` nie odzwierciedla stanu.
+  Wymaga ticketu w workstreamie `integration` (plik `VERSION` jest owned path
+  `integration`).
+- [ ] **Utwórz `pyproject.toml`**: Zdefiniuj pakiet `data2dsl` z zależnością
+  `jsonschema>=4.26.0`. Wymagane przez `integration` workstream
+  (`manifest.json` → `coordination.integration.requiredForPaths`).
+
+### Contract stabilization (workstream: `application`)
+
+- [ ] **Promuj kontrakt z `experimental` na `stable`**: Przenieś
+  `autogrammar.data2dsl.comparison` z `0.1.0-dev` do `0.1.0` w
+  [`dsl-manifest.json`](src/data2dsl_contract_v0/dsl-manifest.json). Wymaga
+  powiązanego upstream review w `wellmanifest/dsl`.
+- [ ] **Pin Docker base image digest**: Zamień `python:3.12-alpine` na
+  `python:3.12-alpine@sha256:...` w [`Dockerfile`](Dockerfile) (rozwiązuje
+  potencjalne `GOV-DOCKER-002`).
+
+### Phase 5: NLP query builder & multi-source expansion (workstream: `application`)
+
+- [ ] **Zbadaj integrację `semcod/nlp2dsl`**: Oceń rozszerzenie
+  `IntentPipeline` o vocabulary `data2dsl` — generowanie bounded comparison
+  query z naturalnego pytania. Zapisz ADR-003.
+- [ ] **Dodaj adapter `curllm` (browser-backed source)**: Zaprojektuj thin
+  adapter na `semcod/curllm` BQL do akwizycji faktów z przeglądarki jako
+  trzecie źródło obserwacji.
+- [ ] **Zbadaj integrację `wellmanifest/skills`**: Oceń publikację `data2dsl`
+  CLI jako governed agent skill (skill manifest + deterministic error routing).
+
+### Priorytet na dziś
+
+Wykonaj w kolejności zależności:
+1. Zamknij ticket-016 (governance) — odblokowuje inne workstreamy
+2. CHANGELOG + README update (governance) — aktualizacja dokumentacji
+3. VERSION bump + pyproject.toml (integration) — przygotowanie release
+4. Docker digest pin (infrastructure) — compliance
+5. Analiza NLP/curllm/skills (application) — research/ADR bez implementacji

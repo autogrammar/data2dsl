@@ -184,12 +184,22 @@ repository require that repository's owner-approved workflow.
 
 ## Current state
 
-- Phase 0 governance bootstrap and capability inventory are complete.
+- Phases 0 through 4 are complete with governed ticket evidence.
+- Four source adapters are implemented: GitHub/Diagit commit metrics,
+  Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG), and
+  Code2Schema (entity/CQRS).
+- The deterministic comparator produces `MATCH`, `CONFLICT`, `MISSING_LEFT`,
+  `MISSING_RIGHT` and `UNEVALUABLE` outcomes with typed deltas and SHA-256
+  evidence chains.
+- The CLI provides `compare`, `compare-golden`, `validate` and `feed-consumer`
+  subcommands.
+- The consumer fact feed is integrated with `semcod/todo2code` while preserving
+  strict separation of factual acquisition from reasoning.
+- The comparison contract `autogrammar.data2dsl.comparison` v`0.1.0-dev` is
+  validated against `wellmanifest/dsl` profiles.
 - Docker bootstrap and the deterministic governance gate pass.
-- No product source, final observation schema, query DSL, GitHub extension or
-  golden-case implementation exists yet.
-- Open architectural claims must remain explicitly provisional until their
-  owning contracts and compatibility tests exist.
+- End-to-end tests cover the golden case (`work-summary.md` vs GitHub), adapter
+  error handling, and all five comparison outcomes.
 
 See [`TODO.md`](TODO.md) for current work and
 [`project/TICKETS.md`](project/TICKETS.md) for governed evidence.
