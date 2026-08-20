@@ -2,8 +2,8 @@
 
 - **ID**: ticket-024
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -18,6 +18,12 @@ implementation of normalized source adapters, deterministic comparison, and cons
 - [x] AC-02: `python src/data2dsl_contract_v0/validate.py --self-test` passes.
 - [x] AC-03: The deterministic governance gate passes.
 - [x] AC-04: The full test suite passes.
+
+## Result
+
+Ticket 024 closed from integrated evidence:
+- PR #25 approved at `bae02cbf8da9cd0aa40f9b4faff097cdf05c8ac3` (Decision `D-024-1519`), merged as `47a9dd89fcffb573a62886f455bf66fa43697e68`.
+- Branch `agent/contract-stable-024` deleted upon merge.
 
 ## Participants
 

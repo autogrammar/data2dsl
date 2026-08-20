@@ -1,0 +1,72 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-025",
+  "summary": "Implement data2dsl agent skill and tool interface",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "47a9dd81863aa7a5d062f28cc7487f72007563f4",
+    "targetBranch": "main",
+    "outcome": "Implement data2dsl agent skill and tool interface in src/data2dsl_skill.py conforming to wellmanifest/skills standard.",
+    "nonGoals": [
+      "Alter deterministic core comparator rules.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Provide programmatic Data2DslSkill entrypoint with structured argument parsing, JSON schema validation, and standardized error responses.",
+      "components": [
+        {
+          "name": "agent-skill-interface",
+          "paths": ["src/data2dsl_skill.py", "tests/test_cli.py"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove data2dsl_skill.py and associated tests."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python -m pytest tests/ -v"],
+        "evidence": "All unit and skill tests pass."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-025/**",
+    "project/ticket-024/README.md",
+    "project/TICKETS.md",
+    "src/data2dsl_skill.py",
+    "tests/test_cli.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
