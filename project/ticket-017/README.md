@@ -2,8 +2,8 @@
 
 - **ID**: ticket-017
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -22,6 +22,12 @@ Update TODO.md with Phase 5 task proposals.
 - [x] AC-04: `project/TICKETS.md` index is regenerated with all 16 tickets.
 - [x] AC-05: TODO.md includes Phase 5 task proposals dated 2026-08-20.
 - [x] AC-06: The deterministic governance gate passes.
+
+## Result
+
+Ticket 017 closed from integrated evidence:
+- PR #18 approved at `00f2833bf6b7d2089916a5f6b0c2bda999c79662` (Decision `D-017-3307`), merged as `8815c975c84f56bb89635bee1cc8ea8126a7ab6e`.
+- Branch `agent/governance-housekeeping-017` deleted upon merge.
 
 ## Participants
 

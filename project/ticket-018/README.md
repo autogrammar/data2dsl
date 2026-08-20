@@ -2,8 +2,8 @@
 
 - **ID**: ticket-018
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -20,6 +20,12 @@ packaging with `jsonschema>=4.26.0` dependency and CLI entry point.
 - [x] AC-02: `pyproject.toml` is created with package metadata, dependencies, and `data2dsl` CLI script entrypoint.
 - [x] AC-03: The deterministic governance gate passes.
 - [x] AC-04: The full test suite passes.
+
+## Result
+
+Ticket 018 closed from integrated evidence:
+- PR #19 approved at `f7da8517a00bbe6001827a4efe0e146767776b48` (Decision `D-018-0919`), merged as `6ee6132e4de88aa45768645578cef6298e44911d`.
+- Branch `agent/release-prep-018` deleted upon merge.
 
 ## Participants
 
