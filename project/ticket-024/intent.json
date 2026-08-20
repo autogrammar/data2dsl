@@ -1,0 +1,70 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-024",
+  "summary": "Promote comparison contract to stable 0.1.0 in dsl-manifest",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "6a4bd53b39a967dad9c5c62ecf041757ebde4757",
+    "targetBranch": "main",
+    "outcome": "Promote src/data2dsl_contract_v0/dsl-manifest.json contract version to 0.1.0 and status to stable.",
+    "nonGoals": [
+      "Break backward compatibility of comparison schemas.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Promote dsl-manifest version from 0.1.0-dev to 0.1.0 and status to stable following complete implementation and verification.",
+      "components": [
+        {
+          "name": "comparison-contract",
+          "paths": ["src/data2dsl_contract_v0/dsl-manifest.json"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert dsl-manifest version and status."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python -m pytest tests/ -v"],
+        "evidence": "All unit and contract tests pass."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-024/**",
+    "project/TICKETS.md",
+    "src/data2dsl_contract_v0/dsl-manifest.json"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
