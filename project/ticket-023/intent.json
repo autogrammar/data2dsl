@@ -1,0 +1,67 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-023",
+  "summary": "Governance closure: close published tickets 021 and 022",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P3",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "ee232e67df1bb746a51d95eeaa2d86161feee7d0",
+    "targetBranch": "main",
+    "outcome": "Close tickets 021 and 022 from protected, integrated publication evidence on main.",
+    "nonGoals": [
+      "Change product behavior or source code.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use GitHub exact-head review, merge, and branch-deletion readback as closure authority.",
+      "components": [
+        {
+          "name": "ticket-closure-receipt",
+          "paths": ["project/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Reopen tickets 021 and 022."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-023/**",
+    "project/ticket-020/README.md",
+    "project/ticket-021/README.md",
+    "project/ticket-022/README.md",
+    "project/TICKETS.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

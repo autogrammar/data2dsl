@@ -2,8 +2,8 @@
 
 - **ID**: ticket-020
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -26,6 +26,8 @@ Tickets 017, 018, and 019 are closed from integrated evidence:
 - PR #18 approved at `00f2833bf6b7d2089916a5f6b0c2bda999c79662` (Decision `D-017-3307`), merged as `8815c975c84f56bb89635bee1cc8ea8126a7ab6e`.
 - PR #19 approved at `f7da8517a00bbe6001827a4efe0e146767776b48` (Decision `D-018-0919`), merged as `6ee6132e4de88aa45768645578cef6298e44911d`.
 - PR #20 approved at `3f592f74cf9af684968ceaa125c29e9457b1818d` (Decision `D-019-4852`), merged as `d303ea0c50617c0a459c4e4a63ab3c7a102e2a53`.
+- PR #21 approved at `1e33f770c5a15861dbc1a3dea408c1b85633a7bf` (Decision `D-020-6261`), merged as `9b58c94fc8fe5c095e170391f8e74512c87647a2`.
+- Branch `agent/close-tickets-017-019` deleted upon merge.
 
 ## Participants
 
