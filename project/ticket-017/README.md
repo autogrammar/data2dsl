@@ -3,7 +3,7 @@
 - **ID**: ticket-017
 - **Owner**: unresolved:human
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-20
 
 ## Goal and scope
@@ -21,7 +21,7 @@ Update TODO.md with Phase 5 task proposals.
 - [x] AC-03: README.md "Current state" reflects implemented capabilities.
 - [x] AC-04: `project/TICKETS.md` index is regenerated with all 16 tickets.
 - [x] AC-05: TODO.md includes Phase 5 task proposals dated 2026-08-20.
-- [ ] AC-06: The deterministic governance gate passes.
+- [x] AC-06: The deterministic governance gate passes.
 
 ## Participants
 
