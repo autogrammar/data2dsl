@@ -6,6 +6,9 @@ from typing import Any
 import pytest
 
 from data2dsl_adapters import (
+    CurllmAdapter,
+    CurllmMetricResponse,
+    CurllmPageEvidence,
     DiagitCommitMetricResponse,
     DiagitPageEvidence,
     GitHubDiagitAdapter,
@@ -190,4 +193,34 @@ def test_code2schema_adapter(golden_query: dict[str, Any]) -> None:
     assert obs["value"] == {"kind": "string-set", "items": ["Item", "Order", "User"]}
     assert len(obs["evidence"]) == 1
     assert obs["evidence"][0]["extractor"]["id"] == "semcod.code2schema"
+
+
+def test_curllm_adapter_valid_and_unevaluable(golden_query: dict[str, Any]) -> None:
+    adapter = CurllmAdapter()
+
+    # Valid response
+    page = CurllmPageEvidence(
+        url="https://github.com/autogrammar/data2dsl",
+        digest_sha256="4" * 64,
+        page=1,
+        endpoint="https://github.com/autogrammar/data2dsl",
+    )
+    resp = CurllmMetricResponse(
+        status="OK",
+        value=10,
+        pages=[page],
+    )
+    obs = adapter.normalize(golden_query, resp, side="right")
+    assert obs["state"] == "OBSERVED"
+    assert obs["value"] == {"kind": "integer", "value": "10"}
+    assert len(obs["evidence"]) == 1
+    assert obs["evidence"][0]["extractor"]["id"] == "semcod.curllm"
+    assert obs["evidence"][0]["digest_sha256"] == "4" * 64
+
+    # Unevaluable response on error/timeout
+    resp_err = CurllmMetricResponse(status="TIMEOUT", error_message="page timed out")
+    obs_err = adapter.normalize(golden_query, resp_err, side="right")
+    assert obs_err["state"] == "UNEVALUABLE"
+    assert obs_err["value"] is None
+    assert obs_err["evidence"][0]["location"]["endpoint"] == "curllm-error"
 
