@@ -11,9 +11,70 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
-from data2dsl_adapters import normalize_observation
-from data2dsl_comparator import compare
+from data2dsl_adapters import (
+    Code2LogicAdapter,
+    Code2LogicMetricResponse,
+    Code2SchemaAdapter,
+    Code2SchemaMetricResponse,
+    CurllmAdapter,
+    CurllmMetricResponse,
+    DiagitCommitMetricResponse,
+    GitHubDiagitAdapter,
+    WorkSummaryMarkdownAdapter,
+)
+from data2dsl_comparator import DeterministicComparator
 from data2dsl_contract_v0.validate import self_test as contract_self_test
+
+
+def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any], side: str = "left") -> Dict[str, Any]:
+    """Helper to normalize raw input via corresponding source adapter."""
+    if source_type == "markdown":
+        adapter = WorkSummaryMarkdownAdapter()
+        md_text = raw.get("markdown_content", "")
+        claim = adapter.extract_commit_claim(
+            markdown_text=md_text,
+            actor=query["subject"]["actor"],
+            path=raw.get("path", "work-summary.md"),
+            source_uri=raw.get("source_uri"),
+            source_revision=raw.get("source_revision"),
+        )
+        return adapter.normalize(query, claim, side=side)
+    elif source_type == "github":
+        adapter = GitHubDiagitAdapter()
+        resp = DiagitCommitMetricResponse(
+            status="OK" if raw.get("commit_count") is not None else "NOT_FOUND",
+            commit_count=raw.get("commit_count"),
+        )
+        return adapter.normalize(query, resp, side=side)
+    elif source_type == "curllm":
+        adapter = CurllmAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, CurllmMetricResponse):
+            resp = CurllmMetricResponse(
+                status="OK" if raw.get("value") is not None else "ERROR",
+                value=raw.get("value"),
+            )
+        return adapter.normalize(query, resp, side=side)
+    elif source_type == "code2logic":
+        adapter = Code2LogicAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, Code2LogicMetricResponse):
+            resp = Code2LogicMetricResponse(
+                status="OK" if raw.get("value") is not None else "ERROR",
+                value=raw.get("value"),
+            )
+        return adapter.normalize(query, resp, side=side)
+    elif source_type == "code2schema":
+        adapter = Code2SchemaAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, Code2SchemaMetricResponse):
+            resp = Code2SchemaMetricResponse(
+                status="OK" if raw.get("value") is not None else "ERROR",
+                value=raw.get("value"),
+            )
+        return adapter.normalize(query, resp, side=side)
+    else:
+        raise ValueError(f"Unknown source adapter kind: {source_type}")
 
 
 class Data2DslSkill:
@@ -82,12 +143,20 @@ class Data2DslSkill:
     @classmethod
     def self_test(cls) -> Dict[str, Any]:
         """Execute self-test suite."""
-        passed = contract_self_test()
-        return {
-            "status": "PASS" if passed else "FAIL",
-            "skill": cls.SKILL_NAME,
-            "version": cls.VERSION
-        }
+        try:
+            contract_self_test()
+            return {
+                "status": "PASS",
+                "skill": cls.SKILL_NAME,
+                "version": cls.VERSION
+            }
+        except Exception as exc:
+            return {
+                "status": "FAIL",
+                "error": str(exc),
+                "skill": cls.SKILL_NAME,
+                "version": cls.VERSION
+            }
 
     @classmethod
     def execute_compare(
@@ -105,8 +174,7 @@ class Data2DslSkill:
             # Resolve left observation
             if left_observation is None:
                 if left_raw is not None and left_source_type is not None:
-                    left_norm = normalize_observation(left_source_type, left_raw)
-                    left_observation = left_norm.to_dict()
+                    left_observation = _normalize_raw(left_source_type, left_raw, query, side="left")
                 else:
                     return {
                         "status": "ERROR",
@@ -117,8 +185,7 @@ class Data2DslSkill:
             # Resolve right observation
             if right_observation is None:
                 if right_raw is not None and right_source_type is not None:
-                    right_norm = normalize_observation(right_source_type, right_raw)
-                    right_observation = right_norm.to_dict()
+                    right_observation = _normalize_raw(right_source_type, right_raw, query, side="right")
                 else:
                     return {
                         "status": "ERROR",
@@ -126,10 +193,12 @@ class Data2DslSkill:
                         "message": "Either right_observation or (right_raw and right_source_type) must be provided."
                     }
 
-            result = compare(query, left_observation, right_observation)
+            comparator = DeterministicComparator()
+            bundle = comparator.compare(query, left_observation, right_observation)
             return {
                 "status": "OK",
-                "result": result.to_dict()
+                "result": bundle["result"],
+                "bundle": bundle
             }
         except Exception as exc:
             return {
