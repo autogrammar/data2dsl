@@ -1,0 +1,65 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-022",
+  "summary": "ADR-003: natural language query and semcod/nlp2dsl integration evaluation",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e2fcddbc3a7abe52cc06dd46336fcc10920052f0",
+    "targetBranch": "main",
+    "outcome": "Publish ADR-003 evaluating semcod/nlp2dsl IntentPipeline extension for natural language data2dsl queries.",
+    "nonGoals": [
+      "Embed non-deterministic LLM parsing into data2dsl core comparator.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record ADR-003 architecture decision for bounding NLP queries outside the deterministic comparison engine.",
+      "components": [
+        {
+          "name": "architecture-decisions",
+          "paths": ["docs/decisions/ADR-003-natural-language-query-and-nlp2dsl-integration.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Delete ADR-003 document."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-022/**",
+    "project/TICKETS.md",
+    "docs/decisions/ADR-003-natural-language-query-and-nlp2dsl-integration.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
