@@ -1,0 +1,71 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-018",
+  "summary": "Release preparation: bump VERSION to 0.1.0 and configure pyproject.toml",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "8815c975c84f56bb89635bee1cc8ea8126a7ab6e",
+    "targetBranch": "main",
+    "outcome": "Bump repository VERSION to 0.1.0 and define standard pyproject.toml package metadata.",
+    "nonGoals": [
+      "Change comparator or adapter core source code.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add declarative pyproject.toml following PEP 621 / hatchling / standard build and bump VERSION.",
+      "components": [
+        {
+          "name": "package-distribution",
+          "paths": ["VERSION", "pyproject.toml"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert VERSION and pyproject.toml."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["pytest tests/"],
+        "evidence": "All unit and E2E test suites pass."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-018/**",
+    "project/TICKETS.md",
+    "VERSION",
+    "pyproject.toml"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
