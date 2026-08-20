@@ -3,8 +3,8 @@
   "schema": "wellmanifest.dsl/manifest/v1",
   "id": "autogrammar.data2dsl.comparison",
   "name": "data2dsl deterministic comparison contract",
-  "version": "0.1.0-dev",
-  "status": "experimental",
+  "version": "0.1.0",
+  "status": "stable",
   "purpose": "Effect-free comparison of evidence-bearing observations with explicit comparability, outcomes and deltas",
   "domain": "data-comparison",
   "owners": [
@@ -52,7 +52,7 @@
   "projections": [],
   "lifecycle": {
     "compatibility": "semver",
-    "stability": "experimental",
+    "stability": "stable",
     "breaking": "major",
     "additive": "minor",
     "fix": "patch"
@@ -110,7 +110,7 @@
   "mappings": [
     {
       "standard": "wellmanifest/dsl",
-      "version": "0.1.0-dev",
+      "version": "0.1.0",
       "relation": "compatible-with",
       "uri": "https://github.com/wellmanifest/dsl"
     }
@@ -120,7 +120,7 @@
     "entries": [
       {
         "standard": "wellmanifest.dsl.profiles",
-        "version": "0.1.0-dev",
+        "version": "0.1.0",
         "repository": "https://github.com/wellmanifest/dsl",
         "revision": "0e088f9efa06a903d1674f42b8ac6afaa0fdf071",
         "contracts": [
