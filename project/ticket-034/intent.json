@@ -1,0 +1,65 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-034",
+  "summary": "Register nlp2dsl research integration notes in documentation",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P3",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e857ea4af203934112d1e79a6a214c6819074bdf",
+    "targetBranch": "main",
+    "outcome": "Publish nlp2dsl IntentPipeline research integration notes in docs/ and link them to ADR-003.",
+    "nonGoals": [
+      "Change product behavior or source code.",
+      "Add runtime LLM dependencies to core data2dsl."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record research architecture notes in docs/ alongside ADR-003.",
+      "components": [
+        {
+          "name": "documentation",
+          "paths": ["docs/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove docs/nlp2dsl-integration-notes.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-034/**",
+    "docs/nlp2dsl-integration-notes.md",
+    "docs/decisions/ADR-003-natural-language-query-and-nlp2dsl-integration.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
