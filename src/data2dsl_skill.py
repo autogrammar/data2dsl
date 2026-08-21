@@ -66,9 +66,10 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         adapter = Code2SchemaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2SchemaMetricResponse):
+            entities = raw.get("entities") if raw.get("entities") is not None else raw.get("value", ())
             resp = Code2SchemaMetricResponse(
-                status="OK" if raw.get("value") is not None else "ERROR",
-                value=raw.get("value"),
+                status="OK" if entities is not None else "ERROR",
+                entities=entities if isinstance(entities, (list, tuple)) else (entities,),
             )
         return adapter.normalize(query, resp, side=side)
     else:

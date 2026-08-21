@@ -1,0 +1,192 @@
+"""Tests for Data2DslSkill agent tool interface."""
+
+from __future__ import annotations
+
+import pytest
+from data2dsl_adapters import (
+    Code2LogicMetricResponse,
+    Code2SchemaMetricResponse,
+    CurllmMetricResponse,
+    CurllmPageEvidence,
+)
+from data2dsl_skill import Data2DslSkill
+
+
+@pytest.fixture
+def base_query():
+    return {
+        "schema": "autogrammar.data2dsl/query/v0",
+        "query_id": "skill-query-001",
+        "subject": {
+            "repository": "https://github.com/autogrammar/data2dsl",
+            "actor": "antigravity",
+        },
+        "metric": {
+            "id": "code.commit.count",
+            "version": "1.0.0",
+            "value_kind": "integer",
+            "unit": "commits",
+        },
+        "window": {
+            "start": "2026-08-10T00:00:00Z",
+            "end": "2026-08-17T00:00:00Z",
+            "semantics": "time-window-exact",
+        },
+        "left_source": {"id": "markdown-work-summary", "kind": "markdown-claim"},
+        "right_source": {"id": "github-diagit-metrics", "kind": "github-metrics"},
+        "comparison": {
+            "equality": "exact",
+            "delta_direction": "right-minus-left",
+            "missing_is_zero": False,
+        },
+    }
+
+
+def test_skill_tool_definitions():
+    tools = Data2DslSkill.get_tool_definitions()
+    assert len(tools) == 2
+    tool_names = {t["name"] for t in tools}
+    assert "data2dsl_compare" in tool_names
+    assert "data2dsl_self_test" in tool_names
+
+
+def test_skill_self_test():
+    res = Data2DslSkill.self_test()
+    assert res["status"] == "PASS"
+    assert res["skill"] == "autogrammar.data2dsl"
+    assert res["version"] == "0.1.0"
+
+
+def test_skill_execute_compare_raw_markdown_and_github_match(base_query):
+    md_content = "# Summary\n\n- @antigravity commits: 10 in 2026-08-10..2026-08-17\n"
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"markdown_content": md_content, "path": "work-summary.md"},
+        left_source_type="markdown",
+        right_raw={"commit_count": 10},
+        right_source_type="github",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+    assert res["result"]["delta"] is None
+
+
+def test_skill_execute_compare_raw_markdown_and_github_conflict(base_query):
+    md_content = "# Summary\n\n- @antigravity commits: 12 in 2026-08-10..2026-08-17\n"
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"markdown_content": md_content, "path": "work-summary.md"},
+        left_source_type="markdown",
+        right_raw={"commit_count": 10},
+        right_source_type="github",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "CONFLICT"
+    assert res["result"]["delta"]["kind"] == "integer"
+    assert res["result"]["delta"]["value"] == "-2"
+
+
+def test_skill_execute_compare_raw_curllm(base_query):
+    ev = CurllmPageEvidence(
+        url="https://github.com/autogrammar/data2dsl/pulse",
+        digest_sha256="abc123def456",
+    )
+    resp = CurllmMetricResponse(status="OK", value=8, pages=(ev,))
+
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"response": resp},
+        left_source_type="curllm",
+        right_raw={"response": resp},
+        right_source_type="curllm",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_skill_execute_compare_raw_curllm_unevaluable(base_query):
+    ev = CurllmPageEvidence(
+        url="https://github.com/autogrammar/data2dsl/pulse",
+        digest_sha256="abc123def456",
+    )
+    resp = CurllmMetricResponse(status="OK", value=8, pages=(ev,))
+    err_resp = CurllmMetricResponse(status="ERROR", value=None, error_message="Page not reachable")
+
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"response": resp},
+        left_source_type="curllm",
+        right_raw={"response": err_resp},
+        right_source_type="curllm",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "UNEVALUABLE"
+
+
+def test_skill_execute_compare_raw_code2logic(base_query):
+    resp = Code2LogicMetricResponse(status="OK", value=15)
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"response": resp},
+        left_source_type="code2logic",
+        right_raw={"value": 15},
+        right_source_type="code2logic",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_skill_execute_compare_raw_code2schema(base_query):
+    schema_query = dict(base_query)
+    schema_query["metric"] = {
+        "id": "schema.entities",
+        "version": "1.0.0",
+        "value_kind": "string-set",
+        "unit": "entities",
+    }
+    resp1 = Code2SchemaMetricResponse(status="OK", entities=["User", "Account"])
+    resp2 = Code2SchemaMetricResponse(status="OK", entities=["User", "Account", "Order"])
+
+    res = Data2DslSkill.execute_compare(
+        query=schema_query,
+        left_raw={"response": resp1},
+        left_source_type="code2schema",
+        right_raw={"response": resp2},
+        right_source_type="code2schema",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "CONFLICT"
+    assert res["result"]["delta"]["kind"] == "string-set"
+    assert res["result"]["delta"]["added"] == ["Order"]
+    assert res["result"]["delta"]["removed"] == []
+
+
+def test_skill_execute_compare_missing_inputs(base_query):
+    res_no_left = Data2DslSkill.execute_compare(
+        query=base_query,
+        right_raw={"commit_count": 10},
+        right_source_type="github",
+    )
+    assert res_no_left["status"] == "ERROR"
+    assert res_no_left["error_code"] == "MISSING_LEFT_OBSERVATION"
+
+    res_no_right = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"commit_count": 10},
+        left_source_type="github",
+    )
+    assert res_no_right["status"] == "ERROR"
+    assert res_no_right["error_code"] == "MISSING_RIGHT_OBSERVATION"
+
+
+def test_skill_execute_compare_unknown_adapter_type(base_query):
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"val": 10},
+        left_source_type="unsupported_source",
+        right_raw={"commit_count": 10},
+        right_source_type="github",
+    )
+    assert res["status"] == "ERROR"
+    assert res["error_code"] == "COMPARISON_EXCEPTION"
+    assert "Unknown source adapter kind" in res["message"]
