@@ -3,7 +3,8 @@
 - **Status:** Accepted
 - **Date:** 2026-08-20
 - **Decision owner:** `data2dsl` ticket-022
-- **Related tickets:** ticket-001, ticket-004, ticket-009, ticket-015
+- **Related tickets:** ticket-001, ticket-004, ticket-009, ticket-015, ticket-022, ticket-034
+- **Technical notes:** [`docs/nlp2dsl-integration-notes.md`](../nlp2dsl-integration-notes.md)
 
 ## Context and Decision Question
 
