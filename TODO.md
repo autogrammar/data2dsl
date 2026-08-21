@@ -88,49 +88,76 @@ Proponowane na podstawie analizy repozytorium i ekosystemu
 
 ### Governance housekeeping (workstream: `governance`)
 
-- [ ] **Zamknij ticket-016**: Zweryfikuj integrację na `main`, ustaw
+- [x] **Zamknij ticket-016**: Zweryfikuj integrację na `main`, ustaw
   `DONE / DONE`. Zregeneruj `project/README.md` (ticket index zatrzymany na
-  ticket-006).
-- [ ] **Zaktualizuj CHANGELOG.md**: Uzupełnij wpisy za Phase 1A–4 z datami
-  merge'ów PR #6–#16 (aktualnie wymieniony tylko Phase 0 bootstrap).
-- [ ] **Zaktualizuj README.md sekcja "Current state"**: Odzwierciedl faktyczny
-  stan — pełna implementacja golden case, CLI, konsumer feed, testy E2E.
+  ticket-006). — ticket-017
+- [x] **Zaktualizuj CHANGELOG.md**: Uzupełnij wpisy za Phase 1A–4 z datami
+  merge'ów PR #6–#16 (aktualnie wymieniony tylko Phase 0 bootstrap). — ticket-017
+- [x] **Zaktualizuj README.md sekcja "Current state"**: Odzwierciedl faktyczny
+  stan — pełna implementacja golden case, CLI, konsumer feed, testy E2E. — ticket-017
 
 ### Release preparation (workstream: `integration`)
 
-- [ ] **Bump VERSION do `0.1.0`**: Obecne `0.0.0` nie odzwierciedla stanu.
+- [x] **Bump VERSION do `0.1.0`**: Obecne `0.0.0` nie odzwierciedla stanu.
   Wymaga ticketu w workstreamie `integration` (plik `VERSION` jest owned path
-  `integration`).
-- [ ] **Utwórz `pyproject.toml`**: Zdefiniuj pakiet `data2dsl` z zależnością
+  `integration`). — ticket-018
+- [x] **Utwórz `pyproject.toml`**: Zdefiniuj pakiet `data2dsl` z zależnością
   `jsonschema>=4.26.0`. Wymagane przez `integration` workstream
-  (`manifest.json` → `coordination.integration.requiredForPaths`).
+  (`manifest.json` → `coordination.integration.requiredForPaths`). — ticket-018
 
 ### Contract stabilization (workstream: `application`)
 
-- [ ] **Promuj kontrakt z `experimental` na `stable`**: Przenieś
+- [x] **Promuj kontrakt z `experimental` na `stable`**: Przenieś
   `autogrammar.data2dsl.comparison` z `0.1.0-dev` do `0.1.0` w
   [`dsl-manifest.json`](src/data2dsl_contract_v0/dsl-manifest.json). Wymaga
-  powiązanego upstream review w `wellmanifest/dsl`.
-- [ ] **Pin Docker base image digest**: Zamień `python:3.12-alpine` na
+  powiązanego upstream review w `wellmanifest/dsl`. — ticket-024
+- [x] **Pin Docker base image digest**: Zamień `python:3.12-alpine` na
   `python:3.12-alpine@sha256:...` w [`Dockerfile`](Dockerfile) (rozwiązuje
-  potencjalne `GOV-DOCKER-002`).
+  potencjalne `GOV-DOCKER-002`). — ticket-021
 
 ### Phase 5: NLP query builder & multi-source expansion (workstream: `application`)
 
-- [ ] **Zbadaj integrację `semcod/nlp2dsl`**: Oceń rozszerzenie
+- [x] **Zbadaj integrację `semcod/nlp2dsl`**: Oceń rozszerzenie
   `IntentPipeline` o vocabulary `data2dsl` — generowanie bounded comparison
-  query z naturalnego pytania. Zapisz ADR-003.
-- [ ] **Dodaj adapter `curllm` (browser-backed source)**: Zaprojektuj thin
+  query z naturalnego pytania. Zapisz ADR-003. — ticket-022
+- [x] **Dodaj adapter `curllm` (browser-backed source)**: Zaprojektuj thin
   adapter na `semcod/curllm` BQL do akwizycji faktów z przeglądarki jako
-  trzecie źródło obserwacji.
-- [ ] **Zbadaj integrację `wellmanifest/skills`**: Oceń publikację `data2dsl`
+  trzecie źródło obserwacji. — ticket-019
+- [x] **Zbadaj integrację `wellmanifest/skills`**: Oceń publikację `data2dsl`
   CLI jako governed agent skill (skill manifest + deterministic error routing).
+  — ticket-025
 
 ### Priorytet na dziś
 
-Wykonaj w kolejności zależności:
-1. Zamknij ticket-016 (governance) — odblokowuje inne workstreamy
-2. CHANGELOG + README update (governance) — aktualizacja dokumentacji
-3. VERSION bump + pyproject.toml (integration) — przygotowanie release
-4. Docker digest pin (infrastructure) — compliance
-5. Analiza NLP/curllm/skills (application) — research/ADR bez implementacji
+Wykonano w kolejności zależności:
+1. ~~Zamknij ticket-016 (governance)~~ — ticket-017 ✓
+2. ~~CHANGELOG + README update (governance)~~ — ticket-017 ✓
+3. ~~VERSION bump + pyproject.toml (integration)~~ — ticket-018 ✓
+4. ~~Docker digest pin (infrastructure)~~ — ticket-021 ✓
+5. ~~Analiza NLP/curllm/skills (application)~~ — ticket-019, 022, 025 ✓
+
+---
+
+## Zadania na dziś — 2026-08-21
+
+### Governance housekeeping (workstream: `governance`, ticket-029)
+
+- [x] **Zamknij ticket-028**: PR #29 merged (`c0bb0db`), ustaw `DONE / DONE`.
+- [ ] **Zaktualizuj TODO.md**: Odznacz zadania z 08-20, dodaj sekcję 08-21.
+- [ ] **Napraw README.md**: `0.1.0-dev` → `0.1.0` w sekcji "Current state",
+  dodaj wzmiankę o adapterze Curllm i agent skill.
+- [ ] **Zregeneruj project/README.md**: Rozszerz ticket index z 6 do 29.
+- [ ] **Zaktualizuj CHANGELOG.md**: Dodaj wpisy za tickety 017–028.
+
+### Jakość i stack compliance (workstream: `application`)
+
+- [ ] **Dodaj `conftest.py`**: Skonfiguruj `pytest` z automatycznym
+  `PYTHONPATH=src` bez ręcznego env.
+- [ ] **Uruchom stack checks**: `ruff`, `mypy` — baseline raport jakości kodu
+  wg `.governance/stack-profiles.json`.
+
+### Research (workstream: `integration`)
+
+- [ ] **Research `nlp2dsl` IntentPipeline**: Przeanalizuj mechanizm vocabulary
+  extension w `semcod/nlp2dsl`, zapisz notatkę w `docs/`.
+

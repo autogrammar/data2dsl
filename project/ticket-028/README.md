@@ -2,8 +2,8 @@
 
 - **ID**: ticket-028
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-20
 
 ## Goal and scope

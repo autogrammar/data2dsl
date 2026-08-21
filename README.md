@@ -185,9 +185,9 @@ repository require that repository's owner-approved workflow.
 ## Current state
 
 - Phases 0 through 4 are complete with governed ticket evidence.
-- Four source adapters are implemented: GitHub/Diagit commit metrics,
-  Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG), and
-  Code2Schema (entity/CQRS).
+- Five source adapters are implemented: GitHub/Diagit commit metrics,
+  Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
+  Code2Schema (entity/CQRS), and Curllm (browser-backed BQL sources).
 - The deterministic comparator produces `MATCH`, `CONFLICT`, `MISSING_LEFT`,
   `MISSING_RIGHT` and `UNEVALUABLE` outcomes with typed deltas and SHA-256
   evidence chains.
@@ -195,9 +195,12 @@ repository require that repository's owner-approved workflow.
   subcommands.
 - The consumer fact feed is integrated with `semcod/todo2code` while preserving
   strict separation of factual acquisition from reasoning.
-- The comparison contract `autogrammar.data2dsl.comparison` v`0.1.0-dev` is
-  validated against `wellmanifest/dsl` profiles.
-- Docker bootstrap and the deterministic governance gate pass.
+- The comparison contract `autogrammar.data2dsl.comparison` v`0.1.0` is stable
+  and validated against `wellmanifest/dsl` profiles.
+- The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
+  and exposes `data2dsl_compare` and `data2dsl_self_test` for agent discovery.
+- Docker bootstrap uses a pinned SHA-256 base image and the deterministic
+  governance gate passes.
 - End-to-end tests cover the golden case (`work-summary.md` vs GitHub), adapter
   error handling, and all five comparison outcomes.
 
