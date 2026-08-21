@@ -2,7 +2,52 @@
 
 ## Unreleased
 
-- Close ticket-016 from integrated default branch evidence.
+### Governance housekeeping
+
+- Close ticket-016 from integrated default branch evidence (ticket-017).
+- Close tickets 017–019 from integrated evidence (ticket-020).
+- Close tickets 021–022 from integrated evidence (ticket-023).
+- Close ticket 025 from integrated evidence (ticket-026).
+- Close ticket 027 from integrated evidence (ticket-028).
+- Close ticket 028 and update TODO.md, README.md, CHANGELOG.md, and
+  project/README.md ticket index (ticket-029).
+
+### Browser-backed source adapter (ticket-019)
+
+- Add `CurllmAdapter` for `semcod/curllm` BQL browser page extractions in
+  `src/data2dsl_adapters.py`.
+- Unit tests for valid and unevaluable Curllm observations in
+  `tests/test_golden_case_e2e.py`.
+
+### Docker compliance (ticket-021)
+
+- Pin `python:3.12-alpine` base image to immutable SHA-256 digest in
+  `Dockerfile`, resolving `GOV-DOCKER-002`.
+
+### Architecture decisions (ticket-022)
+
+- ADR-003: Evaluate `semcod/nlp2dsl` integration for natural language query
+  compilation. Decision: delegate NLP to `nlp2dsl` outer boundary; `data2dsl`
+  core remains zero-LLM, deterministic.
+
+### Contract promotion (ticket-024)
+
+- Promote `autogrammar.data2dsl.comparison` contract from `experimental` /
+  `0.1.0-dev` to `stable` / `0.1.0` in `dsl-manifest.json`.
+
+### Agent skill interface (ticket-025)
+
+- Implement `Data2DslSkill` conforming to `wellmanifest.skills/v1` in
+  `src/data2dsl_skill.py`.
+- Expose `data2dsl_compare` and `data2dsl_self_test` tool definitions for
+  MCP / JSON Schema agent discovery.
+- CLI `--self-test` and tool execution tests in `tests/test_cli.py`.
+
+### Bug fix (ticket-027)
+
+- Fix adapter normalization in `data2dsl_skill.py` for `CurllmAdapter`,
+  `Code2LogicAdapter`, and `Code2SchemaAdapter` raw input handling.
+
 - Update TODO.md with Phase 5 task proposals for 2026-08-20.
 
 ## 0.1.0-dev (2026-08-19)

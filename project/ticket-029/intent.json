@@ -1,0 +1,70 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-029",
+  "summary": "Governance housekeeping: close ticket-028, update TODO, README, CHANGELOG, project index",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P3",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "c0bb0db6258f97b019a1f4f505a8ad269d6a60a5",
+    "targetBranch": "main",
+    "outcome": "Close ticket-028 from integrated evidence on main. Update TODO.md checkboxes, fix README.md version inconsistency, regenerate project/README.md ticket index, and update CHANGELOG.md with entries for tickets 017-028.",
+    "nonGoals": [
+      "Change product behavior or source code.",
+      "Modify external repositories.",
+      "Add new features or adapters."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Governance-only documentation updates; no architectural changes.",
+      "components": [
+        {
+          "name": "governance-documentation",
+          "paths": ["project/**", "TODO.md", "README.md", "CHANGELOG.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert governance documentation updates."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["project\\governance-check.bat"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-029/**",
+    "project/ticket-028/README.md",
+    "project/TICKETS.md",
+    "project/README.md",
+    "TODO.md",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
