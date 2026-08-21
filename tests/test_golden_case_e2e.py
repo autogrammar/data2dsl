@@ -13,7 +13,6 @@ from data2dsl_adapters import (
     DiagitPageEvidence,
     GitHubDiagitAdapter,
     WorkSummaryMarkdownAdapter,
-    build_github_commit_observation,
     compute_sha256,
 )
 from data2dsl_comparator import compare_observations
