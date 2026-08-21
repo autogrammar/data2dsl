@@ -7,9 +7,7 @@ Provides programmatic tool execution for comparing observations deterministicall
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 
 from data2dsl_adapters import (
     Code2LogicAdapter,

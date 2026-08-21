@@ -4,15 +4,14 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Sequence
 
 from data2dsl_adapters import (
     DiagitCommitMetricResponse,
     GitHubDiagitAdapter,
-    MarkdownClaim,
     WorkSummaryMarkdownAdapter,
 )
-from data2dsl_comparator import DeterministicComparator, compare_observations
+from data2dsl_comparator import compare_observations
 from data2dsl_contract_v0.validate import validate_document
 
 
