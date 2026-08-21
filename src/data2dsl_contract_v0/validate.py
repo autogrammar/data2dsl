@@ -47,7 +47,8 @@ def _schema_validator() -> Draft202012Validator:
 
 def _utc(value: str) -> datetime:
     parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    if parsed.utcoffset() is None or parsed.utcoffset().total_seconds() != 0:
+    offset = parsed.utcoffset()
+    if offset is None or offset.total_seconds() != 0:
         raise ContractError("window timestamps must carry UTC offset")
     return parsed
 
