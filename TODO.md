@@ -213,13 +213,13 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **MCP server endpoint** (`semcod/mcp`): Wyeksponowano `Data2DslSkill` jako
   MCP JSON-RPC 2.0 STDIO server tool (`handle_mcp_message` / `main_mcp`) — dostępny dla Cursor/Windsurf/Claude Desktop natywnie. — ticket-039
 
-### Backlog — Dokumentacja (workstream: `integration`)
+### Dokumentacja (workstream: `integration`, ticket-040)
 
-- [ ] **ADR-004: Multi-source pipeline** (`docs/decisions/`): Dokument
-  decyzyjny: architektura pipeline'u wieloźródłowego z integracja
-  planfile→pyqual→koru.
-- [ ] **Aktualizacja CAPABILITY_MAP.md** (`docs/`): Dodaj nowe adaptery i
-  integracje do grafu kompozycji.
+- [x] **ADR-004: Multi-source pipeline** (`docs/decisions/`): Dokument
+  decyzyjny: architektura pipeline'u wieloźródłowego z integracją
+  planfile→pyqual→koru. — ticket-040
+- [x] **Aktualizacja CAPABILITY_MAP.md** (`docs/`): Dodano nowe adaptery i
+  integracje do tabeli i grafu kompozycji. — ticket-040
 
 ### Backlog — Research (notatki w `docs/`)
 

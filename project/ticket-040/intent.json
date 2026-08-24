@@ -1,0 +1,67 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-040",
+  "summary": "Documentation: ADR-004 Multi-source pipeline and CAPABILITY_MAP update",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "b053dd56cacf10d8f86432f6c0ad32379e040499",
+    "targetBranch": "main",
+    "outcome": "Document multi-source pipeline architecture in ADR-004 and update CAPABILITY_MAP with new adapters and MCP/urirun integrations.",
+    "nonGoals": [
+      "Modify source code or comparison contracts.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Create ADR-004 in docs/decisions/ capturing multi-source pipeline decisions and update docs/CAPABILITY_MAP.md with current 8 adapters and integration bindings.",
+      "components": [
+        {
+          "name": "documentation",
+          "paths": ["docs/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert docs/ changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-040/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "docs/decisions/ADR-004-multi-source-pipeline-architecture.md",
+    "docs/CAPABILITY_MAP.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

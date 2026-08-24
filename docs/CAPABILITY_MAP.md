@@ -42,10 +42,15 @@ implemented capability.
 | Observation and evidence envelope | `subactor/twin` | protobuf `subactor.twin.v1.Observation`, `EvidenceRef`; standard validator/generator | metric, target URI, value, time, status and evidence refs | typed protobuf observation/evidence envelope | digital-twin aggregate semantics; package `0.1.0.dev0`; standard/profile is still under review | `proto/twin/v1/twin.proto`, `spec/TWIN_STANDARD.md`, `profiles/generic-twin.json`, `src/twin_standard.py`, tests; revision `6e53bc33a219d6a99b480e3203d40352ff63ce5f` | **CANDIDATE** | Run a compatibility decision with the standard owner before defining a data2dsl envelope. Reuse if generic values and provenance fit without weakening twin invariants. |
 | DSL manifest conformance | `wellmanifest/dsl` | dependency-free `src/dsl_check.py`; `wellmanifest.dsl/manifest/v1` JSON Schema | DSL manifest/bundle | deterministic conformance diagnostics | standard is a pre-stable normative draft; domain profiles are not yet delivered | `spec/DSL_STANDARD.md`, `schemas/dsl-manifest.schema.json`, `src/dsl_check.py`, self-test, `TODO.md`; revision `550e5f441c709e15f2679c1af151352d1eba2f1e` | **REUSE** | Use the checker for manifest conformance once a profile exists; pin the revision. Do not treat the draft as the data model itself. |
 | Shared data-query/result DSL profile | `wellmanifest/dsl` | planned domain profile; no current schema | source/metric/window query and comparison result | portable query/result contract | profile is explicitly pending in TODO; base standard does not define observation comparison semantics | `TODO.md`, `spec/DSL_STANDARD.md`, `schemas/dsl-manifest.schema.json` | **MISSING** | Propose the minimal profile to the owning standard in a later governance ticket. Until accepted, keep any experiment provisional and local. |
-| Browser/web acquisition | `semcod/curllm` | browser automation, BQL parser/executor and CLI | browser/web query | browser-derived data/automation result | browser and LLM/BQL domain, not a neutral data-query planner | BQL/parser/executor modules, tests, `pyproject.toml`; revision `b9d2b570f3ca0efaef8c97014382f10104dc9752` | **REUSE** | Optional source adapter for browser-backed observations; exclude from the core comparator. |
+| Browser/web acquisition | `semcod/curllm` | browser automation, BQL parser/executor and CLI | browser/web query | browser-derived data/automation result | browser and LLM/BQL domain, not a neutral data-query planner | BQL/parser/executor modules, tests, `pyproject.toml`; revision `b9d2b570f3ca0efaef8c97014382f10104dc9752` | **REUSE** | Source adapter `CurllmAdapter` implemented in `src/data2dsl_adapters.py`. |
+| SDLC Task queue acquisition | `semcod/planfile` | YAML task queue, ticket metadata | planfile task/ticket list | normalized ticket counts, task IDs and status observations | planfile project schema | `planfile.yaml`, parser/tests | **REUSE** | Source adapter `PlanfileAdapter` implemented in `src/data2dsl_adapters.py`. |
+| Infrastructure topology acquisition | `semcod/deta` | Docker compose / OpenAPI manifests | infrastructure topology description | normalized service counts, port sets, endpoint lists | container/infra YAML/JSON | `deta.build_topology()`, compose parser | **REUSE** | Source adapter `DetaAdapter` implemented in `src/data2dsl_adapters.py`. |
+| Intent contract bounds acquisition | `subactor/intent-contract-dsl` | Intent contract JSON DSL | contract definitions | normalized parties, deliverables, and obligations | subactor contract schema | `intent-contract.dsl.json` | **REUSE** | Source adapter `IntentContractAdapter` implemented in `src/data2dsl_adapters.py`. |
+| URI workflow routing | `if-uri/urirun` | `connector.manifest.json`, `urirun.bindings` | `data2dsl://` URI commands | execution results with typed envelopes | if-uri connector specification | `src/connector.manifest.json`, `src/data2dsl_skill.py` | **REUSE** | Implemented `urirun_bindings` for `data2dsl://host/compare/run` and `data2dsl://host/selftest/run`. |
+| Model Context Protocol (MCP) | `semcod/mcp` | MCP JSON-RPC 2.0 STDIO protocol | tool call requests (`data2dsl_compare`, `data2dsl_self_test`) | tool call results with text contents | MCP 2024-11-05 spec | `src/data2dsl_skill.py` (`handle_mcp_message`, `main_mcp`) | **REUSE** | Native IDE MCP tool discovery and execution. |
 | SUMD structured-document parsing | `semcod/sumd` | Python `parse`, `parse_file` | SUMD-conformant Markdown | SUMD descriptor model and validation | SUMD-specific, not arbitrary Markdown | package exports, parser/tests; revision `672c699db6110b678260ccd729617e0b5772a6f0` | **REUSE** | Use only when the declared source format is SUMD; otherwise use mdflow. |
-| Generic comparability and metric diff | none verified | no current neutral API found | two normalized observations plus comparison policy | `MATCH`, `CONFLICT`, `MISSING_LEFT`, `MISSING_RIGHT`, `UNEVALUABLE`, deltas and evidence | must remain deterministic and reasoning-free; depends on the envelope/profile decision | negative evidence: targeted implementation/API/test searches in the candidate repos above found only domain-specific comparators | **MISSING** | Smallest justified data2dsl-owned core after the observation/profile decision. Support scalar and set metrics needed by the golden case first. |
-| Golden-case work-summary mapping | none verified | no current mapper from `work-summary.md` claims to comparable GitHub metrics | structured Markdown facts and GitHub metric observations | aligned metric keys, actors, windows and provenance | product-specific glue; must not infer unsupported semantics | mdflow provides structure and Diagit provides only topology; neither implements this mapping | **MISSING** | Small, explicit data2dsl mapping after metric vocabulary and time-window rules are approved. |
+| Generic comparability and metric diff | `data2dsl` | `DeterministicComparator` in `src/data2dsl_comparator.py` | two normalized observations plus comparison policy | `MATCH`, `CONFLICT`, `MISSING_LEFT`, `MISSING_RIGHT`, `UNEVALUABLE`, deltas (`integer`, `float`, `percentage`, `string-set`) and evidence | deterministic comparator | `src/data2dsl_comparator.py`, `tests/` | **IMPLEMENTED** | Supported scalar and set types: `integer`, `string`, `string-set`, `float`, `percentage`. |
+| Golden-case work-summary mapping | `data2dsl` | `WorkSummaryMarkdownAdapter` + `GitHubDiagitAdapter` | structured Markdown claims and GitHub metric observations | aligned metric keys, actors, windows and provenance | product glue | `src/data2dsl_adapters.py`, tests | **IMPLEMENTED** | Complete golden-case flow with SHA-256 evidence chains. |
 | Reasoning and conclusion layer | `semcod/todo2code` | diagnostics/conclusion and optional LLM pipeline | factual IntentGraph/diff/evidence | diagnoses and conclusions | consumer policy and epistemic intent model | `src/graph/linker.ts`, diagnostics/conclusion modules and tests | **REUSE** | Keep outside data2dsl. data2dsl returns facts, deltas and evidence; todo2code remains a consumer. |
 
 ## Extraction boundaries
@@ -66,49 +71,45 @@ The missing pieces are narrower than a new framework:
    `wellmanifest/dsl` is the proper standards route; `subactor/twin` is a
    concrete compatibility candidate for observations and evidence.
 2. Deterministic comparability and metric diff across two neutral observations
-   is not supplied by the inspected domain comparators. This is the smallest
-   justified data2dsl-owned core, contingent on item 1.
-3. GitHub commit metrics should extend Diagit's established provider and auth
-   boundary. Only the normalization adapter belongs in data2dsl.
-4. The golden-case Markdown-to-metric mapping is thin product glue. It should
-   be explicit and evidence-preserving, not hidden in NLP or an LLM prompt.
+   is supplied by `data2dsl_comparator.py`.
+3. GitHub commit metrics extend Diagit's established provider and auth
+   boundary.
+4. The golden-case Markdown-to-metric mapping is implemented in `WorkSummaryMarkdownAdapter`.
 
-No new parser, GitHub client, reasoning layer, or final DSL is justified.
-
-## Provisional composition graph
-
-This graph is a Phase 0 integration hypothesis, not final architecture or a
-published interface.
+## Composition graph
 
 ```mermaid
 flowchart LR
-    Q["User or consumer query"] --> N["nlp2cmd IntentIR (EXTEND, optional)"]
-    Q --> R["data2dsl routing and explicit mapping (minimal glue)"]
-    N --> R
+    Q["User / Agent / MCP / urirun Query"] --> R["data2dsl Routing & Normalization"]
 
-    R --> M["mdflow Markdown facts (REUSE)"]
-    R --> G["shared Git factual seam (EXTRACT from todo2code)"]
-    R --> H["Diagit GitHub provider (REUSE + EXTEND metrics)"]
-    R --> C["language-specific code analyzers (REUSE)"]
-    R --> B["curllm browser adapter (optional REUSE)"]
+    R --> M["mdflow / WorkSummaryMarkdownAdapter"]
+    R --> H["GitHub / DiagitCommitMetricResponse"]
+    R --> L["code2logic CFG/DFG Adapter"]
+    R --> S["code2schema CQRS Adapter"]
+    R --> B["curllm Browser BQL Adapter"]
+    R --> P["planfile Task Queue Adapter"]
+    R --> D["deta Infra Topology Adapter"]
+    R --> I["subactor IntentContract Adapter"]
 
-    M --> O["Observation/evidence envelope decision"]
-    G --> O
+    M --> O["Normalized Observations (observation/v0)"]
     H --> O
-    C --> O
+    L --> O
+    S --> O
     B --> O
-    T["subactor/twin Observation (CANDIDATE)"] --> O
-    D["wellmanifest DSL profile (MISSING)"] --> O
+    P --> O
+    D --> O
+    I --> O
 
-    O --> X["deterministic comparability and metric diff (MISSING)"]
-    X --> E["facts, deltas, statuses and evidence"]
-    E --> P["todo2code or another reasoning consumer"]
+    O --> C["DeterministicComparator (int/float/pct/set)"]
+    C --> F["Comparison Bundle (result/v0 + SHA-256 Evidence)"]
+    F --> X["todo2code / pyqual / Agent Reasoning Consumers"]
 ```
 
-## Phase 0 conclusion
+## Current state conclusion
 
-The product should be a thin composition and normalization layer, not a new
-universal parser framework. Most source acquisition can be reused or recovered
-from existing seams. The only justified core implementation is a small,
-deterministic comparison layer plus explicit mappings, after the observation
-contract and DSL-profile decisions are resolved with their owners.
+The product serves as a lightweight, evidence-preserving composition and
+normalization layer. All 8 source adapters normalize domain facts into
+verifiable observations, and the deterministic comparator supports integer,
+float, percentage, string, and set comparisons with full cryptographic
+provenance.
+
