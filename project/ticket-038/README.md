@@ -2,9 +2,11 @@
 
 - **ID**: ticket-038
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-24
+- **Closed**: 2026-08-24
+- **Receipt**: Committed locally as `154df9e`.
 
 ## Goal and scope
 
