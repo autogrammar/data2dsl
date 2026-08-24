@@ -2,9 +2,11 @@
 
 - **ID**: ticket-039
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-24
+- **Closed**: 2026-08-24
+- **Receipt**: Committed locally as `e93b62e`.
 
 ## Goal and scope
 
