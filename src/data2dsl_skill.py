@@ -16,8 +16,14 @@ from data2dsl_adapters import (
     Code2SchemaMetricResponse,
     CurllmAdapter,
     CurllmMetricResponse,
+    DetaAdapter,
+    DetaTopologyResponse,
     DiagitCommitMetricResponse,
     GitHubDiagitAdapter,
+    IntentContractAdapter,
+    IntentContractResponse,
+    PlanfileAdapter,
+    PlanfileMetricResponse,
     WorkSummaryMarkdownAdapter,
 )
 from data2dsl_comparator import DeterministicComparator
@@ -26,7 +32,8 @@ from data2dsl_contract_v0.validate import self_test as contract_self_test
 
 def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any], side: str = "left") -> Dict[str, Any]:
     """Helper to normalize raw input via corresponding source adapter."""
-    if source_type == "markdown":
+    st = source_type.lower().replace("-", "_")
+    if st == "markdown":
         adapter = WorkSummaryMarkdownAdapter()
         md_text = raw.get("markdown_content", "")
         claim = adapter.extract_commit_claim(
@@ -37,14 +44,14 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
             source_revision=raw.get("source_revision"),
         )
         return adapter.normalize(query, claim, side=side)
-    elif source_type == "github":
+    elif st == "github":
         adapter = GitHubDiagitAdapter()
         resp = DiagitCommitMetricResponse(
             status="OK" if raw.get("commit_count") is not None else "NOT_FOUND",
             commit_count=raw.get("commit_count"),
         )
         return adapter.normalize(query, resp, side=side)
-    elif source_type == "curllm":
+    elif st == "curllm":
         adapter = CurllmAdapter()
         resp = raw.get("response")
         if not isinstance(resp, CurllmMetricResponse):
@@ -53,7 +60,7 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 value=raw.get("value"),
             )
         return adapter.normalize(query, resp, side=side)
-    elif source_type == "code2logic":
+    elif st == "code2logic":
         adapter = Code2LogicAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2LogicMetricResponse):
@@ -62,7 +69,7 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 value=raw.get("value"),
             )
         return adapter.normalize(query, resp, side=side)
-    elif source_type == "code2schema":
+    elif st == "code2schema":
         adapter = Code2SchemaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2SchemaMetricResponse):
@@ -72,8 +79,44 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 entities=entities if isinstance(entities, (list, tuple)) else (entities,),
             )
         return adapter.normalize(query, resp, side=side)
+    elif st == "planfile":
+        adapter = PlanfileAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, PlanfileMetricResponse):
+            count = raw.get("count") if raw.get("count") is not None else raw.get("value")
+            resp = PlanfileMetricResponse(
+                status="OK" if (count is not None or raw.get("tickets")) else "ERROR",
+                count=int(count) if count is not None else None,
+                tickets=raw.get("tickets", ()),
+            )
+        return adapter.normalize(query, resp, side=side)
+    elif st == "deta":
+        adapter = DetaAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, DetaTopologyResponse):
+            sc = raw.get("service_count") if raw.get("service_count") is not None else raw.get("value")
+            resp = DetaTopologyResponse(
+                status="OK" if (sc is not None or raw.get("services") or raw.get("ports")) else "ERROR",
+                service_count=int(sc) if sc is not None else None,
+                services=raw.get("services", ()),
+                ports=raw.get("ports", ()),
+            )
+        return adapter.normalize(query, resp, side=side)
+    elif st in ("intent_contract", "intentcontract"):
+        adapter = IntentContractAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, IntentContractResponse):
+            resp = IntentContractResponse(
+                status="OK" if (raw.get("deliverables") or raw.get("parties") or raw.get("obligations") or raw.get("contract_id")) else "ERROR",
+                contract_id=raw.get("contract_id", "intent-contract-001"),
+                parties=raw.get("parties", ()),
+                deliverables=raw.get("deliverables", ()),
+                obligations=raw.get("obligations", ()),
+            )
+        return adapter.normalize(query, resp, side=side)
     else:
         raise ValueError(f"Unknown source adapter kind: {source_type}")
+
 
 
 class Data2DslSkill:

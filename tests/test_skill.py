@@ -190,3 +190,49 @@ def test_skill_execute_compare_unknown_adapter_type(base_query):
     assert res["status"] == "ERROR"
     assert res["error_code"] == "COMPARISON_EXCEPTION"
     assert "Unknown source adapter kind" in res["message"]
+
+
+def test_skill_execute_compare_raw_planfile(base_query):
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"count": 5},
+        left_source_type="planfile",
+        right_raw={"count": 7},
+        right_source_type="planfile",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "CONFLICT"
+    assert res["result"]["delta"]["kind"] == "integer"
+    assert res["result"]["delta"]["value"] == "2"
+
+
+def test_skill_execute_compare_raw_deta(base_query):
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"service_count": 3},
+        left_source_type="deta",
+        right_raw={"value": 3},
+        right_source_type="deta",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_skill_execute_compare_raw_intent_contract(base_query):
+    contract_query = dict(base_query)
+    contract_query["metric"] = {
+        "id": "contract.deliverables",
+        "version": "1.0.0",
+        "value_kind": "string-set",
+        "property": "deliverables",
+    }
+    res = Data2DslSkill.execute_compare(
+        query=contract_query,
+        left_raw={"deliverables": ["doc.pdf", "app.py"]},
+        left_source_type="intent_contract",
+        right_raw={"deliverables": ["doc.pdf", "app.py"]},
+        right_source_type="intent-contract",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+

@@ -173,31 +173,28 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 
 #### Governance cleanup (workstream: `governance`)
 
-- [ ] **Zamknij ticket-035**: Dokończ governance closure dla ticketów 033, 034.
-  Ustaw `DONE / DONE`.
-- [ ] **Synchronizuj TODO.md**: Odznacz `[x]` checkboxy w sekcji 2026-08-21
-  (linie 146–162) — praca faktycznie wykonana w ticketach 029, 031, 033, 034.
-- [ ] **Uzupełnij CHANGELOG.md**: Dodaj wpisy za tickety 029–035 (conftest,
-  mypy fix, nlp2dsl research, governance closures).
-- [ ] **Odśwież README.md**: Zaktualizuj sekcję "Current state" — conftest,
-  stack checks, nlp2dsl integration notes.
-- [ ] **Zregeneruj project/README.md**: Ticket index powinien zawierać tickety
-  do 035.
+- [x] **Zamknij ticket-035**: Dokończ governance closure dla ticketów 033, 034.
+  Ustaw `DONE / DONE`. — ticket-036
+- [x] **Synchronizuj TODO.md**: Odznacz `[x]` checkboxy w sekcji 2026-08-21
+  (linie 146–162) — praca faktycznie wykonana w ticketach 029, 031, 033, 034. — ticket-036
+- [x] **Uzupełnij CHANGELOG.md**: Dodaj wpisy za tickety 029–035 (conftest,
+  mypy fix, nlp2dsl research, governance closures). — ticket-036
+- [x] **Odśwież README.md**: Zaktualizuj sekcję "Current state" — conftest,
+  stack checks, nlp2dsl integration notes. — ticket-036
+- [x] **Zregeneruj project/README.md**: Ticket index powinien zawierać tickety
+  do 035. — ticket-036
 
-#### Pierwszy adapter (workstream: `application`)
+#### Adaptery wieloźródłowe (workstream: `application`, ticket-037)
 
-- [ ] **Adapter `planfile`** (`semcod/planfile`): Nowy adapter normalizujący
+- [x] **Adapter `planfile`** (`semcod/planfile`): Nowy adapter normalizujący
   tickety/zadania z Planfile jako obserwacje faktyczne. Pozwala porównywać stan
-  planfile vs stan kodu/testów.
-
-### Backlog na kolejną sesję — Adaptery integracyjne (workstream: `application`)
-
-- [ ] **Adapter `deta`** (`semcod/deta`): Adapter do ekstrakcji faktów
+  planfile vs stan kodu/testów. — ticket-037
+- [x] **Adapter `deta`** (`semcod/deta`): Adapter do ekstrakcji faktów
   infrastrukturalnych (Docker services, porty, endpointy) z
-  `deta.build_topology()` — porównywanie deklaracji vs runtime.
-- [ ] **Adapter `intent-contract`** (`subactor/intent-contract-dsl-runtime`):
+  `deta.build_topology()` — porównywanie deklaracji vs runtime. — ticket-037
+- [x] **Adapter `intent-contract`** (`subactor/intent-contract-dsl-runtime`):
   Adapter normalizujący Intent Contracts DSL v1 — strony, obowiązki,
-  deliverables. Porównywanie kontraktu vs stan realizacji.
+  deliverables. Porównywanie kontraktu vs stan realizacji. — ticket-037
 
 ### Backlog — Quality gates i walidacja (workstream: `application`)
 
