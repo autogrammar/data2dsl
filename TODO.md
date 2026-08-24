@@ -221,15 +221,13 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Aktualizacja CAPABILITY_MAP.md** (`docs/`): Dodano nowe adaptery i
   integracje do tabeli i grafu kompozycji. — ticket-040
 
-### Backlog — Research (notatki w `docs/`)
+### Research (notatki w `docs/`, ticket-041)
 
-- [ ] **Research: `koru` closed-loop** (`semcod/koru`): Oceń jak `data2dsl`
-  wchodzi w pętlę detect→plan→execute→verify→heal.
-- [ ] **Research: `diff-dsl` overlap** (`autogrammar/diff-dsl`): Sprawdź
-  nakładanie się z `diff-dsl` command effects — współdzielony vocabulary
-  adapterów.
-- [ ] **Research: OQL telemetry** (`oqlos/*`): Oceń adapter dla OQL scenario
-  outcomes — specyfikacja urządzenia vs rzeczywiste odczyty sensorów.
-- [ ] **Research: `doctor-agent` feed** (`subactor/doctor-agent`): Oceń feed
-  diagnostic-profile z data2dsl do doctor-agent — automatyczne diagnostyki na
-  bazie CONFLICT.
+- [x] **Research: `koru` closed-loop** (`semcod/koru`): Oceniono jak `data2dsl`
+  wchodzi w pętlę detect→plan→execute→verify→heal (`docs/research-koru-closed-loop.md`). — ticket-041
+- [x] **Research: `diff-dsl` overlap** (`autogrammar/diff-dsl`): Sprawdzono
+  nakładanie się i granice z `diff-dsl` (`docs/research-diff-dsl-overlap.md`). — ticket-041
+- [x] **Research: OQL telemetry** (`oqlos/*`): Oceniono adapter dla OQL scenario
+  outcomes (`docs/research-oql-telemetry.md`). — ticket-041
+- [x] **Research: `doctor-agent` feed** (`subactor/doctor-agent`): Oceniono feed
+  diagnostic-profile z data2dsl do doctor-agent (`docs/research-doctor-agent-feed.md`). — ticket-041
