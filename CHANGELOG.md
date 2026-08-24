@@ -15,6 +15,43 @@
 - Close tickets 033 and 034 from integrated evidence (ticket-035).
 - Sync TODO.md checkboxes for 2026-08-21, update CHANGELOG and README,
   regenerate ticket index (ticket-036).
+- Implement multi-source fact adapters Planfile, Deta, and IntentContract (ticket-037).
+- Add float and percentage comparison algorithms with schema definitions (ticket-038).
+- Expose urirun connector manifest and MCP STDIO server endpoint (ticket-039).
+- Document multi-source pipeline architecture in ADR-004 and update CAPABILITY_MAP (ticket-040).
+- Author ecosystem integration research notes for koru, diff-dsl, OQL, and doctor-agent (ticket-041).
+
+### Multi-source fact adapters (ticket-037)
+
+- Implement `PlanfileAdapter` (`semcod.planfile`) for task queue metrics and ticket evidence.
+- Implement `DetaAdapter` (`semcod.deta`) for infrastructure topology, services, and ports.
+- Implement `IntentContractAdapter` (`subactor.intent-contract-dsl`) for parties, deliverables, and obligations.
+- Expand `Data2DslSkill` with raw normalization for `planfile`, `deta`, and `intent_contract`.
+
+### Quality gates: Float and percentage comparator (ticket-038)
+
+- Extend `DeterministicComparator` with `float` and `percentage` comparison policies.
+- Update `src/data2dsl_contract_v0/comparison.schema.json` with float/percentage value/delta schemas.
+- Update `src/data2dsl_contract_v0/validate.py` conformance checks.
+
+### Pipeline integration: urirun and MCP (ticket-039)
+
+- Create `src/connector.manifest.json` declaring `data2dsl://` routes.
+- Implement `urirun_bindings()` in `src/data2dsl_skill.py`.
+- Implement JSON-RPC 2.0 MCP STDIO server handler `handle_mcp_message()` and `main_mcp()` runner.
+
+### Architecture and capability mapping (ticket-040)
+
+- Author `docs/decisions/ADR-004-multi-source-pipeline-architecture.md`.
+- Refresh `docs/CAPABILITY_MAP.md` table and Mermaid composition graph with all 8 source adapters.
+
+### Ecosystem research notes (ticket-041)
+
+- Author `docs/research-koru-closed-loop.md`.
+- Author `docs/research-diff-dsl-overlap.md`.
+- Author `docs/research-oql-telemetry.md`.
+- Author `docs/research-doctor-agent-feed.md`.
+
 
 ### Testing infrastructure (ticket-031)
 

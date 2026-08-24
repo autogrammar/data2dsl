@@ -1,0 +1,76 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-042",
+  "summary": "Governance: end-of-day documentation and changelog sync",
+  "workstream": "governance",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "80c1496339c9f63f236e28f1bac110fc655ee29f",
+    "targetBranch": "main",
+    "outcome": "Sync root CHANGELOG.md and README.md with all work completed today (tickets 037-041).",
+    "nonGoals": [
+      "Modify source code or comparison contracts.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Update CHANGELOG.md with entries for tickets 037-041 and update README.md Current state section with 8 adapters, 41 tickets, and MCP/urirun endpoints.",
+      "components": [
+        {
+          "name": "governance-docs",
+          "paths": [
+            "CHANGELOG.md",
+            "README.md",
+            "TODO.md",
+            "project/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert CHANGELOG.md and README.md changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python .governance/governance_check.py"
+        ],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-042/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

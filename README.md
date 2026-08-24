@@ -184,13 +184,21 @@ repository require that repository's owner-approved workflow.
 
 ## Current state
 
-- Phases 0 through 4 are complete with governed ticket evidence (36 tickets).
-- Five source adapters are implemented: GitHub/Diagit commit metrics,
+- Phases 0 through 4 are complete with governed ticket evidence (41 tickets).
+- Eight source adapters are implemented: GitHub/Diagit commit metrics,
   Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
-  Code2Schema (entity/CQRS), and Curllm (browser-backed BQL sources).
-- The deterministic comparator produces `MATCH`, `CONFLICT`, `MISSING_LEFT`,
+  Code2Schema (entity/CQRS), Curllm (browser-backed BQL sources),
+  Planfile (SDLC task queues and ticket statuses), Deta (infrastructure
+  topologies and services), and IntentContract (Subactor DSL v1 contracts).
+- The deterministic comparator supports `integer`, `string`, `string-set`,
+  `float`, and `percentage` metrics, producing `MATCH`, `CONFLICT`, `MISSING_LEFT`,
   `MISSING_RIGHT` and `UNEVALUABLE` outcomes with typed deltas and SHA-256
   evidence chains.
+- Pipeline integration includes `if-uri`/`urirun` connector manifest
+  (`data2dsl://` routes) and Model Context Protocol (MCP) JSON-RPC 2.0 STDIO
+  server endpoints.
+- Architecture decisions (ADR-001 through ADR-004) and capability maps document
+  multi-source pipelines and ecosystem integration points.
 - The CLI provides `compare`, `compare-golden`, `validate` and `feed-consumer`
   subcommands.
 - The consumer fact feed is integrated with `semcod/todo2code` while preserving
@@ -199,15 +207,10 @@ repository require that repository's owner-approved workflow.
   and validated against `wellmanifest/dsl` profiles.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
   and exposes `data2dsl_compare` and `data2dsl_self_test` for agent discovery.
-- Testing infrastructure includes `conftest.py` with automatic `sys.path`
-  injection, comprehensive skill adapter coverage, and clean `ruff`/`mypy`
-  baselines.
-- Architecture decision ADR-003 documents the `nlp2dsl` IntentPipeline
-  integration strategy; detailed notes are in `docs/nlp2dsl-integration-notes.md`.
+- Testing infrastructure includes `conftest.py`, 35 unit tests (100% passing),
+  and clean `ruff`/`mypy` baselines.
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic
   governance gate passes.
-- End-to-end tests cover the golden case (`work-summary.md` vs GitHub), adapter
-  error handling, and all five comparison outcomes.
 
 See [`TODO.md`](TODO.md) for current work and
 [`project/TICKETS.md`](project/TICKETS.md) for governed evidence.
