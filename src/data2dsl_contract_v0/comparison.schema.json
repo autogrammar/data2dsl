@@ -53,7 +53,7 @@
       "properties": {
         "id": {"$ref": "#/$defs/stableId"},
         "version": {"type": "string", "pattern": "^v[1-9][0-9]*$"},
-        "value_kind": {"enum": ["integer", "string", "string-set"]},
+        "value_kind": {"enum": ["integer", "string", "string-set", "float", "percentage"]},
         "unit": {"type": "string", "minLength": 1, "maxLength": 80}
       }
     },
@@ -81,7 +81,7 @@
       "additionalProperties": false,
       "required": ["equality", "delta_direction", "missing_is_zero"],
       "properties": {
-        "equality": {"enum": ["integer-exact", "string-exact", "string-set-exact"]},
+        "equality": {"enum": ["integer-exact", "string-exact", "string-set-exact", "float-exact", "percentage-exact"]},
         "delta_direction": {"const": "right-minus-left"},
         "missing_is_zero": {"const": false}
       }
@@ -108,6 +108,24 @@
       "properties": {
         "kind": {"const": "integer"},
         "value": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)$"}
+      }
+    },
+    "floatValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "float"},
+        "value": {"type": "string", "pattern": "^-?[0-9]+(\\.[0-9]+)?$"}
+      }
+    },
+    "percentageValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "percentage"},
+        "value": {"type": "string", "pattern": "^-?[0-9]+(\\.[0-9]+)?%?$"}
       }
     },
     "stringValue": {
@@ -137,6 +155,8 @@
       "oneOf": [
         {"type": "null"},
         {"$ref": "#/$defs/integerValue"},
+        {"$ref": "#/$defs/floatValue"},
+        {"$ref": "#/$defs/percentageValue"},
         {"$ref": "#/$defs/stringValue"},
         {"$ref": "#/$defs/stringSetValue"}
       ]
@@ -222,6 +242,24 @@
         "value": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)$"}
       }
     },
+    "floatDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "float"},
+        "value": {"type": "string", "pattern": "^-?[0-9]+(\\.[0-9]+)?$"}
+      }
+    },
+    "percentageDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": {"const": "percentage"},
+        "value": {"type": "string", "pattern": "^-?[0-9]+(\\.[0-9]+)?%?$"}
+      }
+    },
     "stringSetDelta": {
       "type": "object",
       "additionalProperties": false,
@@ -236,6 +274,8 @@
       "oneOf": [
         {"type": "null"},
         {"$ref": "#/$defs/integerDelta"},
+        {"$ref": "#/$defs/floatDelta"},
+        {"$ref": "#/$defs/percentageDelta"},
         {"$ref": "#/$defs/stringSetDelta"}
       ]
     },

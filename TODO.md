@@ -143,21 +143,91 @@ Wykonano w kolejności zależności:
 ### Governance housekeeping (workstream: `governance`, ticket-029)
 
 - [x] **Zamknij ticket-028**: PR #29 merged (`c0bb0db`), ustaw `DONE / DONE`.
-- [ ] **Zaktualizuj TODO.md**: Odznacz zadania z 08-20, dodaj sekcję 08-21.
-- [ ] **Napraw README.md**: `0.1.0-dev` → `0.1.0` w sekcji "Current state",
-  dodaj wzmiankę o adapterze Curllm i agent skill.
-- [ ] **Zregeneruj project/README.md**: Rozszerz ticket index z 6 do 29.
-- [ ] **Zaktualizuj CHANGELOG.md**: Dodaj wpisy za tickety 017–028.
+- [x] **Zaktualizuj TODO.md**: Odznacz zadania z 08-20, dodaj sekcję 08-21. — ticket-029
+- [x] **Napraw README.md**: `0.1.0-dev` → `0.1.0` w sekcji "Current state",
+  dodaj wzmiankę o adapterze Curllm i agent skill. — ticket-029
+- [x] **Zregeneruj project/README.md**: Rozszerz ticket index z 6 do 29. — ticket-029
+- [x] **Zaktualizuj CHANGELOG.md**: Dodaj wpisy za tickety 017–028. — ticket-029
 
 ### Jakość i stack compliance (workstream: `application`)
 
-- [ ] **Dodaj `conftest.py`**: Skonfiguruj `pytest` z automatycznym
-  `PYTHONPATH=src` bez ręcznego env.
-- [ ] **Uruchom stack checks**: `ruff`, `mypy` — baseline raport jakości kodu
-  wg `.governance/stack-profiles.json`.
+- [x] **Dodaj `conftest.py`**: Skonfiguruj `pytest` z automatycznym
+  `PYTHONPATH=src` bez ręcznego env. — ticket-031
+- [x] **Uruchom stack checks**: `ruff`, `mypy` — baseline raport jakości kodu
+  wg `.governance/stack-profiles.json`. — ticket-033
 
 ### Research (workstream: `integration`)
 
-- [ ] **Research `nlp2dsl` IntentPipeline**: Przeanalizuj mechanizm vocabulary
-  extension w `semcod/nlp2dsl`, zapisz notatkę w `docs/`.
+- [x] **Research `nlp2dsl` IntentPipeline**: Przeanalizuj mechanizm vocabulary
+  extension w `semcod/nlp2dsl`, zapisz notatkę w `docs/`. — ticket-034
 
+---
+
+## Zadania na dziś — 2026-08-24
+
+Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
+`autogrammar/*` (36 repo), `if-uri/`, `urirun-connectors/` (92 konektory),
+`oqlos/`, `MatthiasLew/`, `wellmanifest/`.
+
+### Do 13:00 — Governance cleanup + pierwszy adapter
+
+#### Governance cleanup (workstream: `governance`)
+
+- [x] **Zamknij ticket-035**: Dokończ governance closure dla ticketów 033, 034.
+  Ustaw `DONE / DONE`. — ticket-036
+- [x] **Synchronizuj TODO.md**: Odznacz `[x]` checkboxy w sekcji 2026-08-21
+  (linie 146–162) — praca faktycznie wykonana w ticketach 029, 031, 033, 034. — ticket-036
+- [x] **Uzupełnij CHANGELOG.md**: Dodaj wpisy za tickety 029–035 (conftest,
+  mypy fix, nlp2dsl research, governance closures). — ticket-036
+- [x] **Odśwież README.md**: Zaktualizuj sekcję "Current state" — conftest,
+  stack checks, nlp2dsl integration notes. — ticket-036
+- [x] **Zregeneruj project/README.md**: Ticket index powinien zawierać tickety
+  do 035. — ticket-036
+
+#### Adaptery wieloźródłowe (workstream: `application`, ticket-037)
+
+- [x] **Adapter `planfile`** (`semcod/planfile`): Nowy adapter normalizujący
+  tickety/zadania z Planfile jako obserwacje faktyczne. Pozwala porównywać stan
+  planfile vs stan kodu/testów. — ticket-037
+- [x] **Adapter `deta`** (`semcod/deta`): Adapter do ekstrakcji faktów
+  infrastrukturalnych (Docker services, porty, endpointy) z
+  `deta.build_topology()` — porównywanie deklaracji vs runtime. — ticket-037
+- [x] **Adapter `intent-contract`** (`subactor/intent-contract-dsl-runtime`):
+  Adapter normalizujący Intent Contracts DSL v1 — strony, obowiązki,
+  deliverables. Porównywanie kontraktu vs stan realizacji. — ticket-037
+
+### Quality gates i walidacja (workstream: `application`, ticket-038)
+
+- [x] **Komparator `float`/`percentage`**: Rozszerz `DeterministicComparator` o
+  typy `float` i `percentage` delta (potrzebne dla metryk pyqual, code2llm
+  health scores). — ticket-038
+- [x] **Integracja `pyqual` gate** (`semcod/pyqual`): Obsługa metryk jakości
+  kodów (float/percentage) do stage'ów pyqual. — ticket-038
+
+
+### Integracja z pipeline (workstream: `application`, ticket-039)
+
+- [x] **`urirun` connector manifest** (`urirun-connectors/`): Stworzono
+  `src/connector.manifest.json` i `urirun_bindings` → `data2dsl` jako
+  connector URI scheme `data2dsl://host/compare/run` i `data2dsl://host/selftest/run`. — ticket-039
+- [x] **MCP server endpoint** (`semcod/mcp`): Wyeksponowano `Data2DslSkill` jako
+  MCP JSON-RPC 2.0 STDIO server tool (`handle_mcp_message` / `main_mcp`) — dostępny dla Cursor/Windsurf/Claude Desktop natywnie. — ticket-039
+
+### Dokumentacja (workstream: `integration`, ticket-040)
+
+- [x] **ADR-004: Multi-source pipeline** (`docs/decisions/`): Dokument
+  decyzyjny: architektura pipeline'u wieloźródłowego z integracją
+  planfile→pyqual→koru. — ticket-040
+- [x] **Aktualizacja CAPABILITY_MAP.md** (`docs/`): Dodano nowe adaptery i
+  integracje do tabeli i grafu kompozycji. — ticket-040
+
+### Research (notatki w `docs/`, ticket-041)
+
+- [x] **Research: `koru` closed-loop** (`semcod/koru`): Oceniono jak `data2dsl`
+  wchodzi w pętlę detect→plan→execute→verify→heal (`docs/research-koru-closed-loop.md`). — ticket-041
+- [x] **Research: `diff-dsl` overlap** (`autogrammar/diff-dsl`): Sprawdzono
+  nakładanie się i granice z `diff-dsl` (`docs/research-diff-dsl-overlap.md`). — ticket-041
+- [x] **Research: OQL telemetry** (`oqlos/*`): Oceniono adapter dla OQL scenario
+  outcomes (`docs/research-oql-telemetry.md`). — ticket-041
+- [x] **Research: `doctor-agent` feed** (`subactor/doctor-agent`): Oceniono feed
+  diagnostic-profile z data2dsl do doctor-agent (`docs/research-doctor-agent-feed.md`). — ticket-041

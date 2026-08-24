@@ -190,3 +190,133 @@ def test_skill_execute_compare_unknown_adapter_type(base_query):
     assert res["status"] == "ERROR"
     assert res["error_code"] == "COMPARISON_EXCEPTION"
     assert "Unknown source adapter kind" in res["message"]
+
+
+def test_skill_execute_compare_raw_planfile(base_query):
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"count": 5},
+        left_source_type="planfile",
+        right_raw={"count": 7},
+        right_source_type="planfile",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "CONFLICT"
+    assert res["result"]["delta"]["kind"] == "integer"
+    assert res["result"]["delta"]["value"] == "2"
+
+
+def test_skill_execute_compare_raw_deta(base_query):
+    res = Data2DslSkill.execute_compare(
+        query=base_query,
+        left_raw={"service_count": 3},
+        left_source_type="deta",
+        right_raw={"value": 3},
+        right_source_type="deta",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_skill_execute_compare_raw_intent_contract(base_query):
+    contract_query = dict(base_query)
+    contract_query["metric"] = {
+        "id": "contract.deliverables",
+        "version": "1.0.0",
+        "value_kind": "string-set",
+        "property": "deliverables",
+    }
+    res = Data2DslSkill.execute_compare(
+        query=contract_query,
+        left_raw={"deliverables": ["doc.pdf", "app.py"]},
+        left_source_type="intent_contract",
+        right_raw={"deliverables": ["doc.pdf", "app.py"]},
+        right_source_type="intent-contract",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_urirun_bindings(base_query):
+    from data2dsl_skill import urirun_bindings
+
+    bindings = urirun_bindings()
+    assert bindings["scheme"] == "data2dsl"
+    assert "data2dsl://host/compare/run" in bindings["routes"]
+    assert "data2dsl://host/selftest/run" in bindings["routes"]
+
+    # Test selftest route
+    selftest_res = bindings["handler"]("data2dsl://host/selftest/run", {})
+    assert selftest_res["status"] == "PASS"
+
+    # Test compare route
+    compare_res = bindings["handler"](
+        "data2dsl://host/compare/run",
+        {
+            "query": base_query,
+            "left_raw": {"commit_count": 10},
+            "left_source_type": "github",
+            "right_raw": {"commit_count": 10},
+            "right_source_type": "github",
+        },
+    )
+    assert compare_res["status"] == "OK"
+    assert compare_res["result"]["outcome"] == "MATCH"
+
+
+def test_handle_mcp_message_protocol(base_query):
+    import json
+    from data2dsl_skill import handle_mcp_message
+
+    # Test initialize
+    init_req = {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}
+    init_resp = handle_mcp_message(init_req)
+    assert init_resp["result"]["serverInfo"]["name"] == "data2dsl"
+    assert init_resp["result"]["protocolVersion"] == "2024-11-05"
+
+    # Test tools/list
+    list_req = {"jsonrpc": "2.0", "id": 2, "method": "tools/list"}
+    list_resp = handle_mcp_message(list_req)
+    tool_names = [t["name"] for t in list_resp["result"]["tools"]]
+    assert "data2dsl_compare" in tool_names
+    assert "data2dsl_self_test" in tool_names
+
+    # Test tools/call data2dsl_self_test
+    call_test_req = {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {"name": "data2dsl_self_test", "arguments": {}},
+    }
+    call_test_resp = handle_mcp_message(call_test_req)
+    content = json.loads(call_test_resp["result"]["content"][0]["text"])
+    assert content["status"] == "PASS"
+
+    # Test tools/call data2dsl_compare
+    call_comp_req = {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "tools/call",
+        "params": {
+            "name": "data2dsl_compare",
+            "arguments": {
+                "query": base_query,
+                "left_raw": {"commit_count": 5},
+                "left_source_type": "github",
+                "right_raw": {"commit_count": 5},
+                "right_source_type": "github",
+            },
+        },
+    }
+    call_comp_resp = handle_mcp_message(call_comp_req)
+    comp_content = json.loads(call_comp_resp["result"]["content"][0]["text"])
+    assert comp_content["status"] == "OK"
+    assert comp_content["result"]["outcome"] == "MATCH"
+
+    # Test unknown method
+    unknown_req = {"jsonrpc": "2.0", "id": 5, "method": "unknown/method"}
+    unknown_resp = handle_mcp_message(unknown_req)
+    assert "error" in unknown_resp
+    assert unknown_resp["error"]["code"] == -32601
+
+

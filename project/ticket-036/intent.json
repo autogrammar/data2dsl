@@ -1,0 +1,73 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-036",
+  "summary": "Governance housekeeping: sync TODO, CHANGELOG, README, ticket index 2026-08-24",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "b053dd56cacf10d8f86432f6c0ad32379e040499",
+    "targetBranch": "main",
+    "outcome": "Sync TODO.md checkboxes for 2026-08-21, update CHANGELOG.md with tickets 029-035, refresh README.md current state, regenerate ticket index.",
+    "nonGoals": [
+      "Change product behavior or source code.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Governance-only documentation sync; no product changes.",
+      "components": [
+        {
+          "name": "governance-docs",
+          "paths": ["TODO.md", "CHANGELOG.md", "README.md"]
+        },
+        {
+          "name": "ticket-closure",
+          "paths": ["project/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert TODO.md, CHANGELOG.md, README.md to prior state."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-07",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-036/**",
+    "project/ticket-035/README.md",
+    "project/TICKETS.md",
+    "project/README.md",
+    "TODO.md",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

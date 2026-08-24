@@ -1,0 +1,69 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-041",
+  "summary": "Research: Ecosystem integration notes for koru, diff-dsl, OQL, and doctor-agent",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "b053dd56cacf10d8f86432f6c0ad32379e040499",
+    "targetBranch": "main",
+    "outcome": "Compile research documentation analyzing data2dsl integration with koru closed-loop self-healing, diff-dsl command effects, OQL scenario telemetry, and doctor-agent diagnostic feeds.",
+    "nonGoals": [
+      "Implement runtime bindings before formal RFCs.",
+      "Modify core comparator schemas or source code."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add four structured research notes in docs/ evaluating the integration interfaces, data contracts, and boundary invariants with koru, diff-dsl, oqlos, and doctor-agent.",
+      "components": [
+        {
+          "name": "research-documentation",
+          "paths": ["docs/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert docs/research-*.md files."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-041/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "docs/research-koru-closed-loop.md",
+    "docs/research-diff-dsl-overlap.md",
+    "docs/research-oql-telemetry.md",
+    "docs/research-doctor-agent-feed.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

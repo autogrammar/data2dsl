@@ -184,7 +184,7 @@ repository require that repository's owner-approved workflow.
 
 ## Current state
 
-- Phases 0 through 4 are complete with governed ticket evidence.
+- Phases 0 through 4 are complete with governed ticket evidence (36 tickets).
 - Five source adapters are implemented: GitHub/Diagit commit metrics,
   Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
   Code2Schema (entity/CQRS), and Curllm (browser-backed BQL sources).
@@ -199,6 +199,11 @@ repository require that repository's owner-approved workflow.
   and validated against `wellmanifest/dsl` profiles.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
   and exposes `data2dsl_compare` and `data2dsl_self_test` for agent discovery.
+- Testing infrastructure includes `conftest.py` with automatic `sys.path`
+  injection, comprehensive skill adapter coverage, and clean `ruff`/`mypy`
+  baselines.
+- Architecture decision ADR-003 documents the `nlp2dsl` IntentPipeline
+  integration strategy; detailed notes are in `docs/nlp2dsl-integration-notes.md`.
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic
   governance gate passes.
 - End-to-end tests cover the golden case (`work-summary.md` vs GitHub), adapter

@@ -7,6 +7,8 @@ Provides programmatic tool execution for comparing observations deterministicall
 
 from __future__ import annotations
 
+import json
+import sys
 from typing import Any, Dict, Optional
 
 from data2dsl_adapters import (
@@ -16,8 +18,14 @@ from data2dsl_adapters import (
     Code2SchemaMetricResponse,
     CurllmAdapter,
     CurllmMetricResponse,
+    DetaAdapter,
+    DetaTopologyResponse,
     DiagitCommitMetricResponse,
     GitHubDiagitAdapter,
+    IntentContractAdapter,
+    IntentContractResponse,
+    PlanfileAdapter,
+    PlanfileMetricResponse,
     WorkSummaryMarkdownAdapter,
 )
 from data2dsl_comparator import DeterministicComparator
@@ -26,7 +34,8 @@ from data2dsl_contract_v0.validate import self_test as contract_self_test
 
 def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any], side: str = "left") -> Dict[str, Any]:
     """Helper to normalize raw input via corresponding source adapter."""
-    if source_type == "markdown":
+    st = source_type.lower().replace("-", "_")
+    if st == "markdown":
         adapter = WorkSummaryMarkdownAdapter()
         md_text = raw.get("markdown_content", "")
         claim = adapter.extract_commit_claim(
@@ -37,14 +46,14 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
             source_revision=raw.get("source_revision"),
         )
         return adapter.normalize(query, claim, side=side)
-    elif source_type == "github":
+    elif st == "github":
         adapter = GitHubDiagitAdapter()
         resp = DiagitCommitMetricResponse(
             status="OK" if raw.get("commit_count") is not None else "NOT_FOUND",
             commit_count=raw.get("commit_count"),
         )
         return adapter.normalize(query, resp, side=side)
-    elif source_type == "curllm":
+    elif st == "curllm":
         adapter = CurllmAdapter()
         resp = raw.get("response")
         if not isinstance(resp, CurllmMetricResponse):
@@ -53,7 +62,7 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 value=raw.get("value"),
             )
         return adapter.normalize(query, resp, side=side)
-    elif source_type == "code2logic":
+    elif st == "code2logic":
         adapter = Code2LogicAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2LogicMetricResponse):
@@ -62,7 +71,7 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 value=raw.get("value"),
             )
         return adapter.normalize(query, resp, side=side)
-    elif source_type == "code2schema":
+    elif st == "code2schema":
         adapter = Code2SchemaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2SchemaMetricResponse):
@@ -72,8 +81,44 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 entities=entities if isinstance(entities, (list, tuple)) else (entities,),
             )
         return adapter.normalize(query, resp, side=side)
+    elif st == "planfile":
+        adapter = PlanfileAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, PlanfileMetricResponse):
+            count = raw.get("count") if raw.get("count") is not None else raw.get("value")
+            resp = PlanfileMetricResponse(
+                status="OK" if (count is not None or raw.get("tickets")) else "ERROR",
+                count=int(count) if count is not None else None,
+                tickets=raw.get("tickets", ()),
+            )
+        return adapter.normalize(query, resp, side=side)
+    elif st == "deta":
+        adapter = DetaAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, DetaTopologyResponse):
+            sc = raw.get("service_count") if raw.get("service_count") is not None else raw.get("value")
+            resp = DetaTopologyResponse(
+                status="OK" if (sc is not None or raw.get("services") or raw.get("ports")) else "ERROR",
+                service_count=int(sc) if sc is not None else None,
+                services=raw.get("services", ()),
+                ports=raw.get("ports", ()),
+            )
+        return adapter.normalize(query, resp, side=side)
+    elif st in ("intent_contract", "intentcontract"):
+        adapter = IntentContractAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, IntentContractResponse):
+            resp = IntentContractResponse(
+                status="OK" if (raw.get("deliverables") or raw.get("parties") or raw.get("obligations") or raw.get("contract_id")) else "ERROR",
+                contract_id=raw.get("contract_id", "intent-contract-001"),
+                parties=raw.get("parties", ()),
+                deliverables=raw.get("deliverables", ()),
+                obligations=raw.get("obligations", ()),
+            )
+        return adapter.normalize(query, resp, side=side)
     else:
         raise ValueError(f"Unknown source adapter kind: {source_type}")
+
 
 
 class Data2DslSkill:
@@ -205,3 +250,109 @@ class Data2DslSkill:
                 "error_code": "COMPARISON_EXCEPTION",
                 "message": str(exc)
             }
+
+
+def urirun_bindings() -> Dict[str, Any]:
+    """Return urirun bindings descriptor and router for data2dsl:// URI schemes."""
+    def _route_compare(payload: Dict[str, Any]) -> Dict[str, Any]:
+        return Data2DslSkill.execute_compare(**payload)
+
+    def _route_selftest(payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return Data2DslSkill.self_test()
+
+    return {
+        "scheme": "data2dsl",
+        "version": Data2DslSkill.VERSION,
+        "routes": {
+            "data2dsl://host/compare/run": _route_compare,
+            "data2dsl://host/selftest/run": _route_selftest,
+        },
+        "handler": lambda route, payload: {
+            "data2dsl://host/compare/run": _route_compare,
+            "data2dsl://host/selftest/run": _route_selftest,
+        }.get(route, lambda p: {"status": "ERROR", "message": f"Unknown route: {route}"})(payload)
+    }
+
+
+def handle_mcp_message(msg: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Process a single Model Context Protocol (MCP) JSON-RPC 2.0 message."""
+    method = msg.get("method")
+    msg_id = msg.get("id")
+
+    if method == "initialize":
+        return {
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "result": {
+                "protocolVersion": "2024-11-05",
+                "capabilities": {"tools": {}},
+                "serverInfo": {"name": "data2dsl", "version": Data2DslSkill.VERSION},
+            },
+        }
+
+    if method == "notifications/initialized":
+        return None
+
+    if method == "tools/list":
+        return {
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "result": {"tools": Data2DslSkill.get_tool_definitions()},
+        }
+
+    if method == "tools/call":
+        params = msg.get("params", {})
+        tool_name = params.get("name")
+        arguments = params.get("arguments", {})
+
+        if tool_name == "data2dsl_compare":
+            res = Data2DslSkill.execute_compare(**arguments)
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {"content": [{"type": "text", "text": json.dumps(res)}]},
+            }
+        elif tool_name == "data2dsl_self_test":
+            res = Data2DslSkill.self_test()
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {"content": [{"type": "text", "text": json.dumps(res)}]},
+            }
+        else:
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "error": {"code": -32601, "message": f"Method not found: {tool_name}"},
+            }
+
+    if msg_id is not None:
+        return {
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "error": {"code": -32601, "message": f"Unsupported method: {method}"},
+        }
+    return None
+
+
+def main_mcp() -> None:
+    """STDIO JSON-RPC server loop for MCP."""
+    for line in sys.stdin:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            req = json.loads(line)
+            resp = handle_mcp_message(req)
+            if resp is not None:
+                sys.stdout.write(json.dumps(resp) + "\n")
+                sys.stdout.flush()
+        except Exception as exc:
+            err_resp = {
+                "jsonrpc": "2.0",
+                "id": None,
+                "error": {"code": -32700, "message": f"Parse error: {exc}"},
+            }
+            sys.stdout.write(json.dumps(err_resp) + "\n")
+            sys.stdout.flush()
+
