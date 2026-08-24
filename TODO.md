@@ -205,13 +205,13 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
   kodów (float/percentage) do stage'ów pyqual. — ticket-038
 
 
-### Backlog — Integracja z pipeline (workstream: `integration`)
+### Integracja z pipeline (workstream: `application`, ticket-039)
 
-- [ ] **`urirun` connector manifest** (`urirun-connectors/`): Stwórz
-  `connector.manifest.json` i entry_point `urirun.bindings` → `data2dsl` jako
-  connector URI scheme `data2dsl://compare/...`.
-- [ ] **MCP server endpoint** (`semcod/mcp`): Wyeksponuj `Data2DslSkill` jako
-  MCP server tool — dostępny dla Cursor/Windsurf/Claude Desktop natywnie.
+- [x] **`urirun` connector manifest** (`urirun-connectors/`): Stworzono
+  `src/connector.manifest.json` i `urirun_bindings` → `data2dsl` jako
+  connector URI scheme `data2dsl://host/compare/run` i `data2dsl://host/selftest/run`. — ticket-039
+- [x] **MCP server endpoint** (`semcod/mcp`): Wyeksponowano `Data2DslSkill` jako
+  MCP JSON-RPC 2.0 STDIO server tool (`handle_mcp_message` / `main_mcp`) — dostępny dla Cursor/Windsurf/Claude Desktop natywnie. — ticket-039
 
 ### Backlog — Dokumentacja (workstream: `integration`)
 

@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-039",
+  "summary": "Pipeline integration: urirun connector manifest and MCP server endpoint",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "b053dd56cacf10d8f86432f6c0ad32379e040499",
+    "targetBranch": "main",
+    "outcome": "Expose data2dsl as an if-uri urirun connector with connector.manifest.json, urirun.bindings, and MCP STDIO server endpoint.",
+    "nonGoals": [
+      "Break existing comparator or CLI behavior.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add connector.manifest.json in src/, implement urirun_bindings and run_mcp_stdio in src/data2dsl_skill.py, and add unit test coverage in tests/test_skill.py.",
+      "components": [
+        {
+          "name": "connector-and-skill",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/ and tests/ changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python -m pytest tests/ -v"],
+        "evidence": "All unit tests for urirun bindings and MCP runner pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-039/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/connector.manifest.json",
+    "src/data2dsl_skill.py",
+    "tests/test_skill.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

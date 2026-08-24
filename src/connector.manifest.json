@@ -1,0 +1,48 @@
+{
+  "id": "data2dsl",
+  "name": "Data2DSL",
+  "status": "available",
+  "category": "Verification",
+  "summary": "Evidence-first deterministic data comparison and observation normalization layer.",
+  "description": "data2dsl compares facts acquired from disparate sources (Markdown, GitHub, AST analyzers, Browser/Curllm, Planfile, Deta, IntentContracts) against bounded queries, producing deterministic comparison outcomes with SHA-256 provenance chains.",
+  "useCases": [
+    "Deterministically compare claimed activity in work-summary.md against measured GitHub commits.",
+    "Verify code implementation against declared schemas or planfile task queues.",
+    "Execute automated quality gate comparisons with typed deltas."
+  ],
+  "requires": [],
+  "install": {
+    "mode": "urirun-extra",
+    "pipSpec": "data2dsl @ git+https://github.com/autogrammar/data2dsl.git@v0.1.0"
+  },
+  "version": "0.1.0",
+  "homepage": "https://github.com/autogrammar/data2dsl",
+  "repository": "https://github.com/autogrammar/data2dsl",
+  "docsUrl": "https://github.com/autogrammar/data2dsl#readme",
+  "keywords": [
+    "data2dsl",
+    "evidence",
+    "comparison",
+    "verification",
+    "provenance",
+    "mcp"
+  ],
+  "provenance": "verified",
+  "publisher": {
+    "name": "autogrammar",
+    "url": "https://github.com/autogrammar",
+    "github": "https://github.com/autogrammar"
+  },
+  "mcp": true,
+  "a2a": true,
+  "routes": [
+    "data2dsl://host/compare/run",
+    "data2dsl://host/selftest/run"
+  ],
+  "uriSchemes": [
+    "data2dsl"
+  ],
+  "adapterKinds": [
+    "local-function"
+  ]
+}
