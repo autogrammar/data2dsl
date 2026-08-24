@@ -58,6 +58,8 @@ def _expected_policy(value_kind: str) -> str:
         "integer": "integer-exact",
         "string": "string-exact",
         "string-set": "string-set-exact",
+        "float": "float-exact",
+        "percentage": "percentage-exact",
     }[value_kind]
 
 
@@ -65,6 +67,10 @@ def _canonical_value(value: dict[str, Any]) -> Any:
     kind = value["kind"]
     if kind == "integer":
         return int(value["value"])
+    if kind == "float":
+        return float(value["value"])
+    if kind == "percentage":
+        return float(str(value["value"]).rstrip("%").strip())
     if kind == "string":
         return value["value"]
     items = value["items"]
@@ -77,6 +83,16 @@ def _expected_delta(left: dict[str, Any], right: dict[str, Any]) -> dict[str, An
     kind = left["kind"]
     if kind == "integer":
         return {"kind": "integer", "value": str(int(right["value"]) - int(left["value"]))}
+    if kind == "float":
+        diff = round(float(right["value"]) - float(left["value"]), 6)
+        diff_str = f"{diff:.6f}".rstrip("0").rstrip(".") if "." in f"{diff:.6f}" else str(diff)
+        return {"kind": "float", "value": diff_str}
+    if kind == "percentage":
+        l_val = float(str(left["value"]).rstrip("%").strip())
+        r_val = float(str(right["value"]).rstrip("%").strip())
+        diff = round(r_val - l_val, 4)
+        diff_str = f"{diff:.4f}".rstrip("0").rstrip(".") if "." in f"{diff:.4f}" else str(diff)
+        return {"kind": "percentage", "value": f"{diff_str}%"}
     if kind == "string-set":
         left_items = set(left["items"])
         right_items = set(right["items"])

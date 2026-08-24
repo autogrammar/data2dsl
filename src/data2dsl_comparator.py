@@ -114,6 +114,26 @@ class DeterministicComparator:
                 "removed": sorted(left_set - right_set),
             }
 
+        if kind == "float":
+            left_float = float(left_val["value"])
+            right_float = float(right_val["value"])
+            if abs(right_float - left_float) < 1e-9:
+                return "MATCH", None
+            diff = round(right_float - left_float, 6)
+            diff_str = f"{diff:.6f}".rstrip("0").rstrip(".") if "." in f"{diff:.6f}" else str(diff)
+            return "CONFLICT", {"kind": "float", "value": diff_str}
+
+        if kind == "percentage":
+            l_raw = str(left_val["value"]).rstrip("%").strip()
+            r_raw = str(right_val["value"]).rstrip("%").strip()
+            left_pct = float(l_raw)
+            right_pct = float(r_raw)
+            if abs(right_pct - left_pct) < 1e-6:
+                return "MATCH", None
+            diff = round(right_pct - left_pct, 4)
+            diff_str = f"{diff:.4f}".rstrip("0").rstrip(".") if "." in f"{diff:.4f}" else str(diff)
+            return "CONFLICT", {"kind": "percentage", "value": f"{diff_str}%"}
+
         raise ValueError(f"Unsupported value kind: {kind}")
 
 

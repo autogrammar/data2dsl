@@ -338,3 +338,128 @@ def test_intent_contract_adapter_valid_and_unevaluable(golden_query: dict[str, A
     assert obs_err["state"] == "UNEVALUABLE"
     assert obs_err["value"] is None
 
+
+def test_float_comparator_match_and_conflict(golden_query: dict[str, Any]) -> None:
+    query_float = dict(
+        golden_query,
+        metric={"id": "code.cyclomatic.average", "version": "v1", "value_kind": "float", "unit": "score"},
+        comparison={"equality": "float-exact", "delta_direction": "right-minus-left", "missing_is_zero": False},
+    )
+
+    ev_left = {
+        "evidence_id": "evidence:left:1",
+        "target_uri": "https://github.com/autogrammar/data2dsl",
+        "source_uri": "https://github.com/autogrammar/data2dsl/blob/main/report.json",
+        "source_revision": "sha256:" + "a" * 64,
+        "media_type": "application/json",
+        "digest_sha256": "a" * 64,
+        "extractor": {"id": "semcod.code2llm", "version": "0.1.0"},
+        "location": {"kind": "markdown-lines", "path": "report.json", "start_line": 1, "end_line": 10},
+    }
+    ev_right = {
+        "evidence_id": "evidence:right:1",
+        "target_uri": "https://github.com/autogrammar/data2dsl",
+        "source_uri": "https://github.com/autogrammar/data2dsl/blob/main/actual.json",
+        "source_revision": "sha256:" + "b" * 64,
+        "media_type": "application/json",
+        "digest_sha256": "b" * 64,
+        "extractor": {"id": "semcod.code2llm", "version": "0.1.0"},
+        "location": {"kind": "markdown-lines", "path": "actual.json", "start_line": 1, "end_line": 10},
+    }
+
+    obs_left = {
+        "schema": "autogrammar.data2dsl/observation/v0",
+        "observation_id": "obs:float:left",
+        "query_id": query_float["query_id"],
+        "side": "left",
+        "subject": query_float["subject"],
+        "metric": query_float["metric"],
+        "window": query_float["window"],
+        "state": "OBSERVED",
+        "value": {"kind": "float", "value": "12.5"},
+        "evidence": [ev_left],
+    }
+
+    # MATCH case
+    obs_right_match = dict(obs_left, observation_id="obs:float:right:match", side="right", evidence=[ev_right])
+    bundle_match = compare_observations(query_float, obs_left, obs_right_match)
+    assert bundle_match["result"]["outcome"] == "MATCH"
+    assert bundle_match["result"]["delta"] is None
+    validate_document(bundle_match)
+
+    # CONFLICT case: right (15.75) - left (12.5) = +3.25
+    obs_right_conflict = dict(
+        obs_left,
+        observation_id="obs:float:right:conflict",
+        side="right",
+        value={"kind": "float", "value": "15.75"},
+        evidence=[ev_right],
+    )
+    bundle_conflict = compare_observations(query_float, obs_left, obs_right_conflict)
+    assert bundle_conflict["result"]["outcome"] == "CONFLICT"
+    assert bundle_conflict["result"]["delta"] == {"kind": "float", "value": "3.25"}
+    validate_document(bundle_conflict)
+
+
+def test_percentage_comparator_match_and_conflict(golden_query: dict[str, Any]) -> None:
+    query_pct = dict(
+        golden_query,
+        metric={"id": "test.coverage.percentage", "version": "v1", "value_kind": "percentage", "unit": "percentage"},
+        comparison={"equality": "percentage-exact", "delta_direction": "right-minus-left", "missing_is_zero": False},
+    )
+
+    ev_left = {
+        "evidence_id": "evidence:left:1",
+        "target_uri": "https://github.com/autogrammar/data2dsl",
+        "source_uri": "https://github.com/autogrammar/data2dsl/blob/main/report.json",
+        "source_revision": "sha256:" + "c" * 64,
+        "media_type": "application/json",
+        "digest_sha256": "c" * 64,
+        "extractor": {"id": "semcod.pyqual", "version": "0.1.0"},
+        "location": {"kind": "markdown-lines", "path": "report.json", "start_line": 1, "end_line": 10},
+    }
+    ev_right = {
+        "evidence_id": "evidence:right:1",
+        "target_uri": "https://github.com/autogrammar/data2dsl",
+        "source_uri": "https://github.com/autogrammar/data2dsl/blob/main/actual.json",
+        "source_revision": "sha256:" + "d" * 64,
+        "media_type": "application/json",
+        "digest_sha256": "d" * 64,
+        "extractor": {"id": "semcod.pyqual", "version": "0.1.0"},
+        "location": {"kind": "markdown-lines", "path": "actual.json", "start_line": 1, "end_line": 10},
+    }
+
+    obs_left = {
+        "schema": "autogrammar.data2dsl/observation/v0",
+        "observation_id": "obs:pct:left",
+        "query_id": query_pct["query_id"],
+        "side": "left",
+        "subject": query_pct["subject"],
+        "metric": query_pct["metric"],
+        "window": query_pct["window"],
+        "state": "OBSERVED",
+        "value": {"kind": "percentage", "value": "80.0%"},
+        "evidence": [ev_left],
+    }
+
+    # MATCH case
+    obs_right_match = dict(obs_left, observation_id="obs:pct:right:match", side="right", value={"kind": "percentage", "value": "80%"}, evidence=[ev_right])
+    bundle_match = compare_observations(query_pct, obs_left, obs_right_match)
+    assert bundle_match["result"]["outcome"] == "MATCH"
+    assert bundle_match["result"]["delta"] is None
+    validate_document(bundle_match)
+
+    # CONFLICT case: right (95.5%) - left (80.0%) = +15.5%
+    obs_right_conflict = dict(
+        obs_left,
+        observation_id="obs:pct:right:conflict",
+        side="right",
+        value={"kind": "percentage", "value": "95.5%"},
+        evidence=[ev_right],
+    )
+    bundle_conflict = compare_observations(query_pct, obs_left, obs_right_conflict)
+    assert bundle_conflict["result"]["outcome"] == "CONFLICT"
+    assert bundle_conflict["result"]["delta"] == {"kind": "percentage", "value": "15.5%"}
+    validate_document(bundle_conflict)
+
+

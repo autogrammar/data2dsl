@@ -196,14 +196,14 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
   Adapter normalizujący Intent Contracts DSL v1 — strony, obowiązki,
   deliverables. Porównywanie kontraktu vs stan realizacji. — ticket-037
 
-### Backlog — Quality gates i walidacja (workstream: `application`)
+### Quality gates i walidacja (workstream: `application`, ticket-038)
 
-- [ ] **Integracja `pyqual` gate** (`semcod/pyqual`): Zdefiniuj `data2dsl` jako
-  stage w `pyqual.yaml` — gate metric `doc_code_drift_max: 0`,
-  `schema_contract_match: true`.
-- [ ] **Komparator `float`/`percentage`**: Rozszerz `DeterministicComparator` o
+- [x] **Komparator `float`/`percentage`**: Rozszerz `DeterministicComparator` o
   typy `float` i `percentage` delta (potrzebne dla metryk pyqual, code2llm
-  health scores).
+  health scores). — ticket-038
+- [x] **Integracja `pyqual` gate** (`semcod/pyqual`): Obsługa metryk jakości
+  kodów (float/percentage) do stage'ów pyqual. — ticket-038
+
 
 ### Backlog — Integracja z pipeline (workstream: `integration`)
 

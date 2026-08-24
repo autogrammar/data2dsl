@@ -1,0 +1,78 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-038",
+  "summary": "Quality gates: Float and Percentage comparator with pyqual stage integration",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "b053dd56cacf10d8f86432f6c0ad32379e040499",
+    "targetBranch": "main",
+    "outcome": "Extend DeterministicComparator with float and percentage value/delta support and define pyqual declarative gate stage.",
+    "nonGoals": [
+      "Break backward compatibility with integer/string/string-set schemas.",
+      "Modify external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add float and percentage comparison algorithms to DeterministicComparator in src/data2dsl_comparator.py, update comparison.schema.json schema definitions, and add unit test coverage.",
+      "components": [
+        {
+          "name": "comparator-and-contract",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert changes in src/ and tests/."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python -m pytest tests/ -v"],
+        "evidence": "All existing and new unit tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-038/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_comparator.py",
+    "src/data2dsl_contract_v0/comparison.schema.json",
+    "src/data2dsl_contract_v0/validate.py",
+    "tests/test_golden_case_e2e.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
