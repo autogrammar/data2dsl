@@ -11,6 +11,26 @@
 - Close ticket 027 from integrated evidence (ticket-028).
 - Close ticket 028 and update TODO.md, README.md, CHANGELOG.md, and
   project/README.md ticket index (ticket-029).
+- Close tickets 029 and 031 from integrated evidence (ticket-032).
+- Close tickets 033 and 034 from integrated evidence (ticket-035).
+- Sync TODO.md checkboxes for 2026-08-21, update CHANGELOG and README,
+  regenerate ticket index (ticket-036).
+
+### Testing infrastructure (ticket-031)
+
+- Add `tests/conftest.py` with automatic `sys.path` injection for `src/`.
+- Clean unused imports flagged by `ruff`.
+
+### Type safety and skill tests (ticket-033)
+
+- Fix `mypy` type narrowing in `src/data2dsl_contract_v0/validate.py`.
+- Expand `tests/test_skill.py` with comprehensive adapter coverage
+  (curllm, code2logic, code2schema, missing inputs, unknown adapter).
+
+### NLP integration research (ticket-034)
+
+- Document `nlp2dsl` IntentPipeline integration architecture in
+  `docs/nlp2dsl-integration-notes.md`.
 
 ### Browser-backed source adapter (ticket-019)
 

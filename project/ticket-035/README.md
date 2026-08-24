@@ -2,8 +2,10 @@
 
 - **ID**: ticket-035
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
+- **Closed**: 2026-08-24
+- **Merge evidence**: PR #35 merged as `b053dd5` on `main`; branch `agent/governance-closure-035` deleted upon merge.
 - **Created**: 2026-08-21
 
 ## Goal and scope
