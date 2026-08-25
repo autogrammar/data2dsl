@@ -1,0 +1,76 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-045",
+  "summary": "Documentation and ADR-005 for Autonomous Agent Integration (doctor-agent, koru)",
+  "workstream": "integration",
+  "classification": {
+    "kind": "DOCUMENTATION",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "9c8857431959d5dd112dd81b516bd0ee4f1a7150",
+    "targetBranch": "main",
+    "outcome": "Publish ADR-005, update CAPABILITY_MAP, CHANGELOG, and README for autonomous agent feedback feeds (doctor-agent and koru).",
+    "nonGoals": [
+      "Modify core comparator algorithms or existing adapter schemas."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record ADR-005 describing autonomous agent feedback feeds (DiagnosticProfileFormatter and RemediationIntentFormatter) and update capability map and project documentation.",
+      "components": [
+        {
+          "name": "documentation",
+          "paths": ["docs/**"]
+        },
+        {
+          "name": "governance",
+          "paths": ["project/**", "CHANGELOG.md", "README.md", "TODO.md"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert docs/decisions/ADR-005-autonomous-agent-feedback-feeds.md, docs/CAPABILITY_MAP.md, CHANGELOG.md, and README.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python -m pytest tests/ -v"],
+        "evidence": "All unit tests pass cleanly."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-045/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "docs/**",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

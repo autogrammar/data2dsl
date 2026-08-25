@@ -184,7 +184,7 @@ repository require that repository's owner-approved workflow.
 
 ## Current state
 
-- Phases 0 through 4 are complete with governed ticket evidence (41 tickets).
+- Phases 0 through 4 are complete with governed ticket evidence (45 tickets).
 - Eight source adapters are implemented: GitHub/Diagit commit metrics,
   Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
   Code2Schema (entity/CQRS), Curllm (browser-backed BQL sources),
@@ -194,20 +194,27 @@ repository require that repository's owner-approved workflow.
   `float`, and `percentage` metrics, producing `MATCH`, `CONFLICT`, `MISSING_LEFT`,
   `MISSING_RIGHT` and `UNEVALUABLE` outcomes with typed deltas and SHA-256
   evidence chains.
+- Dedicated autonomous agent feedback feeds are implemented:
+  - `data2dsl_doctor.py` (`DiagnosticProfileFormatter`): Generates prioritized
+    diagnostic profiles and symptom severity triage for `subactor/doctor-agent`.
+  - `data2dsl_remediation.py` (`RemediationIntentFormatter`): Generates
+    machine-actionable `remediation-intent/v1` payloads for `semcod/koru`
+    closed-loop self-healing.
 - Pipeline integration includes `if-uri`/`urirun` connector manifest
   (`data2dsl://` routes) and Model Context Protocol (MCP) JSON-RPC 2.0 STDIO
   server endpoints.
-- Architecture decisions (ADR-001 through ADR-004) and capability maps document
+- Architecture decisions (ADR-001 through ADR-005) and capability maps document
   multi-source pipelines and ecosystem integration points.
-- The CLI provides `compare`, `compare-golden`, `validate` and `feed-consumer`
-  subcommands.
+- The CLI provides `compare`, `compare-golden`, `validate`, `feed-consumer`,
+  `feed-doctor`, and `feed-koru` subcommands.
 - The consumer fact feed is integrated with `semcod/todo2code` while preserving
   strict separation of factual acquisition from reasoning.
 - The comparison contract `autogrammar.data2dsl.comparison` v`0.1.0` is stable
   and validated against `wellmanifest/dsl` profiles.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
-  and exposes `data2dsl_compare` and `data2dsl_self_test` for agent discovery.
-- Testing infrastructure includes `conftest.py`, 35 unit tests (100% passing),
+  and exposes `data2dsl_compare`, `data2dsl_self_test`, and `data2dsl_feed_doctor`
+  for agent discovery.
+- Testing infrastructure includes `conftest.py`, 49 unit tests (100% passing),
   and clean `ruff`/`mypy` baselines.
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic
   governance gate passes.

@@ -20,6 +20,18 @@
 - Expose urirun connector manifest and MCP STDIO server endpoint (ticket-039).
 - Document multi-source pipeline architecture in ADR-004 and update CAPABILITY_MAP (ticket-040).
 - Author ecosystem integration research notes for koru, diff-dsl, OQL, and doctor-agent (ticket-041).
+- Implement Diagnostic Profile Feed `data2dsl_doctor.py` and CLI `feed-doctor` (ticket-043).
+- Implement Koru Remediation Intent Generator `data2dsl_remediation.py` and CLI `feed-koru` (ticket-044).
+- Author ADR-005 on autonomous agent feedback feeds and update capability map (ticket-045).
+
+### Autonomous agent feedback feeds (tickets 043–045)
+
+- Implement `DiagnosticProfileFormatter` and `format_diagnostic_profile()` in `src/data2dsl_doctor.py` for `subactor/doctor-agent` and triage.
+- Expose `feed-doctor` CLI command and `data2dsl_feed_doctor` agent skill tool.
+- Add comprehensive test suite in `tests/test_doctor_feed.py`.
+- Implement `RemediationIntentFormatter` and `format_remediation_intent()` in `src/data2dsl_remediation.py` generating `remediation-intent/v1` for `semcod/koru` closed-loop self-healing.
+- Expose `feed-koru` CLI command and unit tests in `tests/test_remediation_feed.py`.
+- Record `docs/decisions/ADR-005-autonomous-agent-feedback-feeds.md` and refresh `docs/CAPABILITY_MAP.md`.
 
 ### Multi-source fact adapters (ticket-037)
 

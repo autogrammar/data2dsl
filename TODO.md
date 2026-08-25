@@ -231,3 +231,27 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
   outcomes (`docs/research-oql-telemetry.md`). — ticket-041
 - [x] **Research: `doctor-agent` feed** (`subactor/doctor-agent`): Oceniono feed
   diagnostic-profile z data2dsl do doctor-agent (`docs/research-doctor-agent-feed.md`). — ticket-041
+
+---
+
+## Zadania na dziś — 2026-08-25
+
+### Diagnostic feed i integracje agentowe (workstream: `application`, ticket-043, ticket-044)
+
+- [x] **Moduł `data2dsl_doctor.py`**: Implementacja `DiagnosticProfileFormatter` generującego profil diagnostyczny dla `subactor/doctor-agent` i `semcod/koru`. — ticket-043
+- [x] **CLI `feed-doctor`**: Komenda eksportująca profil diagnostyczny z porównań. — ticket-043
+- [x] **Skill `data2dsl_feed_doctor`**: Integracja z agent skill oraz urirun / MCP bindings. — ticket-043
+- [x] **Testy `test_doctor_feed.py`**: Pełne pokrycie testami jednostkowymi. — ticket-043
+- [x] **Moduł `data2dsl_remediation.py`**: Implementacja `RemediationIntentFormatter` generującego remediation intent dla `semcod/koru` closed-loop self-healing. — ticket-044
+- [x] **CLI `feed-koru`**: Komenda eksportująca remediation intent z porównań. — ticket-044
+- [x] **Testy `test_remediation_feed.py`**: Pełne pokrycie testami jednostkowymi dla remediation feed. — ticket-044
+
+### Dokumentacja i decyzje architektoniczne (workstream: `integration`, ticket-045)
+
+- [x] **ADR-005: Autonomous Agent Feedback Feeds**: Utworzenie dokumentu ADR-005 dla integracji z doctor-agent i koru. — ticket-045
+- [x] **Aktualizacja `CAPABILITY_MAP.md`**: Rozszerzenie tabeli i grafu kompozycji o diagnostic i remediation feeds. — ticket-045
+- [x] **Aktualizacja `CHANGELOG.md` i `README.md`**: Odnotowanie modułów feeds, CLI commands, 49 testów jednostkowych i ADR-005. — ticket-045
+
+
+
+

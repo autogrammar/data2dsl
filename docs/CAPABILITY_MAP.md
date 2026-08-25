@@ -52,6 +52,8 @@ implemented capability.
 | Generic comparability and metric diff | `data2dsl` | `DeterministicComparator` in `src/data2dsl_comparator.py` | two normalized observations plus comparison policy | `MATCH`, `CONFLICT`, `MISSING_LEFT`, `MISSING_RIGHT`, `UNEVALUABLE`, deltas (`integer`, `float`, `percentage`, `string-set`) and evidence | deterministic comparator | `src/data2dsl_comparator.py`, `tests/` | **IMPLEMENTED** | Supported scalar and set types: `integer`, `string`, `string-set`, `float`, `percentage`. |
 | Golden-case work-summary mapping | `data2dsl` | `WorkSummaryMarkdownAdapter` + `GitHubDiagitAdapter` | structured Markdown claims and GitHub metric observations | aligned metric keys, actors, windows and provenance | product glue | `src/data2dsl_adapters.py`, tests | **IMPLEMENTED** | Complete golden-case flow with SHA-256 evidence chains. |
 | Reasoning and conclusion layer | `semcod/todo2code` | diagnostics/conclusion and optional LLM pipeline | factual IntentGraph/diff/evidence | diagnoses and conclusions | consumer policy and epistemic intent model | `src/graph/linker.ts`, diagnostics/conclusion modules and tests | **REUSE** | Keep outside data2dsl. data2dsl returns facts, deltas and evidence; todo2code remains a consumer. |
+| Doctor Diagnostic Profile Formatter | `subactor/doctor-agent` / `data2dsl` | `DiagnosticProfileFormatter` in `src/data2dsl_doctor.py`, CLI `feed-doctor` | comparison bundle | prioritized symptoms, severity classification (`CRITICAL`..`INFO`), SHA-256 evidence | diagnostic triage feed | `src/data2dsl_doctor.py`, `tests/test_doctor_feed.py` | **IMPLEMENTED** | Transforms comparison discrepancies into prioritized diagnostic profiles for doctor-agent. |
+| Koru Remediation Intent Formatter | `semcod/koru` / `data2dsl` | `RemediationIntentFormatter` in `src/data2dsl_remediation.py`, CLI `feed-koru` | comparison bundle | structured `remediation-intent/v1` actions (`synchronize_metric`, `restore_missing_entries`, `resolve_conflict`) | closed-loop remediation feed | `src/data2dsl_remediation.py`, `tests/test_remediation_feed.py` | **IMPLEMENTED** | Maps deltas and conflicts to machine-actionable repair intents for koru closed-loop self-healing. |
 
 ## Extraction boundaries
 
@@ -75,6 +77,7 @@ The missing pieces are narrower than a new framework:
 3. GitHub commit metrics extend Diagit's established provider and auth
    boundary.
 4. The golden-case Markdown-to-metric mapping is implemented in `WorkSummaryMarkdownAdapter`.
+5. Autonomous agent feeds are provided by `data2dsl_doctor.py` (`doctor-agent` triage) and `data2dsl_remediation.py` (`koru` self-healing).
 
 ## Composition graph
 
@@ -102,14 +105,18 @@ flowchart LR
 
     O --> C["DeterministicComparator (int/float/pct/set)"]
     C --> F["Comparison Bundle (result/v0 + SHA-256 Evidence)"]
-    F --> X["todo2code / pyqual / Agent Reasoning Consumers"]
+
+    F --> X["todo2code / pyqual (Reasoning Fact Feed)"]
+    F --> DOC["doctor-agent (Diagnostic Profile Feed)"]
+    F --> KORU["semcod/koru (Remediation Intent Feed)"]
 ```
 
 ## Current state conclusion
 
 The product serves as a lightweight, evidence-preserving composition and
 normalization layer. All 8 source adapters normalize domain facts into
-verifiable observations, and the deterministic comparator supports integer,
+verifiable observations, the deterministic comparator supports integer,
 float, percentage, string, and set comparisons with full cryptographic
-provenance.
+provenance, and specialized feeds project discrepancies into consumer feeds
+for `todo2code`, `doctor-agent`, and `koru` closed-loop self-healing.
 
