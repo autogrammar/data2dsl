@@ -81,6 +81,31 @@ def build_parser() -> argparse.ArgumentParser:
         "--output", type=Path, default=None, help="Optional output JSON path."
     )
 
+    # feed-doctor
+    doctor_parser = subparsers.add_parser(
+        "feed-doctor", help="Export comparison bundle(s) into diagnostic profile feed for doctor-agent."
+    )
+    doctor_parser.add_argument(
+        "--bundle", required=True, type=Path, help="Path to comparison bundle or list of bundles JSON."
+    )
+    doctor_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+
+    # feed-koru
+    koru_parser = subparsers.add_parser(
+        "feed-koru", help="Export comparison bundle(s) into remediation intent feed for semcod/koru."
+    )
+    koru_parser.add_argument(
+        "--bundle", required=True, type=Path, help="Path to comparison bundle or list of bundles JSON."
+    )
+    koru_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+    koru_parser.add_argument(
+        "--ticket", type=str, default=None, help="Optional ticket identifier."
+    )
+
     return parser
 
 
@@ -201,6 +226,30 @@ def main(argv: Sequence[str] | None = None) -> int:
         bundle_doc = json.loads(args.bundle.read_text(encoding="utf-8"))
         payload = ConsumerFactFeed.export_reasoning_payload(bundle_doc)
         output_str = json.dumps(payload.to_dict(), indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
+        return 0
+
+    if args.command == "feed-doctor":
+        from data2dsl_doctor import format_diagnostic_profile
+
+        bundle_doc = json.loads(args.bundle.read_text(encoding="utf-8"))
+        profile = format_diagnostic_profile(bundle_doc)
+        output_str = json.dumps(profile, indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
+        return 0
+
+    if args.command == "feed-koru":
+        from data2dsl_remediation import format_remediation_intent
+
+        bundle_doc = json.loads(args.bundle.read_text(encoding="utf-8"))
+        intent = format_remediation_intent(bundle_doc, ticket_id=args.ticket)
+        output_str = json.dumps(intent, indent=2, ensure_ascii=False)
         if args.output:
             args.output.write_text(output_str + "\n", encoding="utf-8")
         else:

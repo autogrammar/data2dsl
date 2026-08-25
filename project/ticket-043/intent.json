@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-043",
+  "summary": "Diagnostic Profile Feed for doctor-agent and semcod/koru triage",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "9c8857431959d5dd112dd81b516bd0ee4f1a7150",
+    "targetBranch": "main",
+    "outcome": "Implement Diagnostic Profile Feed module in data2dsl_doctor.py, expose via CLI feed-doctor, with unit test coverage.",
+    "nonGoals": [
+      "Break existing comparator or consumer feed contracts.",
+      "Directly execute remediation in external repositories."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add DiagnosticProfileFormatter and format_diagnostic_profile in src/data2dsl_doctor.py, extend CLI feed-doctor in src/data2dsl_cli.py, and add test suite in tests/test_doctor_feed.py.",
+      "components": [
+        {
+          "name": "doctor-feed",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_doctor.py, src/data2dsl_cli.py, and tests/test_doctor_feed.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["python -m pytest tests/test_doctor_feed.py -v"],
+        "evidence": "All unit tests for DiagnosticProfileFormatter and doctor feed pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["python .governance/governance_check.py"],
+        "evidence": "The deterministic governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-043/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_doctor.py",
+    "src/data2dsl_cli.py",
+    "tests/test_doctor_feed.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
