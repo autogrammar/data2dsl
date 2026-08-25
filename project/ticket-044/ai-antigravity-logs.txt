@@ -1,0 +1,6 @@
+[ticket-044] Initialized ticket-044 for Koru Remediation Intent Generator.
+[ticket-044] Implemented RemediationIntentFormatter in src/data2dsl_remediation.py.
+[ticket-044] Added feed-koru command in src/data2dsl_cli.py.
+[ticket-044] Added test suite in tests/test_remediation_feed.py.
+[ticket-044] Verified ruff clean, pytest 49/49 passed, governance-check passed (GOV-PASS).
+
