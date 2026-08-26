@@ -1,0 +1,17 @@
+{
+  "schema": "autogrammar.data2dsl/query/v0",
+  "query_id": "example-02-oql-query",
+  "subject": {
+    "device_id": "oqlos-sensor-hub-01",
+    "driver": "stm32_thermal_v1"
+  },
+  "metric": {
+    "id": "device.thermal.max_celsius",
+    "version": "1.0.0",
+    "value_kind": "float",
+    "property": "celsius"
+  },
+  "comparison": {
+    "equality": "exact"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "data2dsl_compare",
+    "arguments": {
+      "query": {
+        "schema": "autogrammar.data2dsl/query/v0",
+        "query_id": "mcp-query-001",
+        "subject": {
+          "repository": "https://github.com/autogrammar/data2dsl",
+          "actor": "antigravity"
+        },
+        "metric": {
+          "id": "code.commit.count",
+          "version": "1.0.0",
+          "value_kind": "integer",
+          "unit": "commits"
+        }
+      },
+      "left_raw": {
+        "commit_count": 5
+      },
+      "left_source_type": "github",
+      "right_raw": {
+        "commit_count": 5
+      },
+      "right_source_type": "github"
+    }
+  }
+}

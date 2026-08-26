@@ -184,12 +184,13 @@ repository require that repository's owner-approved workflow.
 
 ## Current state
 
-- Phases 0 through 4 are complete with governed ticket evidence (45 tickets).
-- Eight source adapters are implemented: GitHub/Diagit commit metrics,
+- Phases 0 through 4 are complete with governed ticket evidence (49 tickets).
+- Nine source adapters are implemented: GitHub/Diagit commit metrics,
   Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
   Code2Schema (entity/CQRS), Curllm (browser-backed BQL sources),
   Planfile (SDLC task queues and ticket statuses), Deta (infrastructure
-  topologies and services), and IntentContract (Subactor DSL v1 contracts).
+  topologies and services), IntentContract (Subactor DSL v1 contracts),
+  and OQL Telemetry (`oqlos.telemetry` hardware scenario & sensor logs).
 - The deterministic comparator supports `integer`, `string`, `string-set`,
   `float`, and `percentage` metrics, producing `MATCH`, `CONFLICT`, `MISSING_LEFT`,
   `MISSING_RIGHT` and `UNEVALUABLE` outcomes with typed deltas and SHA-256
@@ -203,7 +204,7 @@ repository require that repository's owner-approved workflow.
 - Pipeline integration includes `if-uri`/`urirun` connector manifest
   (`data2dsl://` routes) and Model Context Protocol (MCP) JSON-RPC 2.0 STDIO
   server endpoints.
-- Architecture decisions (ADR-001 through ADR-005) and capability maps document
+- Architecture decisions (ADR-001 through ADR-006) and capability maps document
   multi-source pipelines and ecosystem integration points.
 - The CLI provides `compare`, `compare-golden`, `validate`, `feed-consumer`,
   `feed-doctor`, and `feed-koru` subcommands.
@@ -214,12 +215,14 @@ repository require that repository's owner-approved workflow.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
   and exposes `data2dsl_compare`, `data2dsl_self_test`, and `data2dsl_feed_doctor`
   for agent discovery.
-- Testing infrastructure includes `conftest.py`, 49 unit tests (100% passing),
+- Testing infrastructure includes `conftest.py`, 57 unit tests (100% passing),
   and clean `ruff`/`mypy` baselines.
+- Runnable example suites are structured under [`examples/`](examples/README.md).
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic
   governance gate passes.
 
-See [`TODO.md`](TODO.md) for current work and
+See [`examples/README.md`](examples/README.md) for runnable usage examples,
+[`TODO.md`](TODO.md) for current work and
 [`project/TICKETS.md`](project/TICKETS.md) for governed evidence.
 
 ## Governance

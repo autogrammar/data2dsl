@@ -1,0 +1,19 @@
+{
+  "schema": "new-project.remediation-intent/v1",
+  "intent_id": "remed-bundle-koru-demo-001",
+  "target": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "antigravity"
+  },
+  "status": "PROPOSED",
+  "actions": [
+    {
+      "metric_id": "code.commit.count",
+      "action_type": "synchronize_metric",
+      "target_value": 5,
+      "observed_value": 8,
+      "discrepancy": "3",
+      "status": "PROPOSED"
+    }
+  ]
+}

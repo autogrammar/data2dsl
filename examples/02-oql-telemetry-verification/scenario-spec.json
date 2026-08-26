@@ -1,0 +1,10 @@
+{
+  "status": "OK",
+  "scenario_id": "sensor-thermal-ceiling-spec",
+  "path": "scenarios/sensor.oql.json",
+  "max_temperature_celsius": 75.0,
+  "sample_rate_hz": 1000.0,
+  "frequency_mhz": 168.0,
+  "active_pins": ["PA0", "PA1", "PB4"],
+  "buses": ["I2C1", "SPI2"]
+}

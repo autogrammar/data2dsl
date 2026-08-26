@@ -1,0 +1,26 @@
+{
+  "schema": "new-project.diagnostic-profile/v1",
+  "profile_id": "diag-prof-bundle-doctor-demo-001",
+  "target": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "antigravity"
+  },
+  "overall_status": "DEGRADED",
+  "severity_summary": {
+    "critical": 0,
+    "high": 1,
+    "medium": 0,
+    "low": 0,
+    "info": 0
+  },
+  "symptoms": [
+    {
+      "metric_id": "code.commit.count",
+      "severity": "HIGH",
+      "discrepancy_type": "CONFLICT",
+      "expected": 5,
+      "observed": 8,
+      "delta": "3"
+    }
+  ]
+}

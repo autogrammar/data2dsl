@@ -1,0 +1,12 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"status\":\"OK\",\"result\":{\"outcome\":\"MATCH\",\"left\":{\"state\":\"VALUE\",\"value\":{\"kind\":\"integer\",\"value\":5}},\"right\":{\"state\":\"VALUE\",\"value\":{\"kind\":\"integer\",\"value\":5}},\"delta\":{\"kind\":\"integer\",\"value\":\"0\"}}}"
+      }
+    ]
+  }
+}

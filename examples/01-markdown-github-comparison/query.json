@@ -1,0 +1,17 @@
+{
+  "schema": "autogrammar.data2dsl/query/v0",
+  "query_id": "example-01-query",
+  "subject": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "antigravity"
+  },
+  "metric": {
+    "id": "code.commit.count",
+    "version": "1.0.0",
+    "value_kind": "integer",
+    "unit": "commits"
+  },
+  "comparison": {
+    "equality": "exact"
+  }
+}

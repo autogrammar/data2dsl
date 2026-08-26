@@ -1,0 +1,74 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-050",
+  "summary": "Documentation Synchronization and Examples Structure",
+  "workstream": "governance",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "4d2cf145baeab679741e6e34cac8e1e15a0e553b",
+    "targetBranch": "main",
+    "outcome": "Synchronize full project documentation and prepare simple, structured examples/[numer]-[przyklad]/ suites.",
+    "nonGoals": [
+      "Modify core comparison algorithms in src/."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Synchronize root documentation with recent OQL and feed capabilities, and structure simple numbered examples in examples/ directory.",
+      "components": [
+        {
+          "name": "governance",
+          "paths": [".governance/**", "README.md", "CHANGELOG.md", "TODO.md", "project/README.md", "examples/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert documentation and examples directory."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest"],
+        "evidence": "Full pytest test suite passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-050/**",
+    ".governance/manifest.json",
+    "README.md",
+    "CHANGELOG.md",
+    "TODO.md",
+    "project/TICKETS.md",
+    "project/README.md",
+    "examples/**"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
