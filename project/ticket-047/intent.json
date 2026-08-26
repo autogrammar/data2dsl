@@ -1,0 +1,71 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-047",
+  "summary": "Documentation and Capability Map Update for OQL Telemetry",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "451a0f43996dc755a55247e281cdf02078718756",
+    "targetBranch": "main",
+    "outcome": "Update docs/CAPABILITY_MAP.md and docs/research-oql-telemetry.md for OQL Telemetry Adapter integration.",
+    "nonGoals": [
+      "Modify source code or alter existing comparator algorithms."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Update capability map and research notes with OQL Telemetry Adapter entries and Mermaid composition graph.",
+      "components": [
+        {
+          "name": "documentation",
+          "paths": ["docs/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert docs/CAPABILITY_MAP.md and docs/research-oql-telemetry.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest"],
+        "evidence": "All unit tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-047/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/CAPABILITY_MAP.md",
+    "docs/research-oql-telemetry.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

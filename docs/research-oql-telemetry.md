@@ -1,8 +1,8 @@
 # Research: `oqlos/*` Scenario Outcomes and Sensor Telemetry Adapter
 
 - **Date:** 2026-08-24
-- **Related:** ADR-004, ticket-041
-- **Status:** Research Note
+- **Related:** ADR-004, ticket-041, ticket-046, ticket-047
+- **Status:** Implemented in ticket-046 (`OqlTelemetryAdapter`)
 
 ## 1. Background
 
