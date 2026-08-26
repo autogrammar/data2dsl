@@ -2,9 +2,10 @@
 
 - **ID**: ticket-047
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: VALIDATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-26
+- **Closed**: 2026-08-26
 - **Receipt**: Updated CAPABILITY_MAP and research notes for OQL telemetry; passed all 55 tests and GOV-PASS.
 
 ## Goal and scope
