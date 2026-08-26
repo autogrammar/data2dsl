@@ -1,0 +1,70 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-049",
+  "summary": "ADR-006 for OQL Telemetry and Hardware-in-the-Loop Normalization",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "451a0f43996dc755a55247e281cdf02078718756",
+    "targetBranch": "main",
+    "outcome": "Record ADR-006 for OQL Telemetry and Hardware-in-the-Loop Normalization architecture.",
+    "nonGoals": [
+      "Modify core comparator logic or runtime code."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record ADR-006 documenting OqlTelemetryAdapter specification, observation normalization rules, and deterministic HIL comparison boundaries.",
+      "components": [
+        {
+          "name": "documentation",
+          "paths": ["docs/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert docs/decisions/ADR-006-oql-telemetry-hardware-normalization.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest"],
+        "evidence": "Full test suite passes."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-049/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/decisions/ADR-006-oql-telemetry-hardware-normalization.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

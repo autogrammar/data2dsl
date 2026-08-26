@@ -1,0 +1,5 @@
+[2026-08-26T11:51:37Z] Scaffolded ticket-049 for ADR-006 OQL Telemetry Decision Record.
+[2026-08-26T11:53:20Z] Bounded intent.json to integration workstream docs/** paths.
+[2026-08-26T11:55:37Z] Authored ADR-006 in docs/decisions/ADR-006-oql-telemetry-hardware-normalization.md.
+[2026-08-26T11:55:57Z] Deterministic governance check passed (GOV-PASS).
+[2026-08-26T11:56:00Z] All 57 pytest unit tests pass cleanly (100%).
