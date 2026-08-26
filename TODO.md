@@ -262,6 +262,7 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Testy jednostkowe OQL**: Zestaw testów `tests/test_oql_adapter.py` dla metryk scalarnych, termicznych i string-set pinouts. — ticket-046
 - [x] **Integracja agent skill & MCP**: Obsługa źródeł OQL w `Data2DslSkill` i dyspozytorze MCP wraz z testami `tests/test_skill.py`. — ticket-048
 - [x] **ADR-006: OQL Telemetry and HIL Normalization**: Utworzenie dokumentu ADR-006 dla adaptera OQL i weryfikacji sprzętowej. — ticket-049
+- [x] **Dokumentacja i struktura przykładów**: Aktualizacja dokumentacji projektu i utworzenie katalogu `examples/01-..` do `examples/05-..`. — ticket-050
 
 
 

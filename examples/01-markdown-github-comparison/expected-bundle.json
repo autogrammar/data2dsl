@@ -1,0 +1,39 @@
+{
+  "schema": "autogrammar.data2dsl/result/v0",
+  "bundle_id": "example-01-bundle",
+  "query": {
+    "schema": "autogrammar.data2dsl/query/v0",
+    "query_id": "example-01-query",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "code.commit.count",
+      "version": "1.0.0",
+      "value_kind": "integer",
+      "unit": "commits"
+    },
+    "comparison": {
+      "equality": "exact"
+    }
+  },
+  "result": {
+    "outcome": "MATCH",
+    "left": {
+      "state": "VALUE",
+      "value": {"kind": "integer", "value": 5}
+    },
+    "right": {
+      "state": "VALUE",
+      "value": {"kind": "integer", "value": 5}
+    },
+    "delta": {
+      "kind": "integer",
+      "value": "0"
+    },
+    "comparison_policy": {
+      "equality": "exact"
+    }
+  }
+}

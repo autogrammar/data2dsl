@@ -1,0 +1,33 @@
+{
+  "schema": "autogrammar.data2dsl/result/v0",
+  "bundle_id": "bundle-koru-demo-001",
+  "query": {
+    "schema": "autogrammar.data2dsl/query/v0",
+    "query_id": "query-koru-001",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "code.commit.count",
+      "version": "1.0.0",
+      "value_kind": "integer",
+      "unit": "commits"
+    }
+  },
+  "result": {
+    "outcome": "CONFLICT",
+    "left": {
+      "state": "VALUE",
+      "value": {"kind": "integer", "value": 5}
+    },
+    "right": {
+      "state": "VALUE",
+      "value": {"kind": "integer", "value": 8}
+    },
+    "delta": {
+      "kind": "integer",
+      "value": "3"
+    }
+  }
+}

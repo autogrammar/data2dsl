@@ -23,6 +23,26 @@
 - Implement Diagnostic Profile Feed `data2dsl_doctor.py` and CLI `feed-doctor` (ticket-043).
 - Implement Koru Remediation Intent Generator `data2dsl_remediation.py` and CLI `feed-koru` (ticket-044).
 - Author ADR-005 on autonomous agent feedback feeds and update capability map (ticket-045).
+- Implement OQL Telemetry Source Adapter for hardware scenario & sensor log normalization (ticket-046).
+- Update Capability Map inventory and research notes for OQL telemetry (ticket-047).
+- Integrate OQL Telemetry into Data2DslSkill and MCP dispatch (ticket-048).
+- Author ADR-006 on OQL telemetry and Hardware-in-the-Loop normalization (ticket-049).
+- Synchronize full project documentation and structure runnable examples in `examples/` (ticket-050).
+
+### OQL telemetry source adapter & HIL normalization (tickets 046–049)
+
+- Implement `DEFAULT_OQL_EXTRACTOR`, `OqlScenarioSpecResponse`, `OqlTelemetryLogResponse`, and `OqlTelemetryAdapter` in `src/data2dsl_adapters.py`.
+- Support scalar (`float`, `integer`), thermal (`float`, `percentage`), and pinout/bus (`string-set`) metrics with SHA-256 evidence digests.
+- Add unit test suite in `tests/test_oql_adapter.py`.
+- Integrate OQL source formats (`oql`, `oqlos`, `oql_telemetry`, `oql_spec`) into `Data2DslSkill` and MCP dispatch (`src/data2dsl_skill.py`).
+- Add skill unit tests and MCP JSON-RPC tests in `tests/test_skill.py`.
+- Record `docs/decisions/ADR-006-oql-telemetry-hardware-normalization.md`.
+- Refresh `docs/CAPABILITY_MAP.md` and `docs/research-oql-telemetry.md`.
+
+### Runnable examples suite (ticket-050)
+
+- Create simple, structured numbered examples in `examples/01-..` through `examples/05-..` with fixtures and READMEs.
+- Add `examples/README.md` index and CLI usage instructions.
 
 ### Autonomous agent feedback feeds (tickets 043–045)
 

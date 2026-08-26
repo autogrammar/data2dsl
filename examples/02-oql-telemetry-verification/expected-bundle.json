@@ -1,0 +1,39 @@
+{
+  "schema": "autogrammar.data2dsl/result/v0",
+  "bundle_id": "example-02-oql-bundle",
+  "query": {
+    "schema": "autogrammar.data2dsl/query/v0",
+    "query_id": "example-02-oql-query",
+    "subject": {
+      "device_id": "oqlos-sensor-hub-01",
+      "driver": "stm32_thermal_v1"
+    },
+    "metric": {
+      "id": "device.thermal.max_celsius",
+      "version": "1.0.0",
+      "value_kind": "float",
+      "property": "celsius"
+    },
+    "comparison": {
+      "equality": "exact"
+    }
+  },
+  "result": {
+    "outcome": "CONFLICT",
+    "left": {
+      "state": "VALUE",
+      "value": {"kind": "float", "value": 75.0}
+    },
+    "right": {
+      "state": "VALUE",
+      "value": {"kind": "float", "value": 82.5}
+    },
+    "delta": {
+      "kind": "float",
+      "value": "7.5"
+    },
+    "comparison_policy": {
+      "equality": "exact"
+    }
+  }
+}

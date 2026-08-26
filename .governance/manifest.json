@@ -48,7 +48,8 @@
           "project.sh",
           "project.bat",
           "project/**",
-          "scripts/runtime.sh"
+          "scripts/runtime.sh",
+          "examples/**"
         ]
       },
       "infrastructure": {
@@ -125,7 +126,10 @@
   "governancePaths": [
     "TODO.md",
     "project/TICKETS.md",
-    "project/ticket-*/**"
+    "project/ticket-*/**",
+    "examples/**",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "requiredFiles": [
     "README.md",
