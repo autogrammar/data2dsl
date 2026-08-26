@@ -1,0 +1,76 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-046",
+  "summary": "OQL Telemetry Source Adapter for Scenario Metrics",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "451a0f43996dc755a55247e281cdf02078718756",
+    "targetBranch": "main",
+    "outcome": "Implement OQL Telemetry Source Adapter in data2dsl_adapters.py with comprehensive unit test suite in test_oql_adapter.py.",
+    "nonGoals": [
+      "Modify external oqlos repositories or rewrite existing adapters."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add OqlScenarioSpecResponse, OqlTelemetryLogResponse, and OqlTelemetryAdapter to normalize scenario declarations and sensor telemetry streams.",
+      "components": [
+        {
+          "name": "application",
+          "paths": ["src/**", "tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_adapters.py and remove tests/test_oql_adapter.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_oql_adapter.py"],
+        "evidence": "All OQL adapter unit tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["pytest"],
+        "evidence": "Full test suite (55 tests) passes."
+      },
+      {
+        "criterion": "AC-03",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-046/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_adapters.py",
+    "tests/test_oql_adapter.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

@@ -24,6 +24,9 @@ from data2dsl_adapters import (
     GitHubDiagitAdapter,
     IntentContractAdapter,
     IntentContractResponse,
+    OqlScenarioSpecResponse,
+    OqlTelemetryAdapter,
+    OqlTelemetryLogResponse,
     PlanfileAdapter,
     PlanfileMetricResponse,
     WorkSummaryMarkdownAdapter,
@@ -116,6 +119,50 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 obligations=raw.get("obligations", ()),
             )
         return adapter.normalize(query, resp, side=side)
+    elif st in ("oql", "oqlos", "oql_telemetry", "oql_spec"):
+        oql_adapter = OqlTelemetryAdapter()
+        resp = raw.get("response")
+        if isinstance(resp, (OqlScenarioSpecResponse, OqlTelemetryLogResponse)):
+            return oql_adapter.normalize(query, resp, side=side)
+
+        is_telemetry = (
+            raw.get("kind") == "telemetry"
+            or "log_id" in raw
+            or "avg_sample_rate_hz" in raw
+            or "peak_temperature_celsius" in raw
+            or side == "right"
+        )
+        if is_telemetry and (raw.get("kind") != "spec" and "scenario_id" not in raw):
+            resp = OqlTelemetryLogResponse(
+                status=raw.get("status", "OK"),
+                log_id=raw.get("log_id", "oql-telemetry-001"),
+                path=raw.get("path", "logs/sensor.jsonl"),
+                start_line=raw.get("start_line", 1),
+                end_line=raw.get("end_line", 1),
+                avg_sample_rate_hz=raw.get("avg_sample_rate_hz") or raw.get("sample_rate_hz") or raw.get("sample_rate"),
+                peak_temperature_celsius=raw.get("peak_temperature_celsius") or raw.get("max_temperature_celsius") or raw.get("temperature"),
+                observed_frequency_mhz=raw.get("observed_frequency_mhz") or raw.get("frequency_mhz"),
+                avg_packet_throughput=raw.get("avg_packet_throughput") or raw.get("packet_throughput") or raw.get("throughput"),
+                active_pins=raw.get("active_pins", ()),
+                active_buses=raw.get("active_buses") or raw.get("buses", ()),
+                error_message=raw.get("error_message"),
+            )
+        else:
+            resp = OqlScenarioSpecResponse(
+                status=raw.get("status", "OK"),
+                scenario_id=raw.get("scenario_id", "oql-scenario-001"),
+                path=raw.get("path", "scenarios/sensor.oql.json"),
+                start_line=raw.get("start_line", 1),
+                end_line=raw.get("end_line", 1),
+                sample_rate_hz=raw.get("sample_rate_hz") or raw.get("sample_rate"),
+                max_temperature_celsius=raw.get("max_temperature_celsius") or raw.get("temperature"),
+                frequency_mhz=raw.get("frequency_mhz"),
+                packet_throughput=raw.get("packet_throughput") or raw.get("throughput"),
+                active_pins=raw.get("active_pins", ()),
+                buses=raw.get("buses", ()),
+                error_message=raw.get("error_message"),
+            )
+        return oql_adapter.normalize(query, resp, side=side)
     else:
         raise ValueError(f"Unknown source adapter kind: {source_type}")
 

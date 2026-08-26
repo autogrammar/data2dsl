@@ -1,0 +1,8 @@
+[2026-08-26T10:57:55Z] Scaffolded ticket-046 for OQL Telemetry Source Adapter.
+[2026-08-26T10:58:11Z] Bounded intent.json allowedPaths to application workstream.
+[2026-08-26T10:59:43Z] Implemented OqlScenarioSpecResponse, OqlTelemetryLogResponse, and OqlTelemetryAdapter in src/data2dsl_adapters.py.
+[2026-08-26T11:03:11Z] Added unit test suite in tests/test_oql_adapter.py.
+[2026-08-26T11:07:01Z] All 55 pytest unit tests pass cleanly (100%).
+[2026-08-26T11:07:30Z] Static analysis with ruff passed.
+[2026-08-26T11:07:40Z] Type analysis with mypy passed for 17 source files.
+[2026-08-26T11:08:51Z] Deterministic governance check passed (GOV-PASS).

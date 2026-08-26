@@ -1,0 +1,6 @@
+[2026-08-26T11:09:41Z] Scaffolded ticket-047 for Documentation and Capability Map Update.
+[2026-08-26T11:11:08Z] Bounded intent.json to integration workstream docs/** paths.
+[2026-08-26T11:12:05Z] Updated docs/CAPABILITY_MAP.md table, Mermaid diagram, and summary.
+[2026-08-26T11:12:13Z] Updated docs/research-oql-telemetry.md status.
+[2026-08-26T11:14:07Z] Deterministic governance check passed (GOV-PASS).
+[2026-08-26T11:14:39Z] All 55 pytest unit tests pass cleanly (100%).

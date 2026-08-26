@@ -252,6 +252,18 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Aktualizacja `CAPABILITY_MAP.md`**: Rozszerzenie tabeli i grafu kompozycji o diagnostic i remediation feeds. — ticket-045
 - [x] **Aktualizacja `CHANGELOG.md` i `README.md`**: Odnotowanie modułów feeds, CLI commands, 49 testów jednostkowych i ADR-005. — ticket-045
 
+---
+
+## Zadania na dziś — 2026-08-26
+
+### Adaptery telemetryczne i scenariusze (workstream: `application`, ticket-046)
+
+- [x] **Adapter `oql` (`oqlos`)**: Adapter normalizujący scenariusze i logi telemetryczne sensorów OQL do obiektów `Observation` z `EvidenceRef`. — ticket-046
+- [x] **Testy jednostkowe OQL**: Zestaw testów `tests/test_oql_adapter.py` dla metryk scalarnych, termicznych i string-set pinouts. — ticket-046
+- [x] **Integracja agent skill & MCP**: Obsługa źródeł OQL w `Data2DslSkill` i dyspozytorze MCP wraz z testami `tests/test_skill.py`. — ticket-048
+- [x] **ADR-006: OQL Telemetry and HIL Normalization**: Utworzenie dokumentu ADR-006 dla adaptera OQL i weryfikacji sprzętowej. — ticket-049
+
+
 
 
 

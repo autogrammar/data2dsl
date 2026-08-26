@@ -1,0 +1,76 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-048",
+  "summary": "OQL Telemetry Integration for Agent Skill and MCP",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "451a0f43996dc755a55247e281cdf02078718756",
+    "targetBranch": "main",
+    "outcome": "Integrate OqlTelemetryAdapter into Data2DslSkill and MCP routing with full test coverage.",
+    "nonGoals": [
+      "Modify core comparator logic or unrelated adapters."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add oql / oqlos raw input normalization to _normalize_raw in src/data2dsl_skill.py and add skill tests in tests/test_skill.py.",
+      "components": [
+        {
+          "name": "skill",
+          "paths": ["src/**", "tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_skill.py and tests/test_skill.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_skill.py"],
+        "evidence": "All skill tests pass including OQL."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["pytest"],
+        "evidence": "Full test suite passes cleanly."
+      },
+      {
+        "criterion": "AC-03",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Governance gate passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-048/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_skill.py",
+    "tests/test_skill.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

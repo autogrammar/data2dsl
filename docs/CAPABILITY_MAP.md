@@ -46,6 +46,7 @@ implemented capability.
 | SDLC Task queue acquisition | `semcod/planfile` | YAML task queue, ticket metadata | planfile task/ticket list | normalized ticket counts, task IDs and status observations | planfile project schema | `planfile.yaml`, parser/tests | **REUSE** | Source adapter `PlanfileAdapter` implemented in `src/data2dsl_adapters.py`. |
 | Infrastructure topology acquisition | `semcod/deta` | Docker compose / OpenAPI manifests | infrastructure topology description | normalized service counts, port sets, endpoint lists | container/infra YAML/JSON | `deta.build_topology()`, compose parser | **REUSE** | Source adapter `DetaAdapter` implemented in `src/data2dsl_adapters.py`. |
 | Intent contract bounds acquisition | `subactor/intent-contract-dsl` | Intent contract JSON DSL | contract definitions | normalized parties, deliverables, and obligations | subactor contract schema | `intent-contract.dsl.json` | **REUSE** | Source adapter `IntentContractAdapter` implemented in `src/data2dsl_adapters.py`. |
+| OQL scenario & sensor telemetry acquisition | `oqlos/*` / `data2dsl` | `OqlTelemetryAdapter` in `src/data2dsl_adapters.py` | OQL scenario manifests and sensor telemetry logs | normalized sample rates, thermal ceilings, throughput, and active pinouts | embedded/sensor scenario domain | `src/data2dsl_adapters.py`, `tests/test_oql_adapter.py` | **IMPLEMENTED** | Normalized observations with `oqlos.telemetry` extractor and cryptographic SHA-256 evidence. |
 | URI workflow routing | `if-uri/urirun` | `connector.manifest.json`, `urirun.bindings` | `data2dsl://` URI commands | execution results with typed envelopes | if-uri connector specification | `src/connector.manifest.json`, `src/data2dsl_skill.py` | **REUSE** | Implemented `urirun_bindings` for `data2dsl://host/compare/run` and `data2dsl://host/selftest/run`. |
 | Model Context Protocol (MCP) | `semcod/mcp` | MCP JSON-RPC 2.0 STDIO protocol | tool call requests (`data2dsl_compare`, `data2dsl_self_test`) | tool call results with text contents | MCP 2024-11-05 spec | `src/data2dsl_skill.py` (`handle_mcp_message`, `main_mcp`) | **REUSE** | Native IDE MCP tool discovery and execution. |
 | SUMD structured-document parsing | `semcod/sumd` | Python `parse`, `parse_file` | SUMD-conformant Markdown | SUMD descriptor model and validation | SUMD-specific, not arbitrary Markdown | package exports, parser/tests; revision `672c699db6110b678260ccd729617e0b5772a6f0` | **REUSE** | Use only when the declared source format is SUMD; otherwise use mdflow. |
@@ -93,6 +94,7 @@ flowchart LR
     R --> P["planfile Task Queue Adapter"]
     R --> D["deta Infra Topology Adapter"]
     R --> I["subactor IntentContract Adapter"]
+    R --> OQL["oqlos OQL Telemetry Adapter"]
 
     M --> O["Normalized Observations (observation/v0)"]
     H --> O
@@ -102,6 +104,7 @@ flowchart LR
     P --> O
     D --> O
     I --> O
+    OQL --> O
 
     O --> C["DeterministicComparator (int/float/pct/set)"]
     C --> F["Comparison Bundle (result/v0 + SHA-256 Evidence)"]
@@ -114,7 +117,7 @@ flowchart LR
 ## Current state conclusion
 
 The product serves as a lightweight, evidence-preserving composition and
-normalization layer. All 8 source adapters normalize domain facts into
+normalization layer. All 9 source adapters normalize domain facts into
 verifiable observations, the deterministic comparator supports integer,
 float, percentage, string, and set comparisons with full cryptographic
 provenance, and specialized feeds project discrepancies into consumer feeds

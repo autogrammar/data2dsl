@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import pytest
 from data2dsl_adapters import (
     Code2LogicMetricResponse,
@@ -9,7 +10,7 @@ from data2dsl_adapters import (
     CurllmMetricResponse,
     CurllmPageEvidence,
 )
-from data2dsl_skill import Data2DslSkill
+from data2dsl_skill import Data2DslSkill, handle_mcp_message
 
 
 @pytest.fixture
@@ -318,5 +319,55 @@ def test_handle_mcp_message_protocol(base_query):
     unknown_resp = handle_mcp_message(unknown_req)
     assert "error" in unknown_resp
     assert unknown_resp["error"]["code"] == -32601
+
+
+def test_skill_execute_compare_raw_oql(base_query):
+    oql_query = dict(base_query)
+    oql_query["metric"] = {
+        "id": "device.sensor.sample_rate",
+        "version": "1.0.0",
+        "value_kind": "float",
+        "property": "sample_rate",
+    }
+    res = Data2DslSkill.execute_compare(
+        query=oql_query,
+        left_raw={"sample_rate": 100.0, "kind": "spec"},
+        left_source_type="oql",
+        right_raw={"sample_rate": 100.0, "kind": "telemetry"},
+        right_source_type="oqlos",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_mcp_oql_compare(base_query):
+    oql_query = dict(base_query)
+    oql_query["metric"] = {
+        "id": "device.thermal.max_celsius",
+        "version": "1.0.0",
+        "value_kind": "float",
+        "property": "celsius",
+    }
+    req = {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "tools/call",
+        "params": {
+            "name": "data2dsl_compare",
+            "arguments": {
+                "query": oql_query,
+                "left_raw": {"temperature": 75.0, "kind": "spec"},
+                "left_source_type": "oql_spec",
+                "right_raw": {"temperature": 82.5, "kind": "telemetry"},
+                "right_source_type": "oql_telemetry",
+            },
+        },
+    }
+    resp = handle_mcp_message(req)
+    content = json.loads(resp["result"]["content"][0]["text"])
+    assert content["status"] == "OK"
+    assert content["result"]["outcome"] == "CONFLICT"
+    assert content["result"]["delta"] == {"kind": "float", "value": "7.5"}
+
 
 

@@ -1,0 +1,7 @@
+[2026-08-26T11:37:18Z] Scaffolded ticket-048 for OQL Telemetry Skill and MCP Integration.
+[2026-08-26T11:40:17Z] Bounded intent.json to application workstream.
+[2026-08-26T11:41:07Z] Extended _normalize_raw in src/data2dsl_skill.py for OQL formats.
+[2026-08-26T11:41:17Z] Added unit test suite in tests/test_skill.py.
+[2026-08-26T11:44:17Z] All 57 pytest unit tests pass cleanly (100%).
+[2026-08-26T11:45:01Z] Static analysis with ruff passed.
+[2026-08-26T11:45:06Z] Deterministic governance check passed (GOV-PASS).
