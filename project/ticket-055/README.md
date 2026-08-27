@@ -2,7 +2,7 @@
 
 - **ID**: ticket-055
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Implemented generate_query_template and CLI subcommand generate-query; 83/83 pytest tests passing and GOV-PASS.

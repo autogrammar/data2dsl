@@ -43,6 +43,9 @@ def build_parser() -> argparse.ArgumentParser:
     cmp_parser.add_argument(
         "--output", type=Path, default=None, help="Optional output JSON path."
     )
+    cmp_parser.add_argument(
+        "--format", choices=["json", "markdown"], default="json", help="Output format (json | markdown)."
+    )
 
     # compare-golden
     golden_parser = subparsers.add_parser(
@@ -151,6 +154,9 @@ def build_parser() -> argparse.ArgumentParser:
     batch_parser.add_argument(
         "--output", type=Path, default=None, help="Optional output JSON path."
     )
+    batch_parser.add_argument(
+        "--format", choices=["json", "markdown"], default="json", help="Output format (json | markdown)."
+    )
 
     # generate-query
     gen_parser = subparsers.add_parser(
@@ -213,7 +219,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             }
         bundle = compare_observations(query, left_doc, right_doc)
         validate_document(bundle)
-        output_str = json.dumps(bundle, indent=2, ensure_ascii=False)
+        if getattr(args, "format", "json") == "markdown":
+            from data2dsl_batch import format_markdown_report
+
+            output_str = format_markdown_report(bundle)
+        else:
+            output_str = json.dumps(bundle, indent=2, ensure_ascii=False)
         if args.output:
             args.output.write_text(output_str + "\n", encoding="utf-8")
         else:
@@ -383,7 +394,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         batch_cmp = BatchMultiQueryComparator()
         report = batch_cmp.compare_batch(batch_queries, batch_left_obs, batch_right_obs)
-        output_str = json.dumps(report.to_dict(), indent=2, ensure_ascii=False)
+        if getattr(args, "format", "json") == "markdown":
+            from data2dsl_batch import format_markdown_report
+
+            output_str = format_markdown_report(report)
+        else:
+            output_str = json.dumps(report.to_dict(), indent=2, ensure_ascii=False)
         if args.output:
             args.output.write_text(output_str + "\n", encoding="utf-8")
         else:

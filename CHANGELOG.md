@@ -33,6 +33,13 @@
 - Author ADR-007 on Subactor conformance, update capability map, and add SUMD example (ticket-053).
 - Implement Batch Multi-Query comparison engine and CLI subcommand (ticket-054).
 - Implement Query Template Generator and CLI subcommand (ticket-055).
+- Implement Markdown report formatting for CLI and batch operations (ticket-056).
+
+### Markdown report formatting (ticket-056)
+
+- Implement `format_markdown_report` in `src/data2dsl_batch.py` rendering structured Markdown tables with status indicators and observation metrics.
+- Add `--format` (json | markdown) argument to `data2dsl compare` and `data2dsl batch` CLI subcommands.
+- Add test suite in `tests/test_batch_compare.py` (84/84 tests passing).
 
 ### Query template generator (ticket-055)
 
