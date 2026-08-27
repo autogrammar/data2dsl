@@ -1,0 +1,70 @@
+[
+  {
+    "schema": "autogrammar.data2dsl/observation/v0",
+    "observation_id": "observation:github:tickets",
+    "query_id": "query:batch:tickets_completed",
+    "side": "right",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "tickets_completed",
+      "version": "1.0.0",
+      "value_kind": "integer",
+      "unit": "tickets"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "state": "OBSERVED",
+    "value": {
+      "kind": "integer",
+      "value": "56"
+    },
+    "evidence": [
+      {
+        "evidence_id": "evidence:github:api:1",
+        "digest_sha256": "8f3b232ce9a3d4626154b5dfd4f6ef1e47f7d1b3e6e8e89fbc07e265c02b3df4",
+        "source_uri": "https://api.github.com/repos/autogrammar/data2dsl/pulls?state=closed",
+        "source_revision": "sha256:8f3b232ce9a3d4626154b5dfd4f6ef1e47f7d1b3e6e8e89fbc07e265c02b3df4"
+      }
+    ]
+  },
+  {
+    "schema": "autogrammar.data2dsl/observation/v0",
+    "observation_id": "observation:audit:coverage",
+    "query_id": "query:batch:test_coverage",
+    "side": "right",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "test_coverage",
+      "version": "1.0.0",
+      "value_kind": "percentage",
+      "unit": "percent"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "state": "OBSERVED",
+    "value": {
+      "kind": "percentage",
+      "value": "100.0%"
+    },
+    "evidence": [
+      {
+        "evidence_id": "evidence:audit:report:1",
+        "digest_sha256": "2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae",
+        "source_uri": "https://audit.ci/reports/latest",
+        "source_revision": "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
+      }
+    ]
+  }
+]

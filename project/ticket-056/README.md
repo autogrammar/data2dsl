@@ -2,7 +2,7 @@
 
 - **ID**: ticket-056
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Implemented format_markdown_report and added --format flag to compare and batch CLI subcommands; 84/84 pytest tests passing and GOV-PASS.

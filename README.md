@@ -184,17 +184,26 @@ repository require that repository's owner-approved workflow.
 
 ## Current state
 
-- Phases 0 through 4 are complete with governed ticket evidence (49 tickets).
-- Nine source adapters are implemented: GitHub/Diagit commit metrics,
+- Phases 0 through 5 are complete with governed ticket evidence (56 tickets).
+- Ten source adapters are implemented: GitHub/Diagit commit metrics,
   Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
   Code2Schema (entity/CQRS), Curllm (browser-backed BQL sources),
   Planfile (SDLC task queues and ticket statuses), Deta (infrastructure
   topologies and services), IntentContract (Subactor DSL v1 contracts),
-  and OQL Telemetry (`oqlos.telemetry` hardware scenario & sensor logs).
+  OQL Telemetry (`oqlos.telemetry` hardware scenario & sensor logs), and
+  SUMD (Structured Unified Markdown tables & descriptor blocks).
 - The deterministic comparator supports `integer`, `string`, `string-set`,
   `float`, and `percentage` metrics, producing `MATCH`, `CONFLICT`, `MISSING_LEFT`,
   `MISSING_RIGHT` and `UNEVALUABLE` outcomes with typed deltas and SHA-256
   evidence chains.
+- Multi-query batch comparison engine (`src/data2dsl_batch.py`) aggregates
+  summary metrics (`clean_ratio`, `is_clean`, missing/conflict breakdowns) and
+  formats Markdown comparison reports.
+- Query template generator (`src/data2dsl_generator.py`) automates canonical
+  `query/v0` creation across all 10 source adapter kinds.
+- Full Subactor standard conformance is implemented (`src/data2dsl_subactor.py`)
+  with semantic delegation envelope validation (`COMM-*` error codes) and
+  closed-loop self-healing (`DETECT` $\to$ `PLAN` $\to$ `EXECUTE` $\to$ `VERIFY` $\to$ `HEAL`).
 - Dedicated autonomous agent feedback feeds are implemented:
   - `data2dsl_doctor.py` (`DiagnosticProfileFormatter`): Generates prioritized
     diagnostic profiles and symptom severity triage for `subactor/doctor-agent`.
@@ -204,20 +213,21 @@ repository require that repository's owner-approved workflow.
 - Pipeline integration includes `if-uri`/`urirun` connector manifest
   (`data2dsl://` routes) and Model Context Protocol (MCP) JSON-RPC 2.0 STDIO
   server endpoints.
-- Architecture decisions (ADR-001 through ADR-006) and capability maps document
+- Architecture decisions (ADR-001 through ADR-007) and capability maps document
   multi-source pipelines and ecosystem integration points.
 - The CLI provides `compare`, `compare-golden`, `validate`, `feed-consumer`,
-  `feed-doctor`, and `feed-koru` subcommands.
+  `feed-doctor`, `feed-koru`, `validate-envelope`, `simulate-healing`, `batch`,
+  and `generate-query` subcommands with `--format markdown|json` support.
 - The consumer fact feed is integrated with `semcod/todo2code` while preserving
   strict separation of factual acquisition from reasoning.
 - The comparison contract `autogrammar.data2dsl.comparison` v`0.1.0` is stable
   and validated against `wellmanifest/dsl` profiles.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
-  and exposes `data2dsl_compare`, `data2dsl_self_test`, and `data2dsl_feed_doctor`
-  for agent discovery.
-- Testing infrastructure includes `conftest.py`, 57 unit tests (100% passing),
+  and exposes `data2dsl_compare`, `data2dsl_self_test`, `data2dsl_feed_doctor`,
+  `data2dsl_validate_envelope`, and `data2dsl_simulate_healing` for agent discovery.
+- Testing infrastructure includes `conftest.py`, 84 unit tests (100% passing),
   and clean `ruff`/`mypy` baselines.
-- Runnable example suites are structured under [`examples/`](examples/README.md).
+- Eight runnable example suites are structured under [`examples/`](examples/README.md).
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic
   governance gate passes.
 

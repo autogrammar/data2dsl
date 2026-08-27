@@ -306,6 +306,12 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Flaga `--format` w CLI**: Dodanie opcji `markdown` / `json` do komend `compare` i `batch` w `src/data2dsl_cli.py`. — ticket-056
 - [x] **Zestaw testów jednostkowych i CLI**: Rozszerzenie `tests/test_batch_compare.py` (84/84 testów przechodzi). — ticket-056
 
+### Przykład wsadowy 08 i synchronizacja dokumentacji (workstream: `integration`, ticket-057)
+
+- [x] **Pakiet `examples/08-batch-multi-query/`**: Utworzenie gotowego pakietu demonstracyjnego z fixtures i instrukcją. — ticket-057
+- [x] **Aktualizacja `examples/README.md`**: Włączenie Przykładu 08 do indeksu przykładów. — ticket-057
+- [x] **Synchronizacja głównego `README.md`**: Uzupełnienie opisów 10 adapterów, subkomend CLI, generatora i Subactora. — ticket-057
+
 
 
 
