@@ -2,7 +2,7 @@
 
 - **ID**: ticket-057
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Created examples/08-batch-multi-query, updated examples/README.md and root README.md; 84/84 pytest tests passing and GOV-PASS.
