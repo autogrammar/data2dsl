@@ -1,0 +1,70 @@
+[
+  {
+    "schema": "autogrammar.data2dsl/observation/v0",
+    "observation_id": "observation:planfile:tickets",
+    "query_id": "query:batch:tickets_completed",
+    "side": "left",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "tickets_completed",
+      "version": "1.0.0",
+      "value_kind": "integer",
+      "unit": "tickets"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "state": "OBSERVED",
+    "value": {
+      "kind": "integer",
+      "value": "56"
+    },
+    "evidence": [
+      {
+        "evidence_id": "evidence:planfile:1",
+        "digest_sha256": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+        "source_uri": "file:///project/TICKETS.md",
+        "source_revision": "sha256:4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a"
+      }
+    ]
+  },
+  {
+    "schema": "autogrammar.data2dsl/observation/v0",
+    "observation_id": "observation:ci:coverage",
+    "query_id": "query:batch:test_coverage",
+    "side": "left",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "test_coverage",
+      "version": "1.0.0",
+      "value_kind": "percentage",
+      "unit": "percent"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "state": "OBSERVED",
+    "value": {
+      "kind": "percentage",
+      "value": "100.0%"
+    },
+    "evidence": [
+      {
+        "evidence_id": "evidence:ci:coverage:1",
+        "digest_sha256": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+        "source_uri": "file:///coverage.xml",
+        "source_revision": "sha256:ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d"
+      }
+    ]
+  }
+]

@@ -34,6 +34,13 @@
 - Implement Batch Multi-Query comparison engine and CLI subcommand (ticket-054).
 - Implement Query Template Generator and CLI subcommand (ticket-055).
 - Implement Markdown report formatting for CLI and batch operations (ticket-056).
+- Create Batch Example 08 and synchronize root documentation (ticket-057).
+
+### Batch example 08 & root documentation sync (ticket-057)
+
+- Create `examples/08-batch-multi-query/` runnable example suite for multi-query batch comparison and Markdown report generation.
+- Update `examples/README.md` index table with Example 08.
+- Synchronize root `README.md` reflecting 10 implemented source adapters, CLI subcommands, and Subactor integration.
 
 ### Markdown report formatting (ticket-056)
 

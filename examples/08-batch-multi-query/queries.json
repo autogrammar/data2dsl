@@ -1,0 +1,66 @@
+[
+  {
+    "schema": "autogrammar.data2dsl/query/v0",
+    "query_id": "query:batch:tickets_completed",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "tickets_completed",
+      "version": "1.0.0",
+      "value_kind": "integer",
+      "unit": "tickets"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "left_source": {
+      "id": "source:planfile",
+      "kind": "planfile"
+    },
+    "right_source": {
+      "id": "source:github",
+      "kind": "github"
+    },
+    "comparison": {
+      "equality": "exact",
+      "delta_direction": "right-minus-left",
+      "missing_is_zero": false
+    }
+  },
+  {
+    "schema": "autogrammar.data2dsl/query/v0",
+    "query_id": "query:batch:test_coverage",
+    "subject": {
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "antigravity"
+    },
+    "metric": {
+      "id": "test_coverage",
+      "version": "1.0.0",
+      "value_kind": "percentage",
+      "unit": "percent"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "left_source": {
+      "id": "source:ci",
+      "kind": "ci"
+    },
+    "right_source": {
+      "id": "source:audit",
+      "kind": "audit"
+    },
+    "comparison": {
+      "equality": "percentage-exact",
+      "delta_direction": "right-minus-left",
+      "missing_is_zero": false
+    }
+  }
+]

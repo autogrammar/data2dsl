@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-057",
+  "summary": "Batch Example 08 and Root Documentation Synchronization",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Create examples/08-batch-multi-query example suite with runnable fixtures and sync root README.md and examples/README.md.",
+    "nonGoals": [
+      "Modify core Python application source code.",
+      "Mutate external repository resources."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Create examples/08-batch-multi-query with queries.json, left-observations.json, right-observations.json, README.md; update examples/README.md; update root README.md with all new CLI subcommands and capabilities.",
+      "components": [
+        {
+          "name": "examples",
+          "paths": ["examples/**"]
+        },
+        {
+          "name": "documentation",
+          "paths": ["README.md", "docs/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert examples/08-batch-multi-query, examples/README.md, and root README.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest -v"],
+        "evidence": "All tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-057/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "README.md",
+    "examples/**",
+    "docs/**"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
