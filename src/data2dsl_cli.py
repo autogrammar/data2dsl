@@ -152,6 +152,27 @@ def build_parser() -> argparse.ArgumentParser:
         "--output", type=Path, default=None, help="Optional output JSON path."
     )
 
+    # generate-query
+    gen_parser = subparsers.add_parser(
+        "generate-query",
+        help="Generate a canonical autogrammar.data2dsl/query/v0 query template.",
+    )
+    gen_parser.add_argument(
+        "--source", required=True, help="Source adapter kind (e.g. sumd, oql, markdown, planfile, github)."
+    )
+    gen_parser.add_argument(
+        "--metric", required=True, help="Metric identifier."
+    )
+    gen_parser.add_argument(
+        "--value-kind", default="integer", help="Value kind (integer, float, percentage, string, string-set)."
+    )
+    gen_parser.add_argument(
+        "--equality", default="exact", help="Equality policy."
+    )
+    gen_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+
     return parser
 
 
@@ -368,6 +389,22 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             print(output_str)
         return 0 if report.summary.is_clean else 1
+
+    if args.command == "generate-query":
+        from data2dsl_generator import generate_query_template
+
+        query = generate_query_template(
+            source_kind=args.source,
+            metric_id=args.metric,
+            value_kind=args.value_kind,
+            equality=args.equality,
+        )
+        output_str = json.dumps(query, indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
+        return 0
 
     parser.print_help()
     return 1
