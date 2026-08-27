@@ -45,9 +45,12 @@ def base_query():
 
 def test_skill_tool_definitions():
     tools = Data2DslSkill.get_tool_definitions()
-    assert len(tools) == 2
+    assert len(tools) == 4
     tool_names = {t["name"] for t in tools}
     assert "data2dsl_compare" in tool_names
+    assert "data2dsl_self_test" in tool_names
+    assert "data2dsl_validate_envelope" in tool_names
+    assert "data2dsl_simulate_healing" in tool_names
     assert "data2dsl_self_test" in tool_names
 
 
@@ -368,6 +371,123 @@ def test_mcp_oql_compare(base_query):
     assert content["status"] == "OK"
     assert content["result"]["outcome"] == "CONFLICT"
     assert content["result"]["delta"] == {"kind": "float", "value": "7.5"}
+
+
+def test_skill_execute_compare_raw_sumd(base_query):
+    sumd_query = dict(base_query)
+    sumd_query["metric"] = {
+        "id": "tasks_completed",
+        "version": "1.0.0",
+        "value_kind": "integer",
+        "unit": "tasks",
+    }
+    sumd_markdown = "| metric | value |\n| tasks_completed | 10 |\n"
+    res = Data2DslSkill.execute_compare(
+        query=sumd_query,
+        left_raw={"markdown_content": sumd_markdown},
+        left_source_type="sumd",
+        right_raw={"markdown_content": sumd_markdown},
+        right_source_type="sumd",
+    )
+    assert res["status"] == "OK"
+    assert res["result"]["outcome"] == "MATCH"
+
+
+def test_mcp_validate_envelope():
+    envelope_text = (
+        "ROLE: supervisor\n"
+        "GOAL: Fix discrepancy\n"
+        "SCOPE: test scope\n"
+        "ACCEPTANCE: all match\n"
+        "AUTHORITY: observe, plan\n"
+        "LIMITS: no secrets\n"
+        "REPORT: ticket-052\n"
+    )
+    req = {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "tools/call",
+        "params": {
+            "name": "data2dsl_validate_envelope",
+            "arguments": {
+                "envelope": envelope_text,
+            },
+        },
+    }
+    resp = handle_mcp_message(req)
+    assert resp is not None
+    content = json.loads(resp["result"]["content"][0]["text"])
+    assert content["status"] == "OK"
+    assert content["envelope"]["valid"] is True
+    assert content["envelope"]["role"] == "supervisor"
+
+
+def test_mcp_simulate_healing(base_query):
+    left = {
+        "schema": "autogrammar.data2dsl/observation/v0",
+        "observation_id": "obs:1",
+        "side": "left",
+        "subject": base_query["subject"],
+        "metric": base_query["metric"],
+        "window": base_query["window"],
+        "state": "OBSERVED",
+        "value": {"kind": "integer", "value": "10"},
+        "evidence": [{"evidence_id": "ev:1", "digest_sha256": "1111", "source_uri": "uri:1", "source_revision": "sha256:1111"}],
+    }
+    right = {
+        "schema": "autogrammar.data2dsl/observation/v0",
+        "observation_id": "obs:2",
+        "side": "right",
+        "subject": base_query["subject"],
+        "metric": base_query["metric"],
+        "window": base_query["window"],
+        "state": "OBSERVED",
+        "value": {"kind": "integer", "value": "8"},
+        "evidence": [{"evidence_id": "ev:2", "digest_sha256": "2222", "source_uri": "uri:2", "source_revision": "sha256:2222"}],
+    }
+
+    req = {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "tools/call",
+        "params": {
+            "name": "data2dsl_simulate_healing",
+            "arguments": {
+                "query": base_query,
+                "left_observation": left,
+                "right_observation": right,
+            },
+        },
+    }
+    resp = handle_mcp_message(req)
+    assert resp is not None
+    content = json.loads(resp["result"]["content"][0]["text"])
+    assert content["status"] == "OK"
+    assert content["healing_result"]["status"] == "HEALED"
+    assert content["healing_result"]["closed_loop_verification"]["is_clean"] is True
+
+
+def test_urirun_bindings_subactor():
+    from data2dsl_skill import urirun_bindings
+
+    bindings = urirun_bindings()
+    assert "data2dsl://host/subactor/validate" in bindings["routes"]
+    assert "data2dsl://host/healing/simulate" in bindings["routes"]
+
+    # Test route validate
+    envelope_text = (
+        "ROLE: supervisor\n"
+        "GOAL: Fix discrepancy\n"
+        "SCOPE: test scope\n"
+        "ACCEPTANCE: all match\n"
+        "AUTHORITY: observe, plan\n"
+        "LIMITS: no secrets\n"
+        "REPORT: ticket-052\n"
+    )
+    val_res = bindings["handler"]("data2dsl://host/subactor/validate", {"envelope": envelope_text})
+    assert val_res["status"] == "OK"
+    assert val_res["envelope"]["valid"] is True
+
 
 
 

@@ -125,10 +125,12 @@ def test_skill_definitions_and_execution() -> None:
     from data2dsl_skill import Data2DslSkill
 
     tools = Data2DslSkill.get_tool_definitions()
-    assert len(tools) == 2
+    assert len(tools) == 4
     tool_names = [t["name"] for t in tools]
     assert "data2dsl_compare" in tool_names
     assert "data2dsl_self_test" in tool_names
+    assert "data2dsl_validate_envelope" in tool_names
+    assert "data2dsl_simulate_healing" in tool_names
 
     test_res = Data2DslSkill.self_test()
     assert test_res["status"] == "PASS"

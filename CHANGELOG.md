@@ -29,6 +29,14 @@
 - Author ADR-006 on OQL telemetry and Hardware-in-the-Loop normalization (ticket-049).
 - Synchronize full project documentation and structure runnable examples in `examples/` (ticket-050).
 - Implement Subactor delegation envelope validator and closed-loop self-healing E2E pipeline (ticket-051).
+- Implement MCP Subactor validation/healing tools and SUMD structured document adapter (ticket-052).
+
+### MCP Subactor tools & SUMD source adapter (ticket-052)
+
+- Implement `SUMDAdapter` and `SUMDMetricResponse` in `src/data2dsl_adapters.py` for parsing structured markdown tables and descriptor blocks into `Observation` records.
+- Extend `Data2DslSkill` in `src/data2dsl_skill.py` with MCP tools `data2dsl_validate_envelope` and `data2dsl_simulate_healing`.
+- Add `urirun` routes for Subactor validation and healing simulation (`data2dsl://host/subactor/validate`, `data2dsl://host/healing/simulate`).
+- Add comprehensive unit tests in `tests/test_sumd_adapter.py` and extend `tests/test_skill.py` (76/76 tests passing).
 
 ### Subactor delegation envelope & closed-loop self-healing (ticket-051)
 
