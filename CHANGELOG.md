@@ -30,6 +30,13 @@
 - Synchronize full project documentation and structure runnable examples in `examples/` (ticket-050).
 - Implement Subactor delegation envelope validator and closed-loop self-healing E2E pipeline (ticket-051).
 - Implement MCP Subactor validation/healing tools and SUMD structured document adapter (ticket-052).
+- Author ADR-007 on Subactor conformance, update capability map, and add SUMD example (ticket-053).
+
+### Subactor conformance architecture & SUMD example (ticket-053)
+
+- Author `docs/decisions/ADR-007-subactor-conformance-and-closed-loop-self-healing.md`.
+- Update `docs/CAPABILITY_MAP.md` reflecting 10 implemented source adapters, feed formatters, and MCP/urirun tools.
+- Add runnable example `examples/07-sumd-table-comparison/` and update `examples/README.md`.
 
 ### MCP Subactor tools & SUMD source adapter (ticket-052)
 

@@ -1,0 +1,9 @@
+{
+  "schema": "autogrammar.data2dsl/comparison/v0",
+  "result": {
+    "outcome": "MATCH",
+    "left_state": "OBSERVED",
+    "right_state": "OBSERVED",
+    "delta": null
+  }
+}
