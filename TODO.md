@@ -276,6 +276,12 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Testy jednostkowe i E2E**: Utworzenie zestawów testów `tests/test_subactor_envelope.py` oraz `tests/test_self_healing_e2e.py` (67/67 testów przechodzi). — ticket-051
 - [x] **Przykład `examples/06-closed-loop-self-healing/`**: Ustrukturyzowany pakiet demonstracyjny pętli samonaprawczej z fixtures i dokumentacją. — ticket-051
 
+### Narzędzia MCP Subactora i adapter SUMD (workstream: `application`, ticket-052)
+
+- [x] **Adapter `SUMDAdapter`**: Ekstrakcja i normalizacja faktów z tabel i deskryptorów Structured Unified Markdown Document (SUMD). — ticket-052
+- [x] **Narzędzia MCP Subactora**: Integracja `data2dsl_validate_envelope` i `data2dsl_simulate_healing` w `Data2DslSkill` oraz routing `urirun`. — ticket-052
+- [x] **Zestaw testów jednostkowych**: Utworzenie `tests/test_sumd_adapter.py` i rozszerzenie `tests/test_skill.py` (76/76 testów przechodzi). — ticket-052
+
 
 
 

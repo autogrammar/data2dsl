@@ -1,0 +1,79 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-052",
+  "summary": "MCP Subactor Tools and SUMD Source Adapter",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Expose Subactor envelope and healing tools over MCP and urirun, and implement SUMD source adapter with full test coverage.",
+    "nonGoals": [
+      "Break existing comparator or adapter contracts.",
+      "Mutate third-party repositories without a bound grant."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add SUMDAdapter to src/data2dsl_adapters.py, extend Data2DslSkill and MCP handlers in src/data2dsl_skill.py with data2dsl_validate_envelope and data2dsl_simulate_healing, and add tests in tests/test_sumd_adapter.py and tests/test_skill.py.",
+      "components": [
+        {
+          "name": "adapters-and-skill",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_adapters.py, src/data2dsl_skill.py, tests/test_sumd_adapter.py, and tests/test_skill.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_sumd_adapter.py tests/test_skill.py -v"],
+        "evidence": "SUMD adapter and MCP skill tool tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-052/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_adapters.py",
+    "src/data2dsl_skill.py",
+    "tests/test_cli.py",
+    "tests/test_sumd_adapter.py",
+    "tests/test_skill.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

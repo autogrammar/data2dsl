@@ -29,10 +29,13 @@ from data2dsl_adapters import (
     OqlTelemetryLogResponse,
     PlanfileAdapter,
     PlanfileMetricResponse,
+    SUMDAdapter,
+    SUMDMetricResponse,
     WorkSummaryMarkdownAdapter,
 )
 from data2dsl_comparator import DeterministicComparator
 from data2dsl_contract_v0.validate import self_test as contract_self_test
+from data2dsl_subactor import simulate_self_healing_cycle, validate_delegation_envelope
 
 
 def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any], side: str = "left") -> Dict[str, Any]:
@@ -78,55 +81,68 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         adapter = Code2SchemaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2SchemaMetricResponse):
-            entities = raw.get("entities") if raw.get("entities") is not None else raw.get("value", ())
             resp = Code2SchemaMetricResponse(
-                status="OK" if entities is not None else "ERROR",
-                entities=entities if isinstance(entities, (list, tuple)) else (entities,),
+                status="OK" if raw.get("value") is not None else "ERROR",
+                value=raw.get("value"),
             )
         return adapter.normalize(query, resp, side=side)
     elif st == "planfile":
-        adapter = PlanfileAdapter()
+        planfile_adapter = PlanfileAdapter()
         resp = raw.get("response")
         if not isinstance(resp, PlanfileMetricResponse):
-            count = raw.get("count") if raw.get("count") is not None else raw.get("value")
             resp = PlanfileMetricResponse(
-                status="OK" if (count is not None or raw.get("tickets")) else "ERROR",
-                count=int(count) if count is not None else None,
+                status=raw.get("status", "OK"),
+                count=raw.get("count") if raw.get("count") is not None else raw.get("value"),
                 tickets=raw.get("tickets", ()),
+                path=raw.get("path", "planfile.yaml"),
+                error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
+        return planfile_adapter.normalize(query, resp, side=side)
     elif st == "deta":
-        adapter = DetaAdapter()
+        deta_adapter = DetaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, DetaTopologyResponse):
-            sc = raw.get("service_count") if raw.get("service_count") is not None else raw.get("value")
+            service_cnt = raw.get("service_count") if raw.get("service_count") is not None else raw.get("value")
             resp = DetaTopologyResponse(
-                status="OK" if (sc is not None or raw.get("services") or raw.get("ports")) else "ERROR",
-                service_count=int(sc) if sc is not None else None,
+                status=raw.get("status", "OK"),
+                service_count=service_cnt,
                 services=raw.get("services", ()),
                 ports=raw.get("ports", ()),
+                manifest_path=raw.get("manifest_path", "compose.yml"),
+                error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
-    elif st in ("intent_contract", "intentcontract"):
-        adapter = IntentContractAdapter()
+        return deta_adapter.normalize(query, resp, side=side)
+    elif st in ("intent_contract", "subactor_intent_contract", "intentcontract"):
+        intent_adapter = IntentContractAdapter()
         resp = raw.get("response")
         if not isinstance(resp, IntentContractResponse):
             resp = IntentContractResponse(
-                status="OK" if (raw.get("deliverables") or raw.get("parties") or raw.get("obligations") or raw.get("contract_id")) else "ERROR",
-                contract_id=raw.get("contract_id", "intent-contract-001"),
+                status=raw.get("status", "OK"),
                 parties=raw.get("parties", ()),
                 deliverables=raw.get("deliverables", ()),
                 obligations=raw.get("obligations", ()),
+                error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
+        return intent_adapter.normalize(query, resp, side=side)
+    elif st == "sumd":
+        sumd_adapter = SUMDAdapter()
+        resp = raw.get("response")
+        if not isinstance(resp, SUMDMetricResponse):
+            md_text = raw.get("markdown_content", "") or raw.get("text", "")
+            metric_id = query.get("metric", {}).get("id", "metric")
+            resp = sumd_adapter.extract_table_metric(
+                markdown_text=md_text,
+                metric_id=metric_id,
+                path=raw.get("path", "document.sumd.md"),
+                source_uri=raw.get("source_uri"),
+                source_revision=raw.get("source_revision"),
+            )
+        return sumd_adapter.normalize(query, resp, side=side)
     elif st in ("oql", "oqlos", "oql_telemetry", "oql_spec"):
         oql_adapter = OqlTelemetryAdapter()
-        resp = raw.get("response")
-        if isinstance(resp, (OqlScenarioSpecResponse, OqlTelemetryLogResponse)):
-            return oql_adapter.normalize(query, resp, side=side)
-
         is_telemetry = (
-            raw.get("kind") == "telemetry"
+            st in ("oql_telemetry", "oqlos")
+            or raw.get("kind") == "telemetry"
             or "log_id" in raw
             or "avg_sample_rate_hz" in raw
             or "peak_temperature_celsius" in raw
@@ -167,7 +183,6 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         raise ValueError(f"Unknown source adapter kind: {source_type}")
 
 
-
 class Data2DslSkill:
     """Governed agent skill exposing data2dsl capabilities."""
 
@@ -183,7 +198,7 @@ class Data2DslSkill:
                 "name": "data2dsl_compare",
                 "description": (
                     "Compare two evidence-bearing observations (e.g. GitHub commit "
-                    "metrics, work summary claims, or browser extractions) against a "
+                    "metrics, work summary claims, SUMD tables, or browser extractions) against a "
                     "formal query deterministically."
                 ),
                 "parameters": {
@@ -207,7 +222,7 @@ class Data2DslSkill:
                         },
                         "left_source_type": {
                             "type": "string",
-                            "description": "Source adapter kind (e.g. github, markdown, curllm, code2logic, code2schema)."
+                            "description": "Source adapter kind (e.g. github, markdown, sumd, curllm, code2logic, code2schema, oql)."
                         },
                         "right_raw": {
                             "type": "object",
@@ -215,7 +230,7 @@ class Data2DslSkill:
                         },
                         "right_source_type": {
                             "type": "string",
-                            "description": "Source adapter kind (e.g. github, markdown, curllm, code2logic, code2schema)."
+                            "description": "Source adapter kind (e.g. github, markdown, sumd, curllm, code2logic, code2schema, oql)."
                         }
                     },
                     "required": ["query"]
@@ -227,6 +242,42 @@ class Data2DslSkill:
                 "parameters": {
                     "type": "object",
                     "properties": {}
+                }
+            },
+            {
+                "name": "data2dsl_validate_envelope",
+                "description": "Validate a Subactor delegation envelope payload in text or dictionary format.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "envelope": {
+                            "type": ["string", "object"],
+                            "description": "Subactor delegation envelope string or dictionary."
+                        }
+                    },
+                    "required": ["envelope"]
+                }
+            },
+            {
+                "name": "data2dsl_simulate_healing",
+                "description": "Simulate a closed-loop DETECT -> PLAN -> EXECUTE -> VERIFY -> HEAL self-healing cycle.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "object",
+                            "description": "Canonical query dictionary."
+                        },
+                        "left_observation": {
+                            "type": "object",
+                            "description": "Baseline/expected left observation dictionary."
+                        },
+                        "right_observation": {
+                            "type": "object",
+                            "description": "Observed right observation dictionary with discrepancies."
+                        }
+                    },
+                    "required": ["query", "left_observation", "right_observation"]
                 }
             }
         ]
@@ -262,7 +313,6 @@ class Data2DslSkill:
     ) -> Dict[str, Any]:
         """Execute deterministic comparison with either pre-normalized or raw adapter inputs."""
         try:
-            # Resolve left observation
             if left_observation is None:
                 if left_raw is not None and left_source_type is not None:
                     left_observation = _normalize_raw(left_source_type, left_raw, query, side="left")
@@ -273,7 +323,6 @@ class Data2DslSkill:
                         "message": "Either left_observation or (left_raw and left_source_type) must be provided."
                     }
 
-            # Resolve right observation
             if right_observation is None:
                 if right_raw is not None and right_source_type is not None:
                     right_observation = _normalize_raw(right_source_type, right_raw, query, side="right")
@@ -298,6 +347,43 @@ class Data2DslSkill:
                 "message": str(exc)
             }
 
+    @classmethod
+    def execute_validate_envelope(cls, envelope: Any) -> Dict[str, Any]:
+        """Validate a Subactor delegation envelope."""
+        try:
+            env = validate_delegation_envelope(envelope)
+            return {
+                "status": "OK" if env.valid else "INVALID",
+                "envelope": env.to_dict(),
+            }
+        except Exception as exc:
+            return {
+                "status": "ERROR",
+                "error_code": "ENVELOPE_VALIDATION_EXCEPTION",
+                "message": str(exc),
+            }
+
+    @classmethod
+    def execute_simulate_healing(
+        cls,
+        query: Dict[str, Any],
+        left_observation: Dict[str, Any],
+        right_observation: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Run simulated self-healing cycle."""
+        try:
+            res = simulate_self_healing_cycle(query, left_observation, right_observation)
+            return {
+                "status": "OK",
+                "healing_result": res,
+            }
+        except Exception as exc:
+            return {
+                "status": "ERROR",
+                "error_code": "HEALING_SIMULATION_EXCEPTION",
+                "message": str(exc),
+            }
+
 
 def urirun_bindings() -> Dict[str, Any]:
     """Return urirun bindings descriptor and router for data2dsl:// URI schemes."""
@@ -307,16 +393,26 @@ def urirun_bindings() -> Dict[str, Any]:
     def _route_selftest(payload: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         return Data2DslSkill.self_test()
 
+    def _route_validate_envelope(payload: Dict[str, Any]) -> Dict[str, Any]:
+        return Data2DslSkill.execute_validate_envelope(**payload)
+
+    def _route_simulate_healing(payload: Dict[str, Any]) -> Dict[str, Any]:
+        return Data2DslSkill.execute_simulate_healing(**payload)
+
     return {
         "scheme": "data2dsl",
         "version": Data2DslSkill.VERSION,
         "routes": {
             "data2dsl://host/compare/run": _route_compare,
             "data2dsl://host/selftest/run": _route_selftest,
+            "data2dsl://host/subactor/validate": _route_validate_envelope,
+            "data2dsl://host/healing/simulate": _route_simulate_healing,
         },
         "handler": lambda route, payload: {
             "data2dsl://host/compare/run": _route_compare,
             "data2dsl://host/selftest/run": _route_selftest,
+            "data2dsl://host/subactor/validate": _route_validate_envelope,
+            "data2dsl://host/healing/simulate": _route_simulate_healing,
         }.get(route, lambda p: {"status": "ERROR", "message": f"Unknown route: {route}"})(payload)
     }
 
@@ -366,6 +462,20 @@ def handle_mcp_message(msg: Dict[str, Any]) -> Optional[Dict[str, Any]]:
                 "id": msg_id,
                 "result": {"content": [{"type": "text", "text": json.dumps(res)}]},
             }
+        elif tool_name == "data2dsl_validate_envelope":
+            res = Data2DslSkill.execute_validate_envelope(**arguments)
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {"content": [{"type": "text", "text": json.dumps(res)}]},
+            }
+        elif tool_name == "data2dsl_simulate_healing":
+            res = Data2DslSkill.execute_simulate_healing(**arguments)
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {"content": [{"type": "text", "text": json.dumps(res)}]},
+            }
         else:
             return {
                 "jsonrpc": "2.0",
@@ -402,4 +512,3 @@ def main_mcp() -> None:
             }
             sys.stdout.write(json.dumps(err_resp) + "\n")
             sys.stdout.flush()
-

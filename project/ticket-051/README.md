@@ -2,7 +2,7 @@
 
 - **ID**: ticket-051
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Implemented Subactor delegation envelope validator and closed-loop self-healing simulation with CLI subcommands and example suite; 67/67 pytest tests passing and GOV-PASS.
