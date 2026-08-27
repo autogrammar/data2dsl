@@ -4,7 +4,7 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Sequence
+from typing import Any, Sequence
 
 from data2dsl_adapters import (
     DiagitCommitMetricResponse,
@@ -131,6 +131,24 @@ def build_parser() -> argparse.ArgumentParser:
         "--right", required=True, type=Path, help="Path to right observation JSON."
     )
     heal_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+
+    # batch
+    batch_parser = subparsers.add_parser(
+        "batch",
+        help="Compare a batch of queries against observation collections deterministically.",
+    )
+    batch_parser.add_argument(
+        "--queries", required=True, type=Path, help="Path to queries JSON."
+    )
+    batch_parser.add_argument(
+        "--left", required=True, type=Path, help="Path to left observations JSON."
+    )
+    batch_parser.add_argument(
+        "--right", required=True, type=Path, help="Path to right observations JSON."
+    )
+    batch_parser.add_argument(
         "--output", type=Path, default=None, help="Optional output JSON path."
     )
 
@@ -311,6 +329,45 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             print(output_str)
         return 0 if result.get("status") == "HEALED" else 1
+
+    if args.command == "batch":
+        from data2dsl_batch import BatchMultiQueryComparator
+
+        queries_data = json.loads(args.queries.read_text(encoding="utf-8"))
+        batch_queries: list[Any]
+        if isinstance(queries_data, dict) and "queries" in queries_data:
+            batch_queries = list(queries_data["queries"])
+        elif isinstance(queries_data, list):
+            batch_queries = list(queries_data)
+        else:
+            batch_queries = [queries_data]
+
+        batch_left_obs: list[Any]
+        left_data = json.loads(args.left.read_text(encoding="utf-8"))
+        if isinstance(left_data, dict) and "observations" in left_data:
+            batch_left_obs = list(left_data["observations"])
+        elif isinstance(left_data, list):
+            batch_left_obs = list(left_data)
+        else:
+            batch_left_obs = [left_data]
+
+        batch_right_obs: list[Any]
+        right_data = json.loads(args.right.read_text(encoding="utf-8"))
+        if isinstance(right_data, dict) and "observations" in right_data:
+            batch_right_obs = list(right_data["observations"])
+        elif isinstance(right_data, list):
+            batch_right_obs = list(right_data)
+        else:
+            batch_right_obs = [right_data]
+
+        batch_cmp = BatchMultiQueryComparator()
+        report = batch_cmp.compare_batch(batch_queries, batch_left_obs, batch_right_obs)
+        output_str = json.dumps(report.to_dict(), indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
+        return 0 if report.summary.is_clean else 1
 
     parser.print_help()
     return 1
