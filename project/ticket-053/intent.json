@@ -1,0 +1,78 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-053",
+  "summary": "ADR-007 Subactor Conformance, Capability Map Update, and SUMD Example",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Record ADR-007, update CAPABILITY_MAP with 10 source adapters and Subactor tooling, and add runnable example 07.",
+    "nonGoals": [
+      "Modify core application comparator without tests.",
+      "Mutate external repository resources."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Author docs/decisions/ADR-007-subactor-conformance-and-closed-loop-self-healing.md, update docs/CAPABILITY_MAP.md, and create examples/07-sumd-table-comparison/ with runnable fixtures.",
+      "components": [
+        {
+          "name": "documentation",
+          "paths": ["docs/**"]
+        },
+        {
+          "name": "examples",
+          "paths": ["examples/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert docs/decisions/ADR-007-*, docs/CAPABILITY_MAP.md, and examples/07-*."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_sumd_adapter.py -v"],
+        "evidence": "SUMD tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-053/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "docs/decisions/ADR-007-subactor-conformance-and-closed-loop-self-healing.md",
+    "docs/CAPABILITY_MAP.md",
+    "examples/README.md",
+    "examples/07-sumd-table-comparison/**"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

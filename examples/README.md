@@ -12,6 +12,7 @@ This directory provides simple, runnable examples demonstrating the multi-source
 | **04** | [`04-koru-remediation-feed`](04-koru-remediation-feed/) | Comparison Bundle $\to$ Koru Feed | Generating machine-actionable `remediation-intent/v1` payloads for closed-loop self-healing. |
 | **05** | [`05-mcp-tool-dispatch`](05-mcp-tool-dispatch/) | JSON-RPC 2.0 / MCP | Invoking `data2dsl_compare` over Model Context Protocol (MCP). |
 | **06** | [`06-closed-loop-self-healing`](06-closed-loop-self-healing/) | Subactor Envelope & Closed Loop | Complete 5-stage closed loop (`DETECT` -> `PLAN` -> `EXECUTE` -> `VERIFY` -> `HEAL`) with envelope validation. |
+| **07** | [`07-sumd-table-comparison`](07-sumd-table-comparison/) | SUMD Tables vs Telemetry | Factual extraction from Structured Unified Markdown Document tables and deterministic comparison. |
 
 ## Running Examples with CLI
 

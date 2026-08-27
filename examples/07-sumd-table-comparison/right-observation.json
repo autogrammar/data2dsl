@@ -1,0 +1,46 @@
+{
+  "schema": "autogrammar.data2dsl/observation/v0",
+  "observation_id": "observation:telemetry:tasks-42",
+  "query_id": "query:example-07:sumd-tasks",
+  "side": "right",
+  "subject": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "antigravity"
+  },
+  "metric": {
+    "id": "tasks_completed",
+    "version": "1.0.0",
+    "value_kind": "integer",
+    "unit": "tasks"
+  },
+  "window": {
+    "start": "2026-08-01T00:00:00Z",
+    "end": "2026-08-27T00:00:00Z",
+    "semantics": "half-open-utc"
+  },
+  "state": "OBSERVED",
+  "value": {
+    "kind": "integer",
+    "value": "42"
+  },
+  "evidence": [
+    {
+      "evidence_id": "evidence:telemetry:tasks-42:f892a012",
+      "target_uri": "https://github.com/autogrammar/data2dsl",
+      "source_uri": "https://github.com/autogrammar/data2dsl/telemetry/log.json",
+      "source_revision": "sha256:f892a0129c5e317424b9101ad47a8efc9213bc54191c94bbadca4e819b183664",
+      "media_type": "application/json",
+      "digest_sha256": "f892a0129c5e317424b9101ad47a8efc9213bc54191c94bbadca4e819b183664",
+      "extractor": {
+        "id": "system.telemetry",
+        "version": "0.1.0"
+      },
+      "location": {
+        "kind": "log-entry",
+        "path": "telemetry/log.json",
+        "start_line": 1,
+        "end_line": 1
+      }
+    }
+  ]
+}

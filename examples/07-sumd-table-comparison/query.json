@@ -1,0 +1,32 @@
+{
+  "schema": "autogrammar.data2dsl/query/v0",
+  "query_id": "query:example-07:sumd-tasks",
+  "subject": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "antigravity"
+  },
+  "metric": {
+    "id": "tasks_completed",
+    "version": "1.0.0",
+    "value_kind": "integer",
+    "unit": "tasks"
+  },
+  "window": {
+    "start": "2026-08-01T00:00:00Z",
+    "end": "2026-08-27T00:00:00Z",
+    "semantics": "half-open-utc"
+  },
+  "left_source": {
+    "id": "source:sumd:report",
+    "kind": "sumd"
+  },
+  "right_source": {
+    "id": "source:system:telemetry",
+    "kind": "telemetry"
+  },
+  "comparison": {
+    "equality": "exact",
+    "delta_direction": "right-minus-left",
+    "missing_is_zero": false
+  }
+}

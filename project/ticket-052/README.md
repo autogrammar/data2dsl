@@ -2,7 +2,7 @@
 
 - **ID**: ticket-052
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Implemented SUMD source adapter, extended Data2DslSkill and MCP dispatch with Subactor validation and healing tools; 76/76 pytest tests passing and GOV-PASS.

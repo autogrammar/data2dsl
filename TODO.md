@@ -282,6 +282,12 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Narzędzia MCP Subactora**: Integracja `data2dsl_validate_envelope` i `data2dsl_simulate_healing` w `Data2DslSkill` oraz routing `urirun`. — ticket-052
 - [x] **Zestaw testów jednostkowych**: Utworzenie `tests/test_sumd_adapter.py` i rozszerzenie `tests/test_skill.py` (76/76 testów przechodzi). — ticket-052
 
+### ADR-007, mapa możliwości i przykład SUMD (workstream: `integration`, ticket-053)
+
+- [x] **Dokument decyzji ADR-007**: Utworzenie `docs/decisions/ADR-007-subactor-conformance-and-closed-loop-self-healing.md`. — ticket-053
+- [x] **Aktualizacja `CAPABILITY_MAP.md`**: Rozszerzenie inwentarza o 10 adapterów i narzędzia Subactora. — ticket-053
+- [x] **Przykład `examples/07-sumd-table-comparison/`**: Utworzenie pakietu demonstracyjnego ekstrakcji z tabel SUMD. — ticket-053
+
 
 
 
