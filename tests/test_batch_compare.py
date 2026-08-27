@@ -201,3 +201,42 @@ def test_batch_cli(tmp_path: Path):
     report_data = json.loads(output_file.read_text(encoding="utf-8"))
     assert report_data["summary"]["is_clean"] is True
     assert report_data["summary"]["matches"] == 1
+
+
+def test_batch_cli_markdown(tmp_path: Path):
+    queries_file = tmp_path / "queries.json"
+    left_file = tmp_path / "left.json"
+    right_file = tmp_path / "right.json"
+    output_file = tmp_path / "report.md"
+
+    queries_file.write_text(json.dumps([QUERY_1]), encoding="utf-8")
+    obs = {
+        "schema": "autogrammar.data2dsl/observation/v0",
+        "observation_id": "obs:1",
+        "query_id": "query:batch:tasks",
+        "side": "left",
+        "subject": QUERY_1["subject"],
+        "metric": QUERY_1["metric"],
+        "window": QUERY_1["window"],
+        "state": "OBSERVED",
+        "value": {"kind": "integer", "value": "10"},
+        "evidence": [{"evidence_id": "ev:1", "digest_sha256": "1111", "source_uri": "uri:1", "source_revision": "sha256:1111"}],
+    }
+    left_file.write_text(json.dumps([obs]), encoding="utf-8")
+    right_file.write_text(json.dumps([obs]), encoding="utf-8")
+
+    exit_code = cli_main([
+        "batch",
+        "--queries", str(queries_file),
+        "--left", str(left_file),
+        "--right", str(right_file),
+        "--format", "markdown",
+        "--output", str(output_file),
+    ])
+
+    assert exit_code == 0
+    assert output_file.exists()
+    content = output_file.read_text(encoding="utf-8")
+    assert "# data2dsl Comparison Report" in content
+    assert "CLEAN (All Match)" in content
+    assert "`query:batch:tasks`" in content

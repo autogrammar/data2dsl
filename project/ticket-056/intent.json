@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-056",
+  "summary": "Markdown Report Formatting for CLI and Batch",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Implement format_markdown_report in src/data2dsl_batch.py, add --format flag to CLI compare and batch commands in src/data2dsl_cli.py, and add comprehensive unit tests.",
+    "nonGoals": [
+      "Break existing JSON output default format.",
+      "Mutate external repository resources."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Implement format_markdown_report in src/data2dsl_batch.py for single and batch comparison bundles, add --format flag (choices: json, markdown) to CLI in src/data2dsl_cli.py, and add unit tests in tests/test_batch_compare.py.",
+      "components": [
+        {
+          "name": "batch-markdown-formatter",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_batch.py formatting additions, src/data2dsl_cli.py --format additions, and tests/test_batch_compare.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_batch_compare.py -v"],
+        "evidence": "Markdown report tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-056/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_batch.py",
+    "src/data2dsl_cli.py",
+    "tests/test_batch_compare.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

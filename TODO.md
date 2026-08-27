@@ -300,6 +300,12 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Subkomenda CLI `generate-query`**: Dodanie polecenia `data2dsl generate-query` do `src/data2dsl_cli.py`. — ticket-055
 - [x] **Zestaw testów jednostkowych i CLI**: Utworzenie `tests/test_generator.py` (83/83 testów przechodzi). — ticket-055
 
+### Formatowanie raportów Markdown (workstream: `application`, ticket-056)
+
+- [x] **Funkcja `format_markdown_report`**: Implementacja w `src/data2dsl_batch.py` dla wsadowych i pojedynczych raportów. — ticket-056
+- [x] **Flaga `--format` w CLI**: Dodanie opcji `markdown` / `json` do komend `compare` i `batch` w `src/data2dsl_cli.py`. — ticket-056
+- [x] **Zestaw testów jednostkowych i CLI**: Rozszerzenie `tests/test_batch_compare.py` (84/84 testów przechodzi). — ticket-056
+
 
 
 

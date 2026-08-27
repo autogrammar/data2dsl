@@ -196,3 +196,94 @@ class BatchMultiQueryComparator:
             bundles=bundles,
             digest_sha256=digest,
         )
+
+
+def format_markdown_report(report_or_bundle: Any) -> str:
+    """Format a batch report or single comparison bundle as a structured Markdown document."""
+    if hasattr(report_or_bundle, "to_dict"):
+        doc = report_or_bundle.to_dict()
+    elif isinstance(report_or_bundle, dict):
+        doc = report_or_bundle
+    else:
+        raise ValueError("Unsupported document format for markdown report")
+
+    lines: list[str] = []
+    lines.append("# data2dsl Comparison Report\n")
+
+    # Check if batch report or single bundle
+    if "summary" in doc and "bundles" in doc:
+        summary = doc["summary"]
+        status_str = "CLEAN (All Match)" if summary.get("is_clean") else "CONFLICTS/DISCREPANCIES DETECTED"
+        lines.append("## Summary\n")
+        lines.append(f"- **Batch ID**: `{doc.get('batch_id', 'unknown')}`")
+        lines.append(f"- **Status**: `{status_str}`")
+        lines.append(f"- **Total Queries**: {summary.get('total_queries', 0)}")
+        lines.append(f"- **Matches**: {summary.get('matches', 0)}")
+        lines.append(f"- **Conflicts**: {summary.get('conflicts', 0)}")
+        lines.append(f"- **Missing Left / Right**: {summary.get('missing_left', 0)} / {summary.get('missing_right', 0)}")
+        lines.append(f"- **Clean Ratio**: {summary.get('clean_ratio', 0.0):.2%}\n")
+
+        lines.append("## Query Details\n")
+        lines.append("| Query ID | Metric | Left Value | Right Value | Outcome | Delta |")
+        lines.append("|---|---|---|---|---|---|")
+
+        for b in doc.get("bundles", []):
+            q = b.get("query", {})
+            res = b.get("result", {})
+            obs = b.get("observations", {})
+            qid = q.get("query_id", "")
+            mid = q.get("metric", {}).get("id", "")
+            outcome = res.get("outcome", "")
+
+            l_obs: dict[str, Any] = {}
+            r_obs: dict[str, Any] = {}
+            if isinstance(obs, list):
+                for o in obs:
+                    if isinstance(o, dict):
+                        if o.get("side") == "left":
+                            l_obs = o
+                        elif o.get("side") == "right":
+                            r_obs = o
+            elif isinstance(obs, dict):
+                l_obs = obs.get("left", {})
+                r_obs = obs.get("right", {})
+
+            l_val = l_obs.get("value", {}).get("value") if l_obs.get("value") else (str(l_obs.get("value", {}).get("items")) if l_obs.get("value", {}).get("items") is not None else "MISSING")
+            r_val = r_obs.get("value", {}).get("value") if r_obs.get("value") else (str(r_obs.get("value", {}).get("items")) if r_obs.get("value", {}).get("items") is not None else "MISSING")
+            delta_val = res.get("delta", {}).get("value") if res.get("delta") else "-"
+
+            lines.append(f"| `{qid}` | `{mid}` | `{l_val}` | `{r_val}` | **{outcome}** | `{delta_val}` |")
+
+    elif "query" in doc and "result" in doc:
+        q = doc["query"]
+        res = doc["result"]
+        obs = doc.get("observations", {})
+        qid = q.get("query_id", "")
+        mid = q.get("metric", {}).get("id", "")
+        outcome = res.get("outcome", "")
+        l_obs = {}
+        r_obs = {}
+        if isinstance(obs, list):
+            for o in obs:
+                if isinstance(o, dict):
+                    if o.get("side") == "left":
+                        l_obs = o
+                    elif o.get("side") == "right":
+                        r_obs = o
+        elif isinstance(obs, dict):
+            l_obs = obs.get("left", {})
+            r_obs = obs.get("right", {})
+
+        l_val = l_obs.get("value", {}).get("value") if l_obs.get("value") else "MISSING"
+        r_val = r_obs.get("value", {}).get("value") if r_obs.get("value") else "MISSING"
+        delta_val = res.get("delta", {}).get("value") if res.get("delta") else "-"
+
+        lines.append("## Single Comparison Result\n")
+        lines.append(f"- **Query ID**: `{qid}`")
+        lines.append(f"- **Metric**: `{mid}`")
+        lines.append(f"- **Outcome**: **{outcome}**")
+        lines.append(f"- **Left Value**: `{l_val}`")
+        lines.append(f"- **Right Value**: `{r_val}`")
+        lines.append(f"- **Delta**: `{delta_val}`")
+
+    return "\n".join(lines) + "\n"
