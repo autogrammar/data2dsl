@@ -2,9 +2,10 @@
 
 - **ID**: ticket-050
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: VALIDATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-26
+- **Closed**: 2026-08-27
 - **Receipt**: Synchronized project documentation and created examples/01-.. to examples/05-..; 57/57 tests passing and GOV-PASS.
 
 ## Goal and scope

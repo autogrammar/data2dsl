@@ -1,0 +1,32 @@
+{
+  "schema": "autogrammar.data2dsl/query/v0",
+  "query_id": "query:examples:06_self_healing",
+  "subject": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "github:alice"
+  },
+  "metric": {
+    "id": "git.commit.count",
+    "version": "v1",
+    "value_kind": "integer",
+    "unit": "count"
+  },
+  "window": {
+    "start": "2026-08-01T00:00:00Z",
+    "end": "2026-08-15T00:00:00Z",
+    "semantics": "half-open-utc"
+  },
+  "left_source": {
+    "id": "source:work-summary",
+    "kind": "markdown"
+  },
+  "right_source": {
+    "id": "source:diagit:github",
+    "kind": "github"
+  },
+  "comparison": {
+    "equality": "integer-exact",
+    "delta_direction": "right-minus-left",
+    "missing_is_zero": false
+  }
+}

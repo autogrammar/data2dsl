@@ -11,6 +11,7 @@ This directory provides simple, runnable examples demonstrating the multi-source
 | **03** | [`03-doctor-diagnostic-feed`](03-doctor-diagnostic-feed/) | Comparison Bundle $\to$ Doctor Agent | Transforming discrepancies into a prioritized `diagnostic-profile/v1` for triage agents. |
 | **04** | [`04-koru-remediation-feed`](04-koru-remediation-feed/) | Comparison Bundle $\to$ Koru Feed | Generating machine-actionable `remediation-intent/v1` payloads for closed-loop self-healing. |
 | **05** | [`05-mcp-tool-dispatch`](05-mcp-tool-dispatch/) | JSON-RPC 2.0 / MCP | Invoking `data2dsl_compare` over Model Context Protocol (MCP). |
+| **06** | [`06-closed-loop-self-healing`](06-closed-loop-self-healing/) | Subactor Envelope & Closed Loop | Complete 5-stage closed loop (`DETECT` -> `PLAN` -> `EXECUTE` -> `VERIFY` -> `HEAL`) with envelope validation. |
 
 ## Running Examples with CLI
 

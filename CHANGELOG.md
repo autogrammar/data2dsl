@@ -28,6 +28,15 @@
 - Integrate OQL Telemetry into Data2DslSkill and MCP dispatch (ticket-048).
 - Author ADR-006 on OQL telemetry and Hardware-in-the-Loop normalization (ticket-049).
 - Synchronize full project documentation and structure runnable examples in `examples/` (ticket-050).
+- Implement Subactor delegation envelope validator and closed-loop self-healing E2E pipeline (ticket-051).
+
+### Subactor delegation envelope & closed-loop self-healing (ticket-051)
+
+- Implement `SubactorDelegationEnvelope`, text parser, and field validation (`ROLE`, `GOAL`, `SCOPE`, `ACCEPTANCE`, `AUTHORITY`, `LIMITS`, `REPORT`) in `src/data2dsl_subactor.py` conforming to `wellmanifest/how-to-use-subactor`.
+- Implement `simulate_self_healing_cycle` executing 5-stage closed loop `DETECT` -> `PLAN` -> `EXECUTE` -> `VERIFY` -> `HEAL`.
+- Add CLI subcommands `validate-envelope` and `simulate-healing` in `src/data2dsl_cli.py`.
+- Add unit and E2E test suites in `tests/test_subactor_envelope.py` and `tests/test_self_healing_e2e.py` (67/67 tests passing).
+- Add example suite `examples/06-closed-loop-self-healing/` with README and JSON fixtures.
 
 ### OQL telemetry source adapter & HIL normalization (tickets 046–049)
 

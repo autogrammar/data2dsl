@@ -1,0 +1,33 @@
+{
+  "schema": "autogrammar.data2dsl/observation/v0",
+  "observation_id": "obs:github:alice",
+  "side": "right",
+  "subject": {
+    "repository": "https://github.com/autogrammar/data2dsl",
+    "actor": "github:alice"
+  },
+  "metric": {
+    "id": "git.commit.count",
+    "version": "v1",
+    "value_kind": "integer",
+    "unit": "count"
+  },
+  "window": {
+    "start": "2026-08-01T00:00:00Z",
+    "end": "2026-08-15T00:00:00Z",
+    "semantics": "half-open-utc"
+  },
+  "state": "OBSERVED",
+  "value": {
+    "kind": "integer",
+    "value": "40"
+  },
+  "evidence": [
+    {
+      "evidence_id": "evidence:github:1",
+      "digest_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "source_uri": "https://api.github.com/repos/autogrammar/data2dsl",
+      "source_revision": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    }
+  ]
+}
