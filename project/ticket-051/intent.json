@@ -1,0 +1,79 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-051",
+  "summary": "Subactor Delegation Envelope Conformance and Closed-Loop Self-Healing E2E",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Implement Subactor delegation envelope validator and closed-loop self-healing verification module with CLI commands and full test coverage.",
+    "nonGoals": [
+      "Break existing comparator or consumer feed contracts.",
+      "Mutate third-party repositories without a bound grant."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Implement src/data2dsl_subactor.py with SubactorDelegationEnvelope and validate_delegation_envelope, extend CLI commands in src/data2dsl_cli.py, add tests in tests/test_subactor_envelope.py and tests/test_self_healing_e2e.py, and create examples/06-closed-loop-self-healing/.",
+      "components": [
+        {
+          "name": "subactor-conformance",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-and-examples",
+          "paths": ["tests/**", "examples/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_subactor.py, src/data2dsl_cli.py, tests/test_subactor_envelope.py, tests/test_self_healing_e2e.py, and examples/06-closed-loop-self-healing/."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_subactor_envelope.py tests/test_self_healing_e2e.py -v"],
+        "evidence": "Subactor envelope validation and self-healing E2E tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-051/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_subactor.py",
+    "src/data2dsl_cli.py",
+    "tests/test_subactor_envelope.py",
+    "tests/test_self_healing_e2e.py",
+    "examples/06-closed-loop-self-healing/**"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

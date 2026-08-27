@@ -264,6 +264,19 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **ADR-006: OQL Telemetry and HIL Normalization**: Utworzenie dokumentu ADR-006 dla adaptera OQL i weryfikacji sprzętowej. — ticket-049
 - [x] **Dokumentacja i struktura przykładów**: Aktualizacja dokumentacji projektu i utworzenie katalogu `examples/01-..` do `examples/05-..`. — ticket-050
 
+---
+
+## Zadania na dziś — 2026-08-27
+
+### Zgodność z Subactorem i pętla samonaprawcza (workstream: `application`, ticket-051)
+
+- [x] **Moduł `data2dsl_subactor.py`**: Implementacja parsera i walidatora semantycznego envelope Subactora (`ROLE`, `GOAL`, `SCOPE`, `ACCEPTANCE`, `AUTHORITY`, `LIMITS`, `REPORT`) ze standardowymi kodami błędów `COMM-ENVELOPE-001`, `COMM-ROLE-001`, `COMM-AUTH-001`. — ticket-051
+- [x] **Zamknięta pętla samonaprawcza E2E**: Implementacja `simulate_self_healing_cycle` realizującej pętlę `DETECT` -> `PLAN` -> `EXECUTE` -> `VERIFY` -> `HEAL`. — ticket-051
+- [x] **Rozszerzenie CLI `data2dsl`**: Dodanie subkomend `validate-envelope` i `simulate-healing`. — ticket-051
+- [x] **Testy jednostkowe i E2E**: Utworzenie zestawów testów `tests/test_subactor_envelope.py` oraz `tests/test_self_healing_e2e.py` (67/67 testów przechodzi). — ticket-051
+- [x] **Przykład `examples/06-closed-loop-self-healing/`**: Ustrukturyzowany pakiet demonstracyjny pętli samonaprawczej z fixtures i dokumentacją. — ticket-051
+
+
 
 
 

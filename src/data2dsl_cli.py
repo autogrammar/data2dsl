@@ -106,6 +106,34 @@ def build_parser() -> argparse.ArgumentParser:
         "--ticket", type=str, default=None, help="Optional ticket identifier."
     )
 
+    # validate-envelope
+    env_parser = subparsers.add_parser(
+        "validate-envelope", help="Validate a Subactor delegation envelope file (text or JSON)."
+    )
+    env_parser.add_argument(
+        "--envelope", required=True, type=Path, help="Path to delegation envelope file."
+    )
+    env_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+
+    # simulate-healing
+    heal_parser = subparsers.add_parser(
+        "simulate-healing", help="Simulate a DETECT->PLAN->EXECUTE->VERIFY->HEAL closed loop."
+    )
+    heal_parser.add_argument(
+        "--query", required=True, type=Path, help="Path to query JSON."
+    )
+    heal_parser.add_argument(
+        "--left", required=True, type=Path, help="Path to left observation JSON."
+    )
+    heal_parser.add_argument(
+        "--right", required=True, type=Path, help="Path to right observation JSON."
+    )
+    heal_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
+    )
+
     return parser
 
 
@@ -255,6 +283,34 @@ def main(argv: Sequence[str] | None = None) -> int:
         else:
             print(output_str)
         return 0
+
+    if args.command == "validate-envelope":
+        from data2dsl_subactor import validate_delegation_envelope
+
+        content = args.envelope.read_text(encoding="utf-8")
+        envelope = validate_delegation_envelope(content)
+        result = envelope.to_dict()
+        output_str = json.dumps(result, indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
+        return 0 if envelope.valid else 2
+
+    if args.command == "simulate-healing":
+        from data2dsl_subactor import simulate_self_healing_cycle
+
+        query_doc = json.loads(args.query.read_text(encoding="utf-8"))
+        left_doc = json.loads(args.left.read_text(encoding="utf-8"))
+        right_doc = json.loads(args.right.read_text(encoding="utf-8"))
+
+        result = simulate_self_healing_cycle(query_doc, left_doc, right_doc)
+        output_str = json.dumps(result, indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
+        return 0 if result.get("status") == "HEALED" else 1
 
     parser.print_help()
     return 1

@@ -2,9 +2,10 @@
 
 - **ID**: ticket-049
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: VALIDATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-26
+- **Closed**: 2026-08-27
 - **Receipt**: Authored ADR-006 for OQL telemetry and HIL normalization; 57/57 pytest tests passing and GOV-PASS.
 
 ## Goal and scope

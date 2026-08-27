@@ -1,0 +1,7 @@
+ROLE: supervisor
+GOAL: Wykryj i napraw rozbieżność metryk w obserwowanym repozytorium
+SCOPE: autogrammar/data2dsl adaptery metryk i komparator
+ACCEPTANCE: Wszystkie asercje w teście E2E przechodzą, feed-koru raportuje SATISFIED, 0 konfliktów
+AUTHORITY: observe, plan, dry-run, apply:grant-heal-01
+LIMITS: Zakaz modyfikacji poza zakresem naprawy; bez ujawniania sekretów
+REPORT: ticket-051, plan_hash, receipts, readback
