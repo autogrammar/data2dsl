@@ -288,6 +288,12 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Aktualizacja `CAPABILITY_MAP.md`**: Rozszerzenie inwentarza o 10 adapterów i narzędzia Subactora. — ticket-053
 - [x] **Przykład `examples/07-sumd-table-comparison/`**: Utworzenie pakietu demonstracyjnego ekstrakcji z tabel SUMD. — ticket-053
 
+### Wsadowy silnik porównawczy Multi-Query (workstream: `application`, ticket-054)
+
+- [x] **Silnik `BatchMultiQueryComparator`**: Implementacja `src/data2dsl_batch.py` z agregacją metryk podsumowania wsadu i wskaźnika czystości. — ticket-054
+- [x] **Subkomenda CLI `batch`**: Dodanie polecenia `data2dsl batch` do `src/data2dsl_cli.py`. — ticket-054
+- [x] **Zestaw testów jednostkowych i CLI**: Utworzenie `tests/test_batch_compare.py` (79/79 testów przechodzi). — ticket-054
+
 
 
 

@@ -31,6 +31,13 @@
 - Implement Subactor delegation envelope validator and closed-loop self-healing E2E pipeline (ticket-051).
 - Implement MCP Subactor validation/healing tools and SUMD structured document adapter (ticket-052).
 - Author ADR-007 on Subactor conformance, update capability map, and add SUMD example (ticket-053).
+- Implement Batch Multi-Query comparison engine and CLI subcommand (ticket-054).
+
+### Batch multi-query comparison engine (ticket-054)
+
+- Implement `BatchMultiQueryComparator`, `BatchComparisonSummary`, and `BatchComparisonReport` in `src/data2dsl_batch.py`.
+- Add `data2dsl batch` CLI command for multi-query execution with observation matching and clean ratio aggregation.
+- Add test suite in `tests/test_batch_compare.py` (79/79 tests passing).
 
 ### Subactor conformance architecture & SUMD example (ticket-053)
 

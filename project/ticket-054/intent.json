@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-054",
+  "summary": "Batch Multi-Query Comparison Engine and CLI",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Implement BatchMultiQueryComparator in src/data2dsl_batch.py, expose batch compare CLI subcommand in src/data2dsl_cli.py, and add comprehensive unit tests.",
+    "nonGoals": [
+      "Break single query deterministic comparator contracts.",
+      "Mutate external repository resources."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Implement BatchMultiQueryComparator in src/data2dsl_batch.py to execute multiple queries against observation pools deterministically, aggregate statistics (matches, conflicts, missing), expose 'batch' command in src/data2dsl_cli.py, and add tests in tests/test_batch_compare.py.",
+      "components": [
+        {
+          "name": "batch-engine",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_batch.py, src/data2dsl_cli.py batch additions, and tests/test_batch_compare.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_batch_compare.py -v"],
+        "evidence": "Batch comparison tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-054/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_batch.py",
+    "src/data2dsl_cli.py",
+    "tests/test_batch_compare.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

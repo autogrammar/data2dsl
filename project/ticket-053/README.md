@@ -2,7 +2,7 @@
 
 - **ID**: ticket-053
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Authored ADR-007 on Subactor conformance, updated CAPABILITY_MAP with 10-adapter matrix, created example 07 for SUMD tables; 76/76 pytest tests passing and GOV-PASS.
