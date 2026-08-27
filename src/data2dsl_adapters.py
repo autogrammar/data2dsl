@@ -1652,6 +1652,7 @@ class SUMDAdapter:
 
         val_kind = metric.get("value_kind", response.value_kind)
         raw_val = response.value
+        val_obj: dict[str, Any]
 
         if val_kind == "integer":
             val_obj = {"kind": "integer", "value": str(int(raw_val))}

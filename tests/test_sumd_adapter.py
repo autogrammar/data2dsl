@@ -1,4 +1,4 @@
-from data2dsl_adapters import SUMDAdapter, SUMDMetricResponse
+from data2dsl_adapters import SUMDAdapter
 
 
 SUMD_TABLE_MARKDOWN = """

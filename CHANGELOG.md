@@ -32,6 +32,13 @@
 - Implement MCP Subactor validation/healing tools and SUMD structured document adapter (ticket-052).
 - Author ADR-007 on Subactor conformance, update capability map, and add SUMD example (ticket-053).
 - Implement Batch Multi-Query comparison engine and CLI subcommand (ticket-054).
+- Implement Query Template Generator and CLI subcommand (ticket-055).
+
+### Query template generator (ticket-055)
+
+- Implement `generate_query_template` in `src/data2dsl_generator.py` for automated `query/v0` creation across all 10 source adapter kinds.
+- Add `data2dsl generate-query` CLI subcommand.
+- Add test suite in `tests/test_generator.py` (83/83 tests passing).
 
 ### Batch multi-query comparison engine (ticket-054)
 

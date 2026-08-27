@@ -2,7 +2,7 @@
 
 - **ID**: ticket-054
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
+- **Status**: PLAN
 - **Workflow state**: PUBLICATION
 - **Created**: 2026-08-27
 - **Receipt**: Implemented BatchMultiQueryComparator and data2dsl batch CLI subcommand with clean ratio aggregation; 79/79 pytest tests passing and GOV-PASS.

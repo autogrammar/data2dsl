@@ -294,6 +294,12 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Subkomenda CLI `batch`**: Dodanie polecenia `data2dsl batch` do `src/data2dsl_cli.py`. — ticket-054
 - [x] **Zestaw testów jednostkowych i CLI**: Utworzenie `tests/test_batch_compare.py` (79/79 testów przechodzi). — ticket-054
 
+### Generator szablonów zapytań (workstream: `application`, ticket-055)
+
+- [x] **Generator `generate_query_template`**: Implementacja w `src/data2dsl_generator.py` dla 10 adapterów i typów metryk. — ticket-055
+- [x] **Subkomenda CLI `generate-query`**: Dodanie polecenia `data2dsl generate-query` do `src/data2dsl_cli.py`. — ticket-055
+- [x] **Zestaw testów jednostkowych i CLI**: Utworzenie `tests/test_generator.py` (83/83 testów przechodzi). — ticket-055
+
 
 
 

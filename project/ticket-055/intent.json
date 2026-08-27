@@ -1,0 +1,79 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-055",
+  "summary": "Query Template Generator and Tooling",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "e63057df0fe3ecd8d9f8122eb30667642fd96646",
+    "targetBranch": "main",
+    "outcome": "Implement QueryTemplateGenerator in src/data2dsl_generator.py, add generate-query CLI command in src/data2dsl_cli.py, and add comprehensive unit tests.",
+    "nonGoals": [
+      "Break existing query/v0 schema.",
+      "Mutate external repository resources."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Implement generate_query_template() and QueryTemplateGenerator in src/data2dsl_generator.py for canonical query generation with defaults per adapter type, add generate-query to src/data2dsl_cli.py, and add unit tests in tests/test_generator.py.",
+      "components": [
+        {
+          "name": "generator",
+          "paths": ["src/**"]
+        },
+        {
+          "name": "test-suites",
+          "paths": ["tests/**"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert src/data2dsl_generator.py, src/data2dsl_cli.py generate-query additions, and tests/test_generator.py."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": ["pytest tests/test_generator.py -v"],
+        "evidence": "Query generator tests pass."
+      },
+      {
+        "criterion": "AC-02",
+        "commands": ["project/governance-check.bat"],
+        "evidence": "Deterministic governance check passes."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-055/**",
+    "project/TICKETS.md",
+    "TODO.md",
+    "src/data2dsl_generator.py",
+    "src/data2dsl_cli.py",
+    "src/data2dsl_adapters.py",
+    "tests/test_generator.py",
+    "tests/test_sumd_adapter.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
