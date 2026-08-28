@@ -120,7 +120,7 @@ class DeterministicComparator:
         if kind == "float":
             left_float = float(left_val["value"])
             right_float = float(right_val["value"])
-            if abs(right_float - left_float) < 1e-9:
+            if left_float == right_float:
                 return "MATCH", None
             diff = round(right_float - left_float, 6)
             diff_str = f"{diff:.6f}".rstrip("0").rstrip(".") if "." in f"{diff:.6f}" else str(diff)
@@ -131,7 +131,7 @@ class DeterministicComparator:
             r_raw = str(right_val["value"]).rstrip("%").strip()
             left_pct = float(l_raw)
             right_pct = float(r_raw)
-            if abs(right_pct - left_pct) < 1e-6:
+            if left_pct == right_pct:
                 return "MATCH", None
             diff = round(right_pct - left_pct, 4)
             diff_str = f"{diff:.4f}".rstrip("0").rstrip(".") if "." in f"{diff:.4f}" else str(diff)
