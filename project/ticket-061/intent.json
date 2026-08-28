@@ -1,0 +1,23 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-061",
+  "summary": "Fix markdown actor claim parsing and metric.id mapping across adapters (F04, F05)",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-061/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_adapters.py",
+    "tests/test_adapters_f04_f05.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
