@@ -10,9 +10,9 @@ The short version:
 > sources, normalize them without losing provenance, compare like with like,
 > and return the result together with evidence.
 
-The project is currently in contract and integration planning. The repository
-contains governance, capability evidence and architectural decisions, but no
-functional product implementation or final public DSL yet.
+The project delivers a fully implemented, deterministic factual comparison
+layer with 10 source adapters, multi-query batch comparison, agent feedback
+feeds (Doctor & Koru), Subactor delegation validation, and Model Context Protocol (MCP) server endpoints.
 
 ## The problem
 
@@ -223,9 +223,9 @@ repository require that repository's owner-approved workflow.
 - The comparison contract `autogrammar.data2dsl.comparison` v`0.1.0` is stable
   and validated against `wellmanifest/dsl` profiles.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
-  and exposes `data2dsl_compare`, `data2dsl_self_test`, `data2dsl_feed_doctor`,
-  `data2dsl_validate_envelope`, and `data2dsl_simulate_healing` for agent discovery.
-- Testing infrastructure includes `conftest.py`, 84 unit tests (100% passing),
+  and exposes `data2dsl_compare`, `data2dsl_self_test`, `data2dsl_validate_envelope`,
+  and `data2dsl_simulate_healing` for MCP and agent discovery.
+- Testing infrastructure includes `conftest.py`, 123+ unit tests (100% passing),
   and clean `ruff`/`mypy` baselines.
 - Eight runnable example suites are structured under [`examples/`](examples/README.md).
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic

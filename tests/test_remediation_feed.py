@@ -88,7 +88,7 @@ def test_remediation_intent_conflict_numeric():
     )
     intent = format_remediation_intent(bundle_int, ticket_id="ticket-044")
 
-    assert intent["schema"] == "new-project.remediation-intent/v1"
+    assert intent["schema"] == "autogrammar.data2dsl/remediation-feed/v0"
     assert intent["ticket"] == "ticket-044"
     assert intent["remediation_version"] == "1.0.0"
     assert intent["status"] == "PROPOSED"
@@ -198,7 +198,7 @@ def test_cli_feed_koru(tmp_path: Path, capsys):
     assert out_file.exists()
 
     data = json.loads(out_file.read_text(encoding="utf-8"))
-    assert data["schema"] == "new-project.remediation-intent/v1"
+    assert data["schema"] == "autogrammar.data2dsl/remediation-feed/v0"
     assert data["ticket"] == "ticket-cli-override"
     assert data["status"] == "PROPOSED"
     assert len(data["actionable_items"]) == 1

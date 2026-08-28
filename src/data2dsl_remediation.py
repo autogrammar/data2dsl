@@ -38,7 +38,7 @@ def _extract_evidence(obs: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
 class RemediationIntentFormatter:
     """Formats comparison bundles into structured remediation intents for semcod/koru."""
 
-    SCHEMA_VERSION = "new-project.remediation-intent/v1"
+    SCHEMA_VERSION = "autogrammar.data2dsl/remediation-feed/v0"
     REMEDIATION_VERSION = "1.0.0"
 
     @classmethod

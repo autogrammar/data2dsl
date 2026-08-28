@@ -13,9 +13,9 @@ This example demonstrates factual extraction from a **Structured Unified Markdow
 
 ```bash
 # Extract and compare SUMD document directly via CLI
-python src/data2dsl_cli.py compare \
+python -m data2dsl_cli compare \
   --query examples/07-sumd-table-comparison/query.json \
   --left examples/07-sumd-table-comparison/document.sumd.md \
-  --left-type sumd \
+  --left-source-type sumd \
   --right examples/07-sumd-table-comparison/right-observation.json
 ```
