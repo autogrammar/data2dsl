@@ -60,6 +60,9 @@ class DeterministicComparator:
         elif right is None:
             outcome = "MISSING_RIGHT"
             delta = None
+        elif not self._is_compatible(query, left, expected_side="left") or not self._is_compatible(query, right, expected_side="right"):
+            outcome = "UNEVALUABLE"
+            delta = None
         elif left.get("state") != "OBSERVED" or right.get("state") != "OBSERVED":
             outcome = "UNEVALUABLE"
             delta = None
@@ -135,6 +138,41 @@ class DeterministicComparator:
             return "CONFLICT", {"kind": "percentage", "value": f"{diff_str}%"}
 
         raise ValueError(f"Unsupported value kind: {kind}")
+
+    def _is_compatible(
+        self,
+        query: dict[str, Any],
+        obs: dict[str, Any],
+        expected_side: str = "",
+    ) -> bool:
+        """Verify that an observation matches the query parameters."""
+        # Check query_id if present
+        if "query_id" in obs and query.get("query_id") and obs["query_id"] != query["query_id"]:
+            return False
+
+        # Check subject
+        q_subj = query.get("subject", {})
+        o_subj = obs.get("subject", {})
+        if q_subj.get("actor") != o_subj.get("actor"):
+            return False
+        if q_subj.get("repository") != o_subj.get("repository"):
+            return False
+
+        # Check metric
+        q_met = query.get("metric", {})
+        o_met = obs.get("metric", {})
+        if q_met.get("id") != o_met.get("id"):
+            return False
+        if q_met.get("value_kind") != o_met.get("value_kind"):
+            return False
+
+        # Check window
+        q_win = query.get("window", {})
+        o_win = obs.get("window", {})
+        if q_win.get("start") != o_win.get("start") or q_win.get("end") != o_win.get("end"):
+            return False
+
+        return True
 
 
 def compare_observations(
