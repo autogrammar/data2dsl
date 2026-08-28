@@ -142,10 +142,8 @@ def validate_delegation_envelope(
     # Validate authority
     authority = extracted.get("authority", "").lower()
     if authority:
-        tokens = re.split(r"[\s,+;:|]+", authority)
-        has_valid_keyword = any(
-            any(kw in tok for kw in VALID_AUTHORITY_KEYWORDS) for tok in tokens if tok
-        )
+        tokens = [t.lower() for t in re.split(r"[\s,+;:|]+", authority) if t]
+        has_valid_keyword = any(tok in VALID_AUTHORITY_KEYWORDS for tok in tokens)
         if not has_valid_keyword:
             errors.append(
                 EnvelopeValidationError(
@@ -217,7 +215,7 @@ def simulate_self_healing_cycle(
         "pre_repair": {
             "outcome": pre_bundle.get("result", {}).get("outcome"),
             "delta": pre_bundle.get("result", {}).get("delta"),
-            "diagnostic_severity_summary": diag_profile.get("severitySummary"),
+            "diagnostic_severity_summary": diag_profile.get("summary") or diag_profile.get("severitySummary"),
             "remediation_status": rem_intent.get("status"),
             "remediation_summary": rem_intent.get("summary"),
             "evidence_ids": pre_bundle.get("result", {}).get("evidence_ids"),
