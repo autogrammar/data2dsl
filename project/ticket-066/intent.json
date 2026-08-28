@@ -1,0 +1,24 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-066",
+  "summary": "Align MCP tool schema with inputSchema protocol and ensure clean STDIO (F08)",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-066/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_skill.py",
+    "tests/test_skill.py",
+    "tests/test_mcp_protocol_compliance.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

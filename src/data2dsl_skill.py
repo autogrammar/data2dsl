@@ -265,6 +265,72 @@ class Data2DslSkill:
     @classmethod
     def get_tool_definitions(cls) -> list[Dict[str, Any]]:
         """Return MCP / JSON schema tool definitions for agent discovery."""
+        compare_schema = {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "object",
+                    "description": "Canonical autogrammar.data2dsl/query/v0 query object."
+                },
+                "left_observation": {
+                    "type": "object",
+                    "description": "Normalized left observation dictionary."
+                },
+                "right_observation": {
+                    "type": "object",
+                    "description": "Normalized right observation dictionary."
+                },
+                "left_raw": {
+                    "type": "object",
+                    "description": "Raw adapter input for left source."
+                },
+                "left_source_type": {
+                    "type": "string",
+                    "description": "Source adapter kind (e.g. github, markdown, sumd, curllm, code2logic, code2schema, oql)."
+                },
+                "right_raw": {
+                    "type": "object",
+                    "description": "Raw adapter input for right source."
+                },
+                "right_source_type": {
+                    "type": "string",
+                    "description": "Source adapter kind (e.g. github, markdown, sumd, curllm, code2logic, code2schema, oql)."
+                }
+            },
+            "required": ["query"]
+        }
+        self_test_schema = {
+            "type": "object",
+            "properties": {}
+        }
+        envelope_schema = {
+            "type": "object",
+            "properties": {
+                "envelope": {
+                    "type": ["string", "object"],
+                    "description": "Subactor delegation envelope string or dictionary."
+                }
+            },
+            "required": ["envelope"]
+        }
+        healing_schema = {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "object",
+                    "description": "Canonical query dictionary."
+                },
+                "left_observation": {
+                    "type": "object",
+                    "description": "Baseline/expected left observation dictionary."
+                },
+                "right_observation": {
+                    "type": "object",
+                    "description": "Observed right observation dictionary with discrepancies."
+                }
+            },
+            "required": ["query", "left_observation", "right_observation"]
+        }
         return [
             {
                 "name": "data2dsl_compare",
@@ -273,84 +339,26 @@ class Data2DslSkill:
                     "metrics, work summary claims, SUMD tables, or browser extractions) against a "
                     "formal query deterministically."
                 ),
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "object",
-                            "description": "Canonical autogrammar.data2dsl/query/v0 query object."
-                        },
-                        "left_observation": {
-                            "type": "object",
-                            "description": "Normalized left observation dictionary."
-                        },
-                        "right_observation": {
-                            "type": "object",
-                            "description": "Normalized right observation dictionary."
-                        },
-                        "left_raw": {
-                            "type": "object",
-                            "description": "Raw adapter input for left source."
-                        },
-                        "left_source_type": {
-                            "type": "string",
-                            "description": "Source adapter kind (e.g. github, markdown, sumd, curllm, code2logic, code2schema, oql)."
-                        },
-                        "right_raw": {
-                            "type": "object",
-                            "description": "Raw adapter input for right source."
-                        },
-                        "right_source_type": {
-                            "type": "string",
-                            "description": "Source adapter kind (e.g. github, markdown, sumd, curllm, code2logic, code2schema, oql)."
-                        }
-                    },
-                    "required": ["query"]
-                }
+                "inputSchema": compare_schema,
+                "parameters": compare_schema,
             },
             {
                 "name": "data2dsl_self_test",
                 "description": "Run the built-in self-test suite verifying comparator integrity and schema conformance.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {}
-                }
+                "inputSchema": self_test_schema,
+                "parameters": self_test_schema,
             },
             {
                 "name": "data2dsl_validate_envelope",
                 "description": "Validate a Subactor delegation envelope payload in text or dictionary format.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "envelope": {
-                            "type": ["string", "object"],
-                            "description": "Subactor delegation envelope string or dictionary."
-                        }
-                    },
-                    "required": ["envelope"]
-                }
+                "inputSchema": envelope_schema,
+                "parameters": envelope_schema,
             },
             {
                 "name": "data2dsl_simulate_healing",
                 "description": "Simulate a closed-loop DETECT -> PLAN -> EXECUTE -> VERIFY -> HEAL self-healing cycle.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "object",
-                            "description": "Canonical query dictionary."
-                        },
-                        "left_observation": {
-                            "type": "object",
-                            "description": "Baseline/expected left observation dictionary."
-                        },
-                        "right_observation": {
-                            "type": "object",
-                            "description": "Observed right observation dictionary with discrepancies."
-                        }
-                    },
-                    "required": ["query", "left_observation", "right_observation"]
-                }
+                "inputSchema": healing_schema,
+                "parameters": healing_schema,
             }
         ]
 
