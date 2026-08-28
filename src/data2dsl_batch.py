@@ -83,31 +83,39 @@ class BatchMultiQueryComparator:
         batch_id: Optional[str] = None,
     ) -> BatchComparisonReport:
         """Run batch comparison for all queries."""
-        # Index left observations
-        left_map: Dict[str, Dict[str, Any]] = {}
+        # Index left observations by query_id and by composite (repo, actor, metric_id)
+        left_by_qid: Dict[str, Dict[str, Any]] = {}
+        left_by_key: Dict[tuple, Dict[str, Any]] = {}
         if isinstance(left_observations, dict):
-            left_map = dict(left_observations)
+            left_by_qid = dict(left_observations)
         else:
             for obs in left_observations:
                 if not isinstance(obs, dict):
                     continue
-                if "query_id" in obs:
-                    left_map[obs["query_id"]] = obs
-                if "metric" in obs and isinstance(obs["metric"], dict) and "id" in obs["metric"]:
-                    left_map[f"metric:{obs['metric']['id']}"] = obs
+                if "query_id" in obs and obs["query_id"]:
+                    left_by_qid[obs["query_id"]] = obs
+                subj = obs.get("subject", {})
+                met = obs.get("metric", {})
+                if subj and met and "id" in met:
+                    key = (subj.get("repository"), subj.get("actor"), met.get("id"))
+                    left_by_key[key] = obs
 
-        # Index right observations
-        right_map: Dict[str, Dict[str, Any]] = {}
+        # Index right observations by query_id and by composite (repo, actor, metric_id)
+        right_by_qid: Dict[str, Dict[str, Any]] = {}
+        right_by_key: Dict[tuple, Dict[str, Any]] = {}
         if isinstance(right_observations, dict):
-            right_map = dict(right_observations)
+            right_by_qid = dict(right_observations)
         else:
             for obs in right_observations:
                 if not isinstance(obs, dict):
                     continue
-                if "query_id" in obs:
-                    right_map[obs["query_id"]] = obs
-                if "metric" in obs and isinstance(obs["metric"], dict) and "id" in obs["metric"]:
-                    right_map[f"metric:{obs['metric']['id']}"] = obs
+                if "query_id" in obs and obs["query_id"]:
+                    right_by_qid[obs["query_id"]] = obs
+                subj = obs.get("subject", {})
+                met = obs.get("metric", {})
+                if subj and met and "id" in met:
+                    key = (subj.get("repository"), subj.get("actor"), met.get("id"))
+                    right_by_key[key] = obs
 
         bundles: List[Dict[str, Any]] = []
         matches = 0
@@ -118,38 +126,12 @@ class BatchMultiQueryComparator:
 
         for q in queries:
             qid = q.get("query_id", "")
-            mid = q.get("metric", {}).get("id", "")
+            subj = q.get("subject", {})
+            met = q.get("metric", {})
+            q_key = (subj.get("repository"), subj.get("actor"), met.get("id")) if subj and met else None
 
-            left_obs = left_map.get(qid) or left_map.get(f"metric:{mid}")
-            right_obs = right_map.get(qid) or right_map.get(f"metric:{mid}")
-
-            # Synthesize missing observations if not in map
-            if left_obs is None:
-                left_obs = {
-                    "schema": "autogrammar.data2dsl/observation/v0",
-                    "observation_id": f"observation:missing:left:{qid}",
-                    "query_id": qid,
-                    "side": "left",
-                    "subject": q.get("subject", {}),
-                    "metric": q.get("metric", {}),
-                    "window": q.get("window", {}),
-                    "state": "MISSING",
-                    "value": None,
-                    "evidence": [],
-                }
-            if right_obs is None:
-                right_obs = {
-                    "schema": "autogrammar.data2dsl/observation/v0",
-                    "observation_id": f"observation:missing:right:{qid}",
-                    "query_id": qid,
-                    "side": "right",
-                    "subject": q.get("subject", {}),
-                    "metric": q.get("metric", {}),
-                    "window": q.get("window", {}),
-                    "state": "MISSING",
-                    "value": None,
-                    "evidence": [],
-                }
+            left_obs = left_by_qid.get(qid) or (left_by_key.get(q_key) if q_key else None)
+            right_obs = right_by_qid.get(qid) or (right_by_key.get(q_key) if q_key else None)
 
             bundle = self._comparator.compare(q, left_obs, right_obs)
             bundles.append(bundle)
@@ -198,6 +180,37 @@ class BatchMultiQueryComparator:
         )
 
 
+def _format_val(obs: Any) -> str:
+    if not obs or not isinstance(obs, dict):
+        return "MISSING"
+    val = obs.get("value")
+    if val is None:
+        return "None" if obs.get("state") == "OBSERVED" else obs.get("state", "MISSING")
+    if isinstance(val, dict):
+        if "value" in val:
+            return str(val["value"])
+        if "items" in val:
+            return ",".join(str(i) for i in val.get("items", []))
+    return str(val)
+
+
+def _format_delta(delta: Any) -> str:
+    if not delta or not isinstance(delta, dict):
+        return "-"
+    if "value" in delta:
+        return str(delta["value"])
+    if "added" in delta or "removed" in delta:
+        added = ",".join(delta.get("added", []))
+        removed = ",".join(delta.get("removed", []))
+        parts = []
+        if added:
+            parts.append(f"+[{added}]")
+        if removed:
+            parts.append(f"-[{removed}]")
+        return " ".join(parts) if parts else "-"
+    return str(delta)
+
+
 def format_markdown_report(report_or_bundle: Any) -> str:
     """Format a batch report or single comparison bundle as a structured Markdown document."""
     if hasattr(report_or_bundle, "to_dict"):
@@ -205,38 +218,39 @@ def format_markdown_report(report_or_bundle: Any) -> str:
     elif isinstance(report_or_bundle, dict):
         doc = report_or_bundle
     else:
-        raise ValueError("Unsupported document format for markdown report")
+        doc = report_or_bundle
 
-    lines: list[str] = []
+    lines = []
     lines.append("# data2dsl Comparison Report\n")
 
-    # Check if batch report or single bundle
     if "summary" in doc and "bundles" in doc:
         summary = doc["summary"]
         status_str = "CLEAN (All Match)" if summary.get("is_clean") else "CONFLICTS/DISCREPANCIES DETECTED"
         lines.append("## Summary\n")
-        lines.append(f"- **Batch ID**: `{doc.get('batch_id', 'unknown')}`")
+        lines.append(f"- **Batch ID**: `{doc.get('batch_id', summary.get('batch_id', 'batch'))}`")
         lines.append(f"- **Status**: `{status_str}`")
         lines.append(f"- **Total Queries**: {summary.get('total_queries', 0)}")
         lines.append(f"- **Matches**: {summary.get('matches', 0)}")
         lines.append(f"- **Conflicts**: {summary.get('conflicts', 0)}")
         lines.append(f"- **Missing Left / Right**: {summary.get('missing_left', 0)} / {summary.get('missing_right', 0)}")
-        lines.append(f"- **Clean Ratio**: {summary.get('clean_ratio', 0.0):.2%}\n")
+        lines.append(f"- **Unevaluable**: {summary.get('unevaluable', 0)}")
+        clean_ratio = summary.get("clean_ratio", 0.0)
+        lines.append(f"- **Clean Ratio**: {clean_ratio:.2%}\n")
 
         lines.append("## Query Details\n")
         lines.append("| Query ID | Metric | Left Value | Right Value | Outcome | Delta |")
-        lines.append("|---|---|---|---|---|---|")
+        lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
 
         for b in doc.get("bundles", []):
             q = b.get("query", {})
             res = b.get("result", {})
-            obs = b.get("observations", {})
+            obs = b.get("observations", [])
             qid = q.get("query_id", "")
             mid = q.get("metric", {}).get("id", "")
             outcome = res.get("outcome", "")
 
-            l_obs: dict[str, Any] = {}
-            r_obs: dict[str, Any] = {}
+            l_obs = None
+            r_obs = None
             if isinstance(obs, list):
                 for o in obs:
                     if isinstance(o, dict):
@@ -245,24 +259,24 @@ def format_markdown_report(report_or_bundle: Any) -> str:
                         elif o.get("side") == "right":
                             r_obs = o
             elif isinstance(obs, dict):
-                l_obs = obs.get("left", {})
-                r_obs = obs.get("right", {})
+                l_obs = obs.get("left")
+                r_obs = obs.get("right")
 
-            l_val = l_obs.get("value", {}).get("value") if l_obs.get("value") else (str(l_obs.get("value", {}).get("items")) if l_obs.get("value", {}).get("items") is not None else "MISSING")
-            r_val = r_obs.get("value", {}).get("value") if r_obs.get("value") else (str(r_obs.get("value", {}).get("items")) if r_obs.get("value", {}).get("items") is not None else "MISSING")
-            delta_val = res.get("delta", {}).get("value") if res.get("delta") else "-"
+            l_val = _format_val(l_obs)
+            r_val = _format_val(r_obs)
+            delta_val = _format_delta(res.get("delta"))
 
             lines.append(f"| `{qid}` | `{mid}` | `{l_val}` | `{r_val}` | **{outcome}** | `{delta_val}` |")
 
     elif "query" in doc and "result" in doc:
         q = doc["query"]
         res = doc["result"]
-        obs = doc.get("observations", {})
+        obs = doc.get("observations", [])
         qid = q.get("query_id", "")
         mid = q.get("metric", {}).get("id", "")
         outcome = res.get("outcome", "")
-        l_obs = {}
-        r_obs = {}
+        l_obs = None
+        r_obs = None
         if isinstance(obs, list):
             for o in obs:
                 if isinstance(o, dict):
@@ -271,12 +285,12 @@ def format_markdown_report(report_or_bundle: Any) -> str:
                     elif o.get("side") == "right":
                         r_obs = o
         elif isinstance(obs, dict):
-            l_obs = obs.get("left", {})
-            r_obs = obs.get("right", {})
+            l_obs = obs.get("left")
+            r_obs = obs.get("right")
 
-        l_val = l_obs.get("value", {}).get("value") if l_obs.get("value") else "MISSING"
-        r_val = r_obs.get("value", {}).get("value") if r_obs.get("value") else "MISSING"
-        delta_val = res.get("delta", {}).get("value") if res.get("delta") else "-"
+        l_val = _format_val(l_obs)
+        r_val = _format_val(r_obs)
+        delta_val = _format_delta(res.get("delta"))
 
         lines.append("## Single Comparison Result\n")
         lines.append(f"- **Query ID**: `{qid}`")
