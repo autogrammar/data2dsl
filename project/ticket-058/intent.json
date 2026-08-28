@@ -1,0 +1,41 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-058",
+  "summary": "Independent code audit and completion assessment",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "1e7eddd75a40b6c4388869a8210d2c42ca9d9e5e",
+    "targetBranch": "main",
+    "outcome": "Deliver an evidence-backed Polish code audit and completion assessment in docs/AUDYT_KODU_2026-08-28.md.",
+    "nonGoals": ["Modify application source or tests", "Publish, push, merge or change external repositories", "Access secrets or repair findings"],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {"maxImplementationFiles": 1, "maxAffectedComponents": 1, "maxPublicInterfaceChanges": 0, "maxRuntimeDependencies": 0},
+    "architecture": {
+      "status": "accepted",
+      "decision": "Documentation-only audit; run existing checks and isolated temporary probes without changing executable repository files.",
+      "components": [{"name": "audit-documentation", "paths": ["docs/AUDYT_KODU_2026-08-28.md"]}],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove only the audit report and its ticket-owned documentation changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-03", "commands": ["python -m pytest -q -p no:cacheprovider", "python -m ruff check src tests", "python -m mypy src", "python src/data2dsl_contract_v0/validate.py --self-test", "project/governance-check.bat"], "evidence": "Record actual outcomes, including failed checks and environment limitations, in the audit report."},
+      {"criterion": "AC-04", "commands": ["git diff --check"], "evidence": "Review report accuracy, links and bounded write scope."}
+    ]
+  },
+  "allowedPaths": ["project/ticket-058/**", "TODO.md", "project/TICKETS.md", "docs/AUDYT_KODU_2026-08-28.md"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

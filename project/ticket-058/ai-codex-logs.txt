@@ -1,0 +1,16 @@
+2026-08-28 baseline HEAD=1e7eddd75a40b6c4388869a8210d2c42ca9d9e5e; initial clean main.
+Managed allocator fetched/pruned, reserved ticket-058; local branch codex/ticket-058-code-audit.
+SESSION_EXECUTION_AUTHORIZATION recorded for audit/report only.
+python -m pytest -q -p no:cacheprovider: 84 passed in 32.34s.
+Full coverage rerun after required temp-directory permission: 84 passed in 4.06s; 1884 statements, 268 missing, 86%.
+python -m ruff check src tests --output-format concise: PASS.
+python -m mypy src: FAIL (jsonschema stubs, duplicate module discovery).
+python -m mypy --explicit-package-bases --ignore-missing-imports src: PASS (12 source files).
+python src/data2dsl_contract_v0/validate.py --self-test: PASS (5 positive outcomes, 5 negative invariants).
+project/governance-check.bat: GOV-PASS, 0 errors, 0 warnings.
+Governance explicit changed-file scope: GOV-PASS, 0 errors, 0 warnings.
+Wheel build in temporary source copy: PASS; module/resource inventory and isolated CLI import: FAIL.
+docker compose config --quiet: PASS; Docker engine absent, container build/run not performed.
+Targeted probes and official MCP references are summarized in docs/AUDYT_KODU_2026-08-28.md (F01-F15).
+Report local links: no broken links. Audit intent JSON schema: VALID. git diff --check: PASS.
+Application/test files unchanged. No publication or closure performed.
