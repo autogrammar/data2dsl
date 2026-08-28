@@ -232,7 +232,7 @@ class WorkSummaryMarkdownAdapter:
 
         for idx, line in enumerate(lines, start=1):
             line_lower = line.lower()
-            if normalized_actor in line_lower or "commit" in line_lower:
+            if normalized_actor in line_lower:
                 match = re.search(r"(\d+)\s*(?:commits|commit)|commits?[:\s]+(\d+)", line, re.IGNORECASE)
                 if match:
                     val_str = match.group(1) or match.group(2)
@@ -937,9 +937,9 @@ class DetaAdapter:
             }
 
         val_kind = metric.get("value_kind", "integer")
-        metric_name = metric.get("name", "")
-        metric_prop = metric.get("property", "")
-        is_port_query = "port" in metric_name.lower() or "port" in metric_prop.lower()
+        metric_id = (metric.get("id") or metric.get("name") or "").lower()
+        metric_prop = metric.get("property", "").lower()
+        is_port_query = "port" in metric_id or "port" in metric_prop or "ports" in metric_id or "ports" in metric_prop
 
         val_obj: dict[str, Any]
         if is_port_query:
@@ -981,7 +981,8 @@ class DetaAdapter:
                     }
                 )
         else:
-            digest = compute_sha256(f"topology:{response.manifest_path}")
+            ports_str = ",".join(str(p) for p in sorted(response.ports))
+            digest = compute_sha256(f"topology:{response.manifest_path}:{response.service_count}:{ports_str}")
             src_rev = response.source_revision or f"sha256:{digest}"
             evidence_list.append(
                 {
@@ -1094,30 +1095,63 @@ class IntentContractAdapter:
             }
 
         val_kind = metric.get("value_kind", "string-set")
-        metric_name = metric.get("name", "").lower()
+        metric_id = (metric.get("id") or metric.get("name") or "").lower()
         metric_prop = metric.get("property", "").lower()
 
         val_obj: dict[str, Any]
-        if "party" in metric_name or "parties" in metric_prop:
+        if "party" in metric_id or "parties" in metric_id or "parties" in metric_prop or "party" in metric_prop:
             parties_sorted = sorted(list(response.parties))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(parties_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": parties_sorted}
-        elif "obligation" in metric_name or "obligations" in metric_prop:
+        elif "obligation" in metric_id or "obligations" in metric_id or "obligations" in metric_prop or "obligation" in metric_prop:
             obligations_sorted = sorted(list(response.obligations))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(obligations_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": obligations_sorted}
-        else:
+        elif "deliverable" in metric_id or "deliverables" in metric_id or "deliverables" in metric_prop or "deliverable" in metric_prop or not metric_id:
             deliverables_sorted = sorted(list(response.deliverables))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(deliverables_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": deliverables_sorted}
+        else:
+            return {
+                "schema": SCHEMA_OBSERVATION,
+                "observation_id": observation_id or f"observation:intent_contract:unsupported:{side}",
+                "query_id": query_id,
+                "side": side,
+                "subject": subject,
+                "metric": metric,
+                "window": window,
+                "state": "UNEVALUABLE",
+                "value": None,
+                "evidence": [
+                    {
+                        "evidence_id": f"evidence:intent_contract:unsupported:{side}",
+                        "target_uri": target_uri,
+                        "source_uri": f"{target_uri}/{response.path}",
+                        "source_revision": response.source_revision or f"sha256:{compute_sha256(response.path)}",
+                        "media_type": "application/json",
+                        "digest_sha256": compute_sha256(response.path),
+                        "extractor": self._extractor,
+                        "location": {
+                            "kind": "json-lines",
+                            "path": response.path,
+                            "start_line": 1,
+                            "end_line": 1,
+                        },
+                    }
+                ],
+            }
 
-        digest = compute_sha256(f"{response.contract_id}:{','.join(response.deliverables)}")
+        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        parties_str = ",".join(sorted(response.parties))
+        obligations_str = ",".join(sorted(response.obligations))
+        deliverables_str = ",".join(sorted(response.deliverables))
+        digest = compute_sha256(f"{response.contract_id}:{parties_str}:{obligations_str}:{deliverables_str}:{val_repr}")
         src_rev = response.source_revision or f"sha256:{digest}"
         obs_id = observation_id or f"observation:intent_contract:{digest[:8]}"
 
@@ -1266,63 +1300,90 @@ class OqlTelemetryAdapter:
             }
 
         val_kind = metric.get("value_kind", "float")
-        metric_name = metric.get("name", "").lower()
+        metric_id = (metric.get("id") or metric.get("name") or "").lower()
         metric_prop = metric.get("property", "").lower()
 
         val_obj: dict[str, Any]
-        if "sample_rate" in metric_name or "sample_rate" in metric_prop:
+        if "sample_rate" in metric_id or "sample_rate" in metric_prop:
             raw_val = response.sample_rate_hz
             if raw_val is None:
-                val_obj = {"kind": "float", "value": "0.0"}
+                val_obj = None
             elif val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(int(raw_val))}
             else:
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
-        elif "temperature" in metric_name or "thermal" in metric_name or "celsius" in metric_prop:
+        elif "temperature" in metric_id or "thermal" in metric_id or "celsius" in metric_prop:
             raw_val = response.max_temperature_celsius
             if raw_val is None:
-                val_obj = {"kind": "float", "value": "0.0"}
+                val_obj = None
             elif val_kind == "percentage":
                 val_obj = {"kind": "percentage", "value": f"{float(raw_val):.2f}%"}
             else:
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
-        elif "frequency" in metric_name or "frequency_mhz" in metric_prop:
+        elif "frequency" in metric_id or "frequency_mhz" in metric_prop:
             raw_val = response.frequency_mhz
             if raw_val is None:
-                val_obj = {"kind": "float", "value": "0.0"}
+                val_obj = None
             elif val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(int(raw_val))}
             else:
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
-        elif "throughput" in metric_name or "packet_throughput" in metric_prop:
+        elif "throughput" in metric_id or "packet_throughput" in metric_prop:
             raw_val = response.packet_throughput
             if raw_val is None:
-                val_obj = {"kind": "integer", "value": "0"}
+                val_obj = None
             elif val_kind == "float":
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
             else:
                 val_obj = {"kind": "integer", "value": str(int(raw_val))}
-        elif "pin" in metric_name or "gpio" in metric_name or "pins" in metric_prop:
+        elif "pin" in metric_id or "gpio" in metric_id or "pins" in metric_prop:
             pins_sorted = sorted(list(response.active_pins))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(pins_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": pins_sorted}
-        elif "bus" in metric_name or "buses" in metric_prop:
+        elif "bus" in metric_id or "buses" in metric_prop:
             buses_sorted = sorted(list(response.buses))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(buses_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": buses_sorted}
         else:
-            # Default fallback to active_pins if string-set or sample rate
-            if val_kind == "string-set":
-                pins_sorted = sorted(list(response.active_pins))
-                val_obj = {"kind": "string-set", "items": pins_sorted}
-            else:
-                val_obj = {"kind": "float", "value": "0.0"}
+            val_obj = None
 
-        digest = compute_sha256(f"{response.scenario_id}:{response.path}:{val_obj.get('value', '')}")
+        if val_obj is None:
+            obs_id = observation_id or f"observation:oql_spec:unevaluable:{side}"
+            return {
+                "schema": SCHEMA_OBSERVATION,
+                "observation_id": obs_id,
+                "query_id": query_id,
+                "side": side,
+                "subject": subject,
+                "metric": metric,
+                "window": window,
+                "state": "UNEVALUABLE",
+                "value": None,
+                "evidence": [
+                    {
+                        "evidence_id": f"evidence:oql_spec:unsupported:{side}",
+                        "target_uri": target_uri,
+                        "source_uri": f"{target_uri}/{response.path}",
+                        "source_revision": response.source_revision or f"sha256:{compute_sha256(response.path)}",
+                        "media_type": "application/json",
+                        "digest_sha256": compute_sha256(response.path),
+                        "extractor": self._extractor,
+                        "location": {
+                            "kind": "oql-scenario",
+                            "path": response.path,
+                            "start_line": 1,
+                            "end_line": 1,
+                        },
+                    }
+                ],
+            }
+
+        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        digest = compute_sha256(f"{response.scenario_id}:{response.path}:{val_repr}")
         src_rev = response.source_revision or f"sha256:{digest}"
         obs_id = observation_id or f"observation:oql_spec:{digest[:8]}"
 
@@ -1405,62 +1466,90 @@ class OqlTelemetryAdapter:
             }
 
         val_kind = metric.get("value_kind", "float")
-        metric_name = metric.get("name", "").lower()
+        metric_id = (metric.get("id") or metric.get("name") or "").lower()
         metric_prop = metric.get("property", "").lower()
 
         val_obj: dict[str, Any]
-        if "sample_rate" in metric_name or "sample_rate" in metric_prop:
+        if "sample_rate" in metric_id or "sample_rate" in metric_prop:
             raw_val = response.avg_sample_rate_hz
             if raw_val is None:
-                val_obj = {"kind": "float", "value": "0.0"}
+                val_obj = None
             elif val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(int(raw_val))}
             else:
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
-        elif "temperature" in metric_name or "thermal" in metric_name or "celsius" in metric_prop:
+        elif "temperature" in metric_id or "thermal" in metric_id or "celsius" in metric_prop:
             raw_val = response.peak_temperature_celsius
             if raw_val is None:
-                val_obj = {"kind": "float", "value": "0.0"}
+                val_obj = None
             elif val_kind == "percentage":
                 val_obj = {"kind": "percentage", "value": f"{float(raw_val):.2f}%"}
             else:
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
-        elif "frequency" in metric_name or "frequency_mhz" in metric_prop:
+        elif "frequency" in metric_id or "frequency_mhz" in metric_prop:
             raw_val = response.observed_frequency_mhz
             if raw_val is None:
-                val_obj = {"kind": "float", "value": "0.0"}
+                val_obj = None
             elif val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(int(raw_val))}
             else:
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
-        elif "throughput" in metric_name or "packet_throughput" in metric_prop:
+        elif "throughput" in metric_id or "packet_throughput" in metric_prop:
             raw_val = response.avg_packet_throughput
             if raw_val is None:
-                val_obj = {"kind": "integer", "value": "0"}
+                val_obj = None
             elif val_kind == "float":
                 val_obj = {"kind": "float", "value": f"{float(raw_val):.2f}"}
             else:
                 val_obj = {"kind": "integer", "value": str(int(raw_val))}
-        elif "pin" in metric_name or "gpio" in metric_name or "pins" in metric_prop:
+        elif "pin" in metric_id or "gpio" in metric_id or "pins" in metric_prop:
             pins_sorted = sorted(list(response.active_pins))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(pins_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": pins_sorted}
-        elif "bus" in metric_name or "buses" in metric_prop:
-            buses_sorted = sorted(list(response.active_buses))
+        elif "bus" in metric_id or "buses" in metric_prop:
+            buses_sorted = sorted(list(response.observed_buses))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(buses_sorted))}
             else:
                 val_obj = {"kind": "string-set", "items": buses_sorted}
         else:
-            if val_kind == "string-set":
-                pins_sorted = sorted(list(response.active_pins))
-                val_obj = {"kind": "string-set", "items": pins_sorted}
-            else:
-                val_obj = {"kind": "float", "value": "0.0"}
+            val_obj = None
 
-        digest = compute_sha256(f"{response.log_id}:{response.path}:{val_obj.get('value', '')}")
+        if val_obj is None:
+            obs_id = observation_id or f"observation:oql_telemetry:unevaluable:{side}"
+            return {
+                "schema": SCHEMA_OBSERVATION,
+                "observation_id": obs_id,
+                "query_id": query_id,
+                "side": side,
+                "subject": subject,
+                "metric": metric,
+                "window": window,
+                "state": "UNEVALUABLE",
+                "value": None,
+                "evidence": [
+                    {
+                        "evidence_id": f"evidence:oql_telemetry:unsupported:{side}",
+                        "target_uri": target_uri,
+                        "source_uri": f"{target_uri}/{response.path}",
+                        "source_revision": response.source_revision or f"sha256:{compute_sha256(response.path)}",
+                        "media_type": "application/json",
+                        "digest_sha256": compute_sha256(response.path),
+                        "extractor": self._extractor,
+                        "location": {
+                            "kind": "oql-telemetry-log",
+                            "path": response.path,
+                            "start_line": 1,
+                            "end_line": 1,
+                        },
+                    }
+                ],
+            }
+
+        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        digest = compute_sha256(f"{response.log_id}:{response.path}:{val_repr}")
         src_rev = response.source_revision or f"sha256:{digest}"
         obs_id = observation_id or f"observation:oql_telemetry:{digest[:8]}"
 

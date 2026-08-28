@@ -60,6 +60,9 @@ class DeterministicComparator:
         elif right is None:
             outcome = "MISSING_RIGHT"
             delta = None
+        elif not self._is_compatible(query, left, expected_side="left") or not self._is_compatible(query, right, expected_side="right"):
+            outcome = "UNEVALUABLE"
+            delta = None
         elif left.get("state") != "OBSERVED" or right.get("state") != "OBSERVED":
             outcome = "UNEVALUABLE"
             delta = None
@@ -117,7 +120,7 @@ class DeterministicComparator:
         if kind == "float":
             left_float = float(left_val["value"])
             right_float = float(right_val["value"])
-            if abs(right_float - left_float) < 1e-9:
+            if left_float == right_float:
                 return "MATCH", None
             diff = round(right_float - left_float, 6)
             diff_str = f"{diff:.6f}".rstrip("0").rstrip(".") if "." in f"{diff:.6f}" else str(diff)
@@ -128,13 +131,48 @@ class DeterministicComparator:
             r_raw = str(right_val["value"]).rstrip("%").strip()
             left_pct = float(l_raw)
             right_pct = float(r_raw)
-            if abs(right_pct - left_pct) < 1e-6:
+            if left_pct == right_pct:
                 return "MATCH", None
             diff = round(right_pct - left_pct, 4)
             diff_str = f"{diff:.4f}".rstrip("0").rstrip(".") if "." in f"{diff:.4f}" else str(diff)
             return "CONFLICT", {"kind": "percentage", "value": f"{diff_str}%"}
 
         raise ValueError(f"Unsupported value kind: {kind}")
+
+    def _is_compatible(
+        self,
+        query: dict[str, Any],
+        obs: dict[str, Any],
+        expected_side: str = "",
+    ) -> bool:
+        """Verify that an observation matches the query parameters."""
+        # Check query_id if present
+        if "query_id" in obs and query.get("query_id") and obs["query_id"] != query["query_id"]:
+            return False
+
+        # Check subject
+        q_subj = query.get("subject", {})
+        o_subj = obs.get("subject", {})
+        if q_subj.get("actor") != o_subj.get("actor"):
+            return False
+        if q_subj.get("repository") != o_subj.get("repository"):
+            return False
+
+        # Check metric
+        q_met = query.get("metric", {})
+        o_met = obs.get("metric", {})
+        if q_met.get("id") != o_met.get("id"):
+            return False
+        if q_met.get("value_kind") != o_met.get("value_kind"):
+            return False
+
+        # Check window
+        q_win = query.get("window", {})
+        o_win = obs.get("window", {})
+        if q_win.get("start") != o_win.get("start") or q_win.get("end") != o_win.get("end"):
+            return False
+
+        return True
 
 
 def compare_observations(

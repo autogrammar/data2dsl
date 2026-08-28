@@ -73,7 +73,7 @@
       "required": ["id", "kind"],
       "properties": {
         "id": {"$ref": "#/$defs/stableId"},
-        "kind": {"enum": ["markdown", "github"]}
+        "kind": {"enum": ["markdown", "github", "code2logic", "code2schema", "curllm", "planfile", "deta", "intent_contract", "oql", "sumd"]}
       }
     },
     "comparisonPolicy": {
@@ -177,7 +177,7 @@
           "additionalProperties": false,
           "required": ["kind", "path", "start_line", "end_line"],
           "properties": {
-            "kind": {"const": "markdown-lines"},
+            "kind": {"enum": ["markdown-lines", "yaml-lines", "json-lines"]},
             "path": {"type": "string", "minLength": 1, "maxLength": 320},
             "start_line": {"type": "integer", "minimum": 1},
             "end_line": {"type": "integer", "minimum": 1}
@@ -192,6 +192,18 @@
             "endpoint": {"type": "string", "minLength": 1, "maxLength": 320},
             "page": {"type": "integer", "minimum": 1},
             "cursor": {"type": ["string", "null"], "maxLength": 320}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "path"],
+          "properties": {
+            "kind": {"enum": ["oql-scenario", "oql-telemetry-log", "sumd-document", "sumd-missing"]},
+            "path": {"type": "string", "minLength": 1, "maxLength": 320},
+            "start_line": {"type": "integer", "minimum": 0},
+            "end_line": {"type": "integer", "minimum": 0},
+            "scenario_id": {"type": "string", "maxLength": 320}
           }
         }
       ]

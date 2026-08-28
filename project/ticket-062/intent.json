@@ -1,0 +1,24 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-062",
+  "summary": "Harmonize float and percentage comparison semantics between comparator and validator (F11)",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-062/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_comparator.py",
+    "src/data2dsl_contract_v0/validate.py",
+    "tests/test_float_percentage_harmony.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
