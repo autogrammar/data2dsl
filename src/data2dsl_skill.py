@@ -18,9 +18,12 @@ from data2dsl_adapters import (
     Code2SchemaMetricResponse,
     CurllmAdapter,
     CurllmMetricResponse,
+    CurllmPageEvidence,
     DetaAdapter,
+    DetaServiceEvidence,
     DetaTopologyResponse,
     DiagitCommitMetricResponse,
+    DiagitPageEvidence,
     GitHubDiagitAdapter,
     IntentContractAdapter,
     IntentContractResponse,
@@ -29,6 +32,7 @@ from data2dsl_adapters import (
     OqlTelemetryLogResponse,
     PlanfileAdapter,
     PlanfileMetricResponse,
+    PlanfileTicketEvidence,
     SUMDAdapter,
     SUMDMetricResponse,
     WorkSummaryMarkdownAdapter,
@@ -54,18 +58,53 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         return adapter.normalize(query, claim, side=side)
     elif st == "github":
         adapter = GitHubDiagitAdapter()
-        resp = DiagitCommitMetricResponse(
-            status="OK" if raw.get("commit_count") is not None else "NOT_FOUND",
-            commit_count=raw.get("commit_count"),
-        )
+        resp = raw.get("response")
+        if not isinstance(resp, DiagitCommitMetricResponse):
+            pages_raw = raw.get("pages", ())
+            pages_obj = []
+            for p in pages_raw:
+                if isinstance(p, DiagitPageEvidence):
+                    pages_obj.append(p)
+                elif isinstance(p, dict):
+                    pages_obj.append(DiagitPageEvidence(
+                        page=p.get("page", 1),
+                        cursor=p.get("cursor"),
+                        digest_sha256=p.get("digest_sha256", ""),
+                        source_revision=p.get("source_revision", ""),
+                        endpoint=p.get("endpoint", "/commits"),
+                        media_type=p.get("media_type", "application/json"),
+                        source_uri=p.get("source_uri", "https://api.github.com"),
+                    ))
+            resp = DiagitCommitMetricResponse(
+                status="OK" if raw.get("commit_count") is not None else raw.get("status", "NOT_FOUND"),
+                commit_count=raw.get("commit_count"),
+                pages=tuple(pages_obj),
+                error_message=raw.get("error_message"),
+            )
         return adapter.normalize(query, resp, side=side)
     elif st == "curllm":
         adapter = CurllmAdapter()
         resp = raw.get("response")
         if not isinstance(resp, CurllmMetricResponse):
+            pages_raw = raw.get("pages", ())
+            pages_obj = []
+            for p in pages_raw:
+                if isinstance(p, CurllmPageEvidence):
+                    pages_obj.append(p)
+                elif isinstance(p, dict):
+                    pages_obj.append(CurllmPageEvidence(
+                        url=p.get("url", ""),
+                        digest_sha256=p.get("digest_sha256", ""),
+                        page=p.get("page", 1),
+                        endpoint=p.get("endpoint", "web-page"),
+                        source_revision=p.get("source_revision"),
+                        media_type=p.get("media_type", "text/html"),
+                    ))
             resp = CurllmMetricResponse(
-                status="OK" if raw.get("value") is not None else "ERROR",
+                status="OK" if raw.get("value") is not None else raw.get("status", "ERROR"),
                 value=raw.get("value"),
+                pages=tuple(pages_obj),
+                error_message=raw.get("error_message"),
             )
         return adapter.normalize(query, resp, side=side)
     elif st == "code2logic":
@@ -73,8 +112,9 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         resp = raw.get("response")
         if not isinstance(resp, Code2LogicMetricResponse):
             resp = Code2LogicMetricResponse(
-                status="OK" if raw.get("value") is not None else "ERROR",
+                status="OK" if raw.get("value") is not None else raw.get("status", "ERROR"),
                 value=raw.get("value"),
+                error_message=raw.get("error_message"),
             )
         return adapter.normalize(query, resp, side=side)
     elif st == "code2schema":
@@ -82,18 +122,35 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         resp = raw.get("response")
         if not isinstance(resp, Code2SchemaMetricResponse):
             resp = Code2SchemaMetricResponse(
-                status="OK" if raw.get("value") is not None else "ERROR",
+                status="OK" if raw.get("value") is not None else raw.get("status", "ERROR"),
                 value=raw.get("value"),
+                error_message=raw.get("error_message"),
             )
         return adapter.normalize(query, resp, side=side)
     elif st == "planfile":
         planfile_adapter = PlanfileAdapter()
         resp = raw.get("response")
         if not isinstance(resp, PlanfileMetricResponse):
+            tickets_raw = raw.get("tickets", ())
+            tickets_obj = []
+            for t in tickets_raw:
+                if isinstance(t, PlanfileTicketEvidence):
+                    tickets_obj.append(t)
+                elif isinstance(t, dict):
+                    tickets_obj.append(PlanfileTicketEvidence(
+                        ticket_id=t.get("ticket_id", ""),
+                        title=t.get("title", ""),
+                        status=t.get("status", "OPEN"),
+                        path=t.get("path", "planfile.yaml"),
+                        start_line=t.get("start_line", 1),
+                        end_line=t.get("end_line", 1),
+                        digest_sha256=t.get("digest_sha256"),
+                        media_type=t.get("media_type", "application/yaml"),
+                    ))
             resp = PlanfileMetricResponse(
                 status=raw.get("status", "OK"),
                 count=raw.get("count") if raw.get("count") is not None else raw.get("value"),
-                tickets=raw.get("tickets", ()),
+                tickets=tuple(tickets_obj),
                 path=raw.get("path", "planfile.yaml"),
                 error_message=raw.get("error_message"),
             )
@@ -102,12 +159,27 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
         deta_adapter = DetaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, DetaTopologyResponse):
+            services_raw = raw.get("services", ())
+            services_obj = []
+            for s in services_raw:
+                if isinstance(s, DetaServiceEvidence):
+                    services_obj.append(s)
+                elif isinstance(s, dict):
+                    services_obj.append(DetaServiceEvidence(
+                        name=s.get("name", ""),
+                        service_type=s.get("service_type", "service"),
+                        ports=s.get("ports", ()),
+                        manifest_path=s.get("manifest_path", "compose.yml"),
+                        start_line=s.get("start_line", 1),
+                        end_line=s.get("end_line", 1),
+                        digest_sha256=s.get("digest_sha256"),
+                    ))
             service_cnt = raw.get("service_count") if raw.get("service_count") is not None else raw.get("value")
             resp = DetaTopologyResponse(
                 status=raw.get("status", "OK"),
                 service_count=service_cnt,
-                services=raw.get("services", ()),
-                ports=raw.get("ports", ()),
+                services=tuple(services_obj),
+                ports=tuple(raw.get("ports", ())),
                 manifest_path=raw.get("manifest_path", "compose.yml"),
                 error_message=raw.get("error_message"),
             )
