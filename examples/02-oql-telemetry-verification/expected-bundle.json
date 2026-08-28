@@ -1,39 +1,152 @@
 {
-  "schema": "autogrammar.data2dsl/result/v0",
-  "bundle_id": "example-02-oql-bundle",
+  "schema": "autogrammar.data2dsl/comparison-bundle/v0",
+  "profile_bindings": {
+    "query": "wellmanifest.dsl/profile/query/v1",
+    "observation": "wellmanifest.dsl/profile/observation/v1",
+    "result": "wellmanifest.dsl/profile/result/v1",
+    "revision": "0e088f9efa06a903d1674f42b8ac6afaa0fdf071",
+    "contract_digest": "sha256:85010d33a3a1a5a311ad73591b0676b184f475d2aa5323bd2e32ef6d7aca3bd1"
+  },
   "query": {
     "schema": "autogrammar.data2dsl/query/v0",
     "query_id": "example-02-oql-query",
     "subject": {
-      "device_id": "oqlos-sensor-hub-01",
-      "driver": "stm32_thermal_v1"
+      "repository": "https://github.com/autogrammar/data2dsl",
+      "actor": "alice"
     },
     "metric": {
       "id": "device.thermal.max_celsius",
-      "version": "1.0.0",
+      "version": "v1",
       "value_kind": "float",
-      "property": "celsius"
+      "unit": "celsius"
+    },
+    "window": {
+      "start": "2026-08-01T00:00:00Z",
+      "end": "2026-08-27T00:00:00Z",
+      "semantics": "half-open-utc"
+    },
+    "left_source": {
+      "id": "oql-spec",
+      "kind": "oql"
+    },
+    "right_source": {
+      "id": "oql-telemetry",
+      "kind": "oql"
     },
     "comparison": {
-      "equality": "exact"
+      "equality": "float-exact",
+      "delta_direction": "right-minus-left",
+      "missing_is_zero": false
     }
   },
+  "observations": [
+    {
+      "schema": "autogrammar.data2dsl/observation/v0",
+      "observation_id": "observation:oql:spec",
+      "query_id": "example-02-oql-query",
+      "side": "left",
+      "subject": {
+        "repository": "https://github.com/autogrammar/data2dsl",
+        "actor": "alice"
+      },
+      "metric": {
+        "id": "device.thermal.max_celsius",
+        "version": "v1",
+        "value_kind": "float",
+        "unit": "celsius"
+      },
+      "window": {
+        "start": "2026-08-01T00:00:00Z",
+        "end": "2026-08-27T00:00:00Z",
+        "semantics": "half-open-utc"
+      },
+      "state": "OBSERVED",
+      "value": {
+        "kind": "float",
+        "value": "75.0"
+      },
+      "evidence": [
+        {
+          "evidence_id": "evidence:oql:spec:1",
+          "target_uri": "https://github.com/autogrammar/data2dsl",
+          "source_uri": "https://github.com/autogrammar/data2dsl/scenarios/sensor.oql.json",
+          "source_revision": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+          "media_type": "application/json",
+          "digest_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+          "extractor": {
+            "id": "autogrammar.data2dsl.extractor.oql",
+            "version": "1.0.0"
+          },
+          "location": {
+            "kind": "oql-scenario",
+            "path": "scenarios/sensor.oql.json"
+          }
+        }
+      ]
+    },
+    {
+      "schema": "autogrammar.data2dsl/observation/v0",
+      "observation_id": "observation:oql:telemetry",
+      "query_id": "example-02-oql-query",
+      "side": "right",
+      "subject": {
+        "repository": "https://github.com/autogrammar/data2dsl",
+        "actor": "alice"
+      },
+      "metric": {
+        "id": "device.thermal.max_celsius",
+        "version": "v1",
+        "value_kind": "float",
+        "unit": "celsius"
+      },
+      "window": {
+        "start": "2026-08-01T00:00:00Z",
+        "end": "2026-08-27T00:00:00Z",
+        "semantics": "half-open-utc"
+      },
+      "state": "OBSERVED",
+      "value": {
+        "kind": "float",
+        "value": "82.5"
+      },
+      "evidence": [
+        {
+          "evidence_id": "evidence:oql:telemetry:1",
+          "target_uri": "https://github.com/autogrammar/data2dsl",
+          "source_uri": "https://github.com/autogrammar/data2dsl/logs/sensor.jsonl",
+          "source_revision": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+          "media_type": "application/json",
+          "digest_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+          "extractor": {
+            "id": "autogrammar.data2dsl.extractor.oql",
+            "version": "1.0.0"
+          },
+          "location": {
+            "kind": "oql-telemetry-log",
+            "path": "logs/sensor.jsonl"
+          }
+        }
+      ]
+    }
+  ],
   "result": {
+    "schema": "autogrammar.data2dsl/comparison-result/v0",
+    "query_id": "example-02-oql-query",
     "outcome": "CONFLICT",
-    "left": {
-      "state": "VALUE",
-      "value": {"kind": "float", "value": 75.0}
-    },
-    "right": {
-      "state": "VALUE",
-      "value": {"kind": "float", "value": 82.5}
-    },
+    "left_observation_id": "observation:oql:spec",
+    "right_observation_id": "observation:oql:telemetry",
     "delta": {
       "kind": "float",
       "value": "7.5"
     },
-    "comparison_policy": {
-      "equality": "exact"
+    "evidence_ids": [
+      "evidence:oql:spec:1",
+      "evidence:oql:telemetry:1"
+    ],
+    "comparison": {
+      "equality": "float-exact",
+      "delta_direction": "right-minus-left",
+      "missing_is_zero": false
     }
   }
 }
