@@ -8,6 +8,38 @@
     "priority": "P1",
     "origin": "health"
   },
+  "delivery": {
+    "acceptedBaseSha": "33ee5aa8cfb8417d3dca2f254ee8ba7c2132ee9e",
+    "targetBranch": "main",
+    "outcome": "Declare all standalone Python modules in pyproject.toml setuptools config so built wheels include all modules and schema files.",
+    "nonGoals": ["Refactor internal module structures", "Add external dependencies"],
+    "complexity": "XS",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Configure [tool.setuptools.py-modules] in pyproject.toml with all 9 top-level modules in src/ and package-dir.",
+      "components": [{"name": "packaging", "paths": ["pyproject.toml"]}],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert pyproject.toml changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-03",
+        "commands": ["python -m pip wheel --no-deps -w dist .", "python -m pytest", "project/governance-check.bat"],
+        "evidence": "Wheel contains all 9 modules and contract schema."
+      }
+    ]
+  },
   "allowedPaths": [
     "project/ticket-064/**",
     "TODO.md",
