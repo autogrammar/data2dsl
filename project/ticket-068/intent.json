@@ -1,0 +1,24 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-068",
+  "summary": "Fix batch missing observation handling and markdown report formatting (F10, F12)",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-068/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_batch.py",
+    "tests/test_batch_f10_f12.py",
+    "tests/test_batch_comparator.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
