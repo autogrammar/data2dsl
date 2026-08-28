@@ -17,6 +17,24 @@
           "version": "1.0.0",
           "value_kind": "integer",
           "unit": "commits"
+        },
+        "window": {
+          "start": "2026-08-10T00:00:00Z",
+          "end": "2026-08-17T00:00:00Z",
+          "semantics": "half-open-utc"
+        },
+        "left_source": {
+          "id": "github:left",
+          "kind": "github"
+        },
+        "right_source": {
+          "id": "github:right",
+          "kind": "github"
+        },
+        "comparison": {
+          "equality": "integer-exact",
+          "delta_direction": "right-minus-left",
+          "missing_is_zero": false
         }
       },
       "left_raw": {

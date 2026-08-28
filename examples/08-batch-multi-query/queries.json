@@ -8,7 +8,7 @@
     },
     "metric": {
       "id": "tickets_completed",
-      "version": "1.0.0",
+      "version": "v1",
       "value_kind": "integer",
       "unit": "tickets"
     },
@@ -26,7 +26,7 @@
       "kind": "github"
     },
     "comparison": {
-      "equality": "exact",
+      "equality": "integer-exact",
       "delta_direction": "right-minus-left",
       "missing_is_zero": false
     }
@@ -40,7 +40,7 @@
     },
     "metric": {
       "id": "test_coverage",
-      "version": "1.0.0",
+      "version": "v1",
       "value_kind": "percentage",
       "unit": "percent"
     },
@@ -51,11 +51,11 @@
     },
     "left_source": {
       "id": "source:ci",
-      "kind": "ci"
+      "kind": "markdown"
     },
     "right_source": {
-      "id": "source:audit",
-      "kind": "audit"
+      "id": "source:sonar",
+      "kind": "github"
     },
     "comparison": {
       "equality": "percentage-exact",
