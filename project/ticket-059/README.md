@@ -3,7 +3,7 @@
 - **ID**: ticket-059
 - **Owner**: unresolved:human
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: VALIDATION
 - **Created**: 2026-08-28
 
 ## Goal and scope
@@ -28,12 +28,12 @@ No new dependencies, external coordination, or secret access required.
 ## Acceptance criteria
 
 - [x] AC-01: Scope is approved (SESSION_EXECUTION_AUTHORIZATION recorded).
-- [ ] AC-02: Schema accepts all 10 adapter source kinds and their location types.
-- [ ] AC-03: Generator emits valid metric version (`v1`), valid equality policy,
+- [x] AC-02: Schema accepts all 10 adapter source kinds and their location types.
+- [x] AC-03: Generator emits valid metric version (`v1`), valid equality policy,
   and dynamic time period.
-- [ ] AC-04: `generate_query_template()` output for every adapter passes
+- [x] AC-04: `generate_query_template()` output for every adapter passes
   `validate_document()`.
-- [ ] AC-05: All existing tests still pass. New acceptance test added.
+- [x] AC-05: All existing tests still pass (91/91). New acceptance test added.
 
 ## Participants
 
