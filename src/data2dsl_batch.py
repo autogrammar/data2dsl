@@ -130,8 +130,17 @@ class BatchMultiQueryComparator:
             met = q.get("metric", {})
             q_key = (subj.get("repository"), subj.get("actor"), met.get("id")) if subj and met else None
 
-            left_obs = left_by_qid.get(qid) or (left_by_key.get(q_key) if q_key else None)
-            right_obs = right_by_qid.get(qid) or (right_by_key.get(q_key) if q_key else None)
+            left_obs = left_by_qid.get(qid)
+            if left_obs is None and q_key:
+                candidate = left_by_key.get(q_key)
+                if candidate and candidate.get("query_id") in (None, "", qid):
+                    left_obs = candidate
+
+            right_obs = right_by_qid.get(qid)
+            if right_obs is None and q_key:
+                candidate = right_by_key.get(q_key)
+                if candidate and candidate.get("query_id") in (None, "", qid):
+                    right_obs = candidate
 
             bundle = self._comparator.compare(q, left_obs, right_obs)
             bundles.append(bundle)
@@ -182,33 +191,35 @@ class BatchMultiQueryComparator:
 
 def _format_val(obs: Any) -> str:
     if not obs or not isinstance(obs, dict):
-        return "MISSING"
+        return "(missing)"
     val = obs.get("value")
     if val is None:
-        return "None" if obs.get("state") == "OBSERVED" else obs.get("state", "MISSING")
+        return "None" if obs.get("state") == "OBSERVED" else f"({obs.get('state', 'missing').lower()})"
     if isinstance(val, dict):
         if "value" in val:
-            return str(val["value"])
+            return str(val["value"]).replace("|", "\\|")
         if "items" in val:
-            return ",".join(str(i) for i in val.get("items", []))
-    return str(val)
+            items_str = ", ".join(str(i) for i in val.get("items", []))
+            return f"[{items_str}]".replace("|", "\\|")
+    return str(val).replace("|", "\\|")
 
 
 def _format_delta(delta: Any) -> str:
     if not delta or not isinstance(delta, dict):
         return "-"
     if "value" in delta:
-        return str(delta["value"])
+        return str(delta["value"]).replace("|", "\\|")
     if "added" in delta or "removed" in delta:
-        added = ",".join(delta.get("added", []))
-        removed = ",".join(delta.get("removed", []))
+        added = ", ".join(str(i) for i in delta.get("added", []))
+        removed = ", ".join(str(i) for i in delta.get("removed", []))
         parts = []
         if added:
             parts.append(f"+[{added}]")
         if removed:
             parts.append(f"-[{removed}]")
-        return " ".join(parts) if parts else "-"
-    return str(delta)
+        res = " ".join(parts) if parts else "-"
+        return res.replace("|", "\\|")
+    return str(delta).replace("|", "\\|")
 
 
 def format_markdown_report(report_or_bundle: Any) -> str:
