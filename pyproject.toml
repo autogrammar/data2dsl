@@ -20,7 +20,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "jsonschema>=4.26.0",
+    "jsonschema==4.26.0",
 ]
 
 [project.optional-dependencies]

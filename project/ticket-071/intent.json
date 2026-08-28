@@ -1,0 +1,65 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-071",
+  "summary": "Reconcile dependency pinning and testing pipeline configuration (F15)",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-071/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "pyproject.toml"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "delivery": {
+    "acceptedBaseSha": "1e7eddd75a40b6c4388869a8210d2c42ca9d9e5e",
+    "targetBranch": "main",
+    "outcome": "Pin exact jsonschema version and verify packaging dependencies",
+    "nonGoals": [
+      "No breaking changes to runtime APIs"
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 5,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Synchronize package dependency declaration with contract validator requirements",
+      "components": [
+        {
+          "name": "packaging",
+          "paths": ["pyproject.toml"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "git revert HEAD"
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-02",
+        "commands": ["python -m data2dsl_contract_v0.validate --self-test"],
+        "evidence": "pyproject.toml"
+      }
+    ]
+  },
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
