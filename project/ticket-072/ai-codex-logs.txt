@@ -1,0 +1,56 @@
+2026-08-28 re-audit baseline: 5eb2e32c54a9858215cc770751ebc77d497e2628.
+Initial clean main was 39 commits ahead of origin/main. Publication not requested.
+Read manifest, TODO, ticket index and relevant tickets; 058 is DONE; 051-057 different scopes.
+Managed new-ticket.sh allocated ticket-072; local branch codex/ticket-072-local-reaudit.
+SESSION_EXECUTION_AUTHORIZATION: local re-audit and remaining-work-only report.
+Initial sandbox pytest: 116 passed, 11 setup errors due to temp-directory permission.
+Authorized retry: python -m pytest -q -p no:cacheprovider --tb=short: 127 passed, 1 warning in 19.01s.
+Warning: deprecated jsonschema.RefResolver in tests/test_generator.py.
+python -m ruff check src tests --output-format concise: PASS.
+python -m mypy --explicit-package-bases --ignore-missing-imports src: FAIL, 11 errors in data2dsl_adapters.py.
+Mypy: 10 None-to-dict assignments plus missing OqlTelemetryLogResponse.observed_buses.
+python src/data2dsl_contract_v0/validate.py --self-test: PASS (5 positive, 5 negative).
+Isolated wheel build (no downloads): PASS; CLI import: ModuleNotFoundError, data2dsl_cli omitted.
+Wheel contract schema and fixtures now present; packaged contract self-test: PASS.
+Comparator probes: wrong side/unit/metric version/value kind/evidence/policy -> OK MATCH; validator rejects each.
+Changed actor now UNEVALUABLE, but bundle rejected by validator for mismatched subject.
+Batch duplicate observation order -> CONFLICT or is_clean=true. Both missing -> invalid empty observations.
+Code2Schema raw JSON -> unexpected keyword argument value. Curllm/Code2Logic ERROR plus value -> OBSERVED.
+Markdown alice with earlier malice -> 99 instead of 12. SUMD tasks_completed with earlier suffix key -> 99.
+OQL id sample_rate 100 vs 42 now produces valid bundle. OQL raw zero -> UNEVALUABLE.
+OQL active_buses -> AttributeError observed_buses. OQL 1999 timestamps overwritten by 2026 query window.
+OQL source 0.001 -> normalized 0.00; exact float 1 vs 1.0000000005 -> CONFLICT delta 0.
+Float decimal strings 9007199254740992 vs 9007199254740993 -> MATCH after binary conversion.
+Set values [a,b; c] vs [a; b,c] produce same comma-joined digest input; manifest schema/validator hashes still stale.
+MCP main_mcp self-test first stdout line remains CONTRACT-V0-PASS, not JSON-RPC.
+Remediation bare outcome MATCH -> SATISFIED; Doctor accepts same without evidence.
+Mocked clock 2026-09-01 15:00 UTC -> generated start=end; validator rejects query.
+Examples 01/02 expected bundle validation and 05/08 execution: PASS (suite/probes).
+Example 07 --left-source-type -> CLI exit 2. Example 02 README constructor missing scenario_id/path.
+Default Code2Logic/Code2Schema evidence ids contain slash and fail schema validation.
+docker compose config --quiet: PASS. Docker engine unavailable; container execution not verified.
+Initial managed project/governance-check.bat before report modification: GOV-PASS (0 errors, 0 warnings).
+Report rewritten to only remaining work; source/test modifications intentionally absent.
+Final managed governance (default and explicit changed-file scope): GOV-FAIL, GOV-BASE-001.
+Accepted audit base and local main: 5eb2e32c54a9858215cc770751ebc77d497e2628.
+Checker prefers origin/main: 1e7eddd75a40b6c4388869a8210d2c42ca9d9e5e, 39 commits behind local main.
+Read diagnostics.json GOV-BASE-001 (documentation=null); no ref/base/policy change to bypass it.
+Local report delivery is complete; publication governance remains unpassed and is disclosed.
+Report links resolved; intent schema valid; git diff --check passed; application/test diff empty.
+
+Publication authorization received: user explicitly requested push for sharing with their boss.
+Fetched origin/main: 1e7eddd75a40b6c4388869a8210d2c42ca9d9e5e.
+Rebuilt isolated documentation-only publication checkout from that exact base.
+Original audit source 5eb2e32 and its 39 unpublished local commits remain untouched in main.
+Updated delivery acceptedBaseSha to actual publication base; original audit provenance retained.
+Repository delete_branch_on_merge=true confirmed; no merge or protection changes requested.
+Publication checkout validation (origin/main code, not audited local code): 84 pytest tests PASS; ruff PASS; mypy PASS; contract self-test PASS.
+Managed governance --base origin/main: PASS, 0 errors/warnings. git diff --check PASS.
+Diff: 9 documentation/governance files only; no application, test or dependency files.
+Goal CLI unavailable; required Goal-wrapped terminal lifecycle check cannot be claimed.
+Read-only inventory: one primary checkout plus this temporary publication worktree; existing branches preserved, no user data deleted.
+
+Latest SESSION_EXECUTION_AUTHORIZATION: user explicitly requested immediate merge of the document.
+Merge is authorized only through the protected GitHub boundary; no admin bypass or self-approval.
+While preparing publication, main advanced to bf98b515a144eb0cb64b65482549e396fbee036d via another PR. Merged that base into this branch, resolving only the audit conflict in favor of the updated report. Delivery base updated to this actual base; audit source remains 5eb2e32.
+Read-only workspace inventory found 38 pre-existing non-default branch findings across the workspace; preserved unknown/unique data. Goal CLI is unavailable; terminal lifecycle not claimed passed.

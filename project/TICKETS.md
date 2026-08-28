@@ -62,4 +62,5 @@ analysis-generated `project/README.md`.
 | **ticket-055** | [`README.md`](./ticket-055/README.md) | [`preprompt.md`](./ticket-055/preprompt.md) | - |  [`ai-antigravity.md`](./ticket-055/ai-antigravity.md) |  [`ai-antigravity-logs.txt`](./ticket-055/ai-antigravity-logs.txt) | [`changelog.md`](./ticket-055/changelog.md) |
 | **ticket-056** | [`README.md`](./ticket-056/README.md) | [`preprompt.md`](./ticket-056/preprompt.md) | - |  [`ai-antigravity.md`](./ticket-056/ai-antigravity.md) |  [`ai-antigravity-logs.txt`](./ticket-056/ai-antigravity-logs.txt) | [`changelog.md`](./ticket-056/changelog.md) |
 | **ticket-057** | [`README.md`](./ticket-057/README.md) | [`preprompt.md`](./ticket-057/preprompt.md) | - |  [`ai-antigravity.md`](./ticket-057/ai-antigravity.md) |  [`ai-antigravity-logs.txt`](./ticket-057/ai-antigravity-logs.txt) | [`changelog.md`](./ticket-057/changelog.md) |
+| **ticket-072** | [`README.md`](./ticket-072/README.md) | [`preprompt.md`](./ticket-072/preprompt.md) | - | [`ai-codex.md`](./ticket-072/ai-codex.md) | [`ai-codex-logs.txt`](./ticket-072/ai-codex-logs.txt) | [`changelog.md`](./ticket-072/changelog.md) |
 <!-- AUTO:TICKET_INDEX:END -->
