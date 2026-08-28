@@ -981,7 +981,8 @@ class DetaAdapter:
                     }
                 )
         else:
-            digest = compute_sha256(f"topology:{response.manifest_path}")
+            ports_str = ",".join(str(p) for p in sorted(response.ports))
+            digest = compute_sha256(f"topology:{response.manifest_path}:{response.service_count}:{ports_str}")
             src_rev = response.source_revision or f"sha256:{digest}"
             evidence_list.append(
                 {
@@ -1146,7 +1147,11 @@ class IntentContractAdapter:
                 ],
             }
 
-        digest = compute_sha256(f"{response.contract_id}:{','.join(response.deliverables)}")
+        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        parties_str = ",".join(sorted(response.parties))
+        obligations_str = ",".join(sorted(response.obligations))
+        deliverables_str = ",".join(sorted(response.deliverables))
+        digest = compute_sha256(f"{response.contract_id}:{parties_str}:{obligations_str}:{deliverables_str}:{val_repr}")
         src_rev = response.source_revision or f"sha256:{digest}"
         obs_id = observation_id or f"observation:intent_contract:{digest[:8]}"
 
@@ -1377,7 +1382,8 @@ class OqlTelemetryAdapter:
                 ],
             }
 
-        digest = compute_sha256(f"{response.scenario_id}:{response.path}:{val_obj.get('value', '')}")
+        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        digest = compute_sha256(f"{response.scenario_id}:{response.path}:{val_repr}")
         src_rev = response.source_revision or f"sha256:{digest}"
         obs_id = observation_id or f"observation:oql_spec:{digest[:8]}"
 
@@ -1542,7 +1548,8 @@ class OqlTelemetryAdapter:
                 ],
             }
 
-        digest = compute_sha256(f"{response.log_id}:{response.path}:{val_obj.get('value', '')}")
+        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        digest = compute_sha256(f"{response.log_id}:{response.path}:{val_repr}")
         src_rev = response.source_revision or f"sha256:{digest}"
         obs_id = observation_id or f"observation:oql_telemetry:{digest[:8]}"
 
