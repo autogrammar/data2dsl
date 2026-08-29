@@ -1,5 +1,12 @@
 # TODO
 
+## Audit publication - ticket-072
+
+- [x] Re-audit local source 5eb2e32 and retain only remaining work.
+- [x] Rebuild documentation-only publication from origin/main; preserve local code commits.
+- [ ] Publish the audit and ticket evidence for sharing; do not merge.
+
+
 ## Phase 0
 
 - [x] Allocate and link [`ticket-001`](project/ticket-001/README.md).
