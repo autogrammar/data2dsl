@@ -3,7 +3,7 @@
 - **ID**: ticket-076
 - **Owner**: founder:tom-sapletta-com
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -16,10 +16,18 @@ Repair the installed public CLI: the console script resolves
 
 - [x] AC-01: SESSION_EXECUTION_AUTHORIZATION is recorded from the founder's
   active autonomy repair request.
-- [ ] AC-02: The wheel contains `data2dsl_cli.py` and its existing local
+- [x] AC-02: The wheel contains `data2dsl_cli.py` and its existing local
   runtime imports.
-- [ ] AC-03: A clean isolated installation executes `data2dsl --self-test`.
-- [ ] AC-04: Full tests and governance pass.
+- [x] AC-03: A clean isolated installation executes `data2dsl --self-test`.
+- [x] AC-04: Full tests and governance pass.
+
+## Validation evidence
+
+- An out-of-tree wheel contains `data2dsl_cli.py`,
+  `data2dsl_discovery.py` and the console entry-point metadata.
+- A clean venv installed the wheel and executed `data2dsl --self-test` outside
+  the checkout; the imported CLI path was inside `site-packages`.
+- The complete suite passes: 132 tests; governance and whitespace checks pass.
 
 ## Participants
 

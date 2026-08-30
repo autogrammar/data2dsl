@@ -38,6 +38,7 @@ py-modules = [
     "data2dsl_batch",
     "data2dsl_comparator",
     "data2dsl_consumer",
+    "data2dsl_cli",
     "data2dsl_discovery",
     "data2dsl_doctor",
     "data2dsl_generator",

@@ -1,0 +1,1 @@
+2026-08-30T09:19:00Z Out-of-tree wheel contains data2dsl_cli and entry-point metadata; clean installed data2dsl --self-test passed outside the checkout; 132 tests and governance pass.

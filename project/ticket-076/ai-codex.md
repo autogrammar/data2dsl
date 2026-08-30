@@ -23,6 +23,10 @@ checkout tests pass.
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
+- Added `data2dsl_cli` to the explicit setuptools module list.
+- Built and installed the wheel outside the checkout; the installed command
+  completed all 5 positive and 5 negative contract self-test cases.
+- Verified 132 repository tests and governance.
 
 ## Blockers
 

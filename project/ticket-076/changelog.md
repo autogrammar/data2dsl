@@ -5,3 +5,4 @@
 - Initial governance scaffold created.
 - No human participant identity or content was generated.
 - Bounded the missing public CLI wheel target repair.
+- Included and verified the public CLI target in the built wheel.
