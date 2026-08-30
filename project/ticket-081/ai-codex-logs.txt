@@ -1,0 +1,2 @@
+2026-08-30T21:10:24Z Allocated ticket-081 from the clone-wide high-water mark for live readiness_scope loss observed in Supervisor.
+2026-08-30T21:12:00Z Recorded bounded application intent before implementation; issue #75 binds the regression.
