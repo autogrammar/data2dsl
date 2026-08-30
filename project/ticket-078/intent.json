@@ -1,0 +1,73 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-078",
+  "summary": "Expose bounded operational attributes and bottleneck queries",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "fa4649e824570c3cef9e783860039e42d9b34a6f",
+    "targetBranch": "main",
+    "outcome": "Produce a compact deterministic bottleneck subgraph from explicit sanitized operational projections.",
+    "nonGoals": [
+      "Do not crawl filesystems, networks, repositories or implicit registries.",
+      "Do not copy arbitrary scalar fields, grant authority or choose remediation."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extend the experimental discovery graph with list-record entities, a closed vocabulary of bounded operational attributes and deterministic OR filtering.",
+      "components": [
+        {
+          "name": "discovery-core",
+          "paths": ["src/data2dsl_discovery.py", "tests/test_skill.py"]
+        },
+        {
+          "name": "explicit-adapters",
+          "paths": ["src/data2dsl_skill.py", "tests/test_cli.py"]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove list entity attributes and multi-term filtering while retaining ticket-077 string discovery."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-05",
+        "commands": [
+          "python -m pytest -q",
+          "python -m ruff check src/data2dsl_discovery.py tests/test_cli.py",
+          "bash project/governance-check.sh"
+        ],
+        "evidence": "Positive and negative fixtures plus a live read-only PR-controller projection produce a compact deterministic bottleneck graph."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-078/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_discovery.py",
+    "src/data2dsl_skill.py",
+    "tests/test_skill.py",
+    "tests/test_cli.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-077"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
