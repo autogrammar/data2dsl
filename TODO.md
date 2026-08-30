@@ -4,7 +4,7 @@
 
 - [x] Re-audit local source 5eb2e32 and retain only remaining work.
 - [x] Rebuild documentation-only publication from origin/main; preserve local code commits.
-- [ ] Publish the audit and ticket evidence for sharing; do not merge.
+- [x] Publish and merge the audit through exact-head protected Validator review.
 
 
 ## Phase 0
@@ -318,7 +318,6 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Pakiet `examples/08-batch-multi-query/`**: Utworzenie gotowego pakietu demonstracyjnego z fixtures i instrukcją. — ticket-057
 - [x] **Aktualizacja `examples/README.md`**: Włączenie Przykładu 08 do indeksu przykładów. — ticket-057
 - [x] **Synchronizacja głównego `README.md`**: Uzupełnienie opisów 10 adapterów, subkomend CLI, generatora i Subactora. — ticket-057
-
 
 
 
