@@ -2,8 +2,8 @@
 
 - **ID**: ticket-076
 - **Owner**: founder:tom-sapletta-com
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -28,6 +28,9 @@ Repair the installed public CLI: the console script resolves
 - A clean venv installed the wheel and executed `data2dsl --self-test` outside
   the checkout; the imported CLI path was inside `site-packages`.
 - The complete suite passes: 132 tests; governance and whitespace checks pass.
+- Protected Validator run `33303797009` approved exact head
+  `e5808276884873c1daa102d5385bf7baf2310584`; PR #67 merged it as
+  `5ac04deb17003b7d815f301984beec9c8873655e`.
 
 ## Participants
 

@@ -1,1 +1,2 @@
 2026-08-30T09:19:00Z Out-of-tree wheel contains data2dsl_cli and entry-point metadata; clean installed data2dsl --self-test passed outside the checkout; 132 tests and governance pass.
+2026-08-30T09:23:00Z Protected Validator run 33303797009 approved exact head e5808276884873c1daa102d5385bf7baf2310584 and merged PR #67 as 5ac04deb17003b7d815f301984beec9c8873655e.
