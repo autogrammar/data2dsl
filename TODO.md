@@ -9,8 +9,8 @@
 
 ## Operational data graph - ticket-078
 
-- [ ] Expose bounded allowlisted operational attributes on entity nodes.
-- [ ] Support bounded multi-term bottleneck queries with deterministic OR semantics.
+- [x] Expose bounded allowlisted operational attributes on entity nodes.
+- [x] Support bounded multi-term bottleneck queries with deterministic OR semantics.
 
 ## Audit publication - ticket-072
 

@@ -22,6 +22,11 @@ growing, easily understood data network through `autogrammar/data2dsl`.
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
+- Added list-record entities, bounded operational attributes and multi-term
+  filtering to the deterministic discovery graph.
+- Extended the CLI and MCP declarations without adding runtime dependencies or
+  implicit discovery authority.
+- Verified the implementation against the live sanitized PR-controller cycle.
 
 ## Blockers
 

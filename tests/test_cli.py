@@ -55,6 +55,28 @@ def test_cli_discovers_from_file_and_fails_closed_on_duplicate_sources(
     assert "source_uri_duplicate" in error["message"]
 
 
+def test_cli_discovers_multi_term_operational_records(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    envelope = {
+        "sources": [{
+            "uri": "artifact://subactor/pr-controller/cycle/r1",
+            "document": {"pull_requests": [
+                {"repository": "subactor/core", "child_state": "ready"},
+                {"repository": "subactor/twin", "child_state": "failed"},
+            ]},
+        }],
+        "query": ["failed", "blocked"],
+    }
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(envelope)))
+
+    assert main(["discover", "--input", "-"]) == 0
+    graph = json.loads(capsys.readouterr().out)
+    assert graph["query"] == ["failed", "blocked"]
+    assert any(node.get("attributes", {}).get("repository") == "subactor/twin" for node in graph["nodes"])
+    assert all(node.get("attributes", {}).get("repository") != "subactor/core" for node in graph["nodes"])
+
+
 def test_cli_compare_golden_match(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     md_file = tmp_path / "work-summary.md"
     md_file.write_text(

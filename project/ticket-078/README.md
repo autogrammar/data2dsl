@@ -3,7 +3,7 @@
 - **ID**: ticket-078
 - **Owner**: founder:tom-sapletta-com
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -15,15 +15,27 @@ query may select a bounded list of terms using deterministic OR semantics.
 
 ## Acceptance criteria
 
-- [ ] AC-01: SESSION_EXECUTION_AUTHORIZATION is recorded from the Founder's
+- [x] AC-01: SESSION_EXECUTION_AUTHORIZATION is recorded from the Founder's
   active request to continue autonomy repair.
-- [ ] AC-02: Entity nodes expose only allowlisted operational scalar
+- [x] AC-02: Entity nodes expose only allowlisted operational scalar
   attributes with deterministic size and value bounds.
-- [ ] AC-03: A string query remains backward compatible and a bounded list of
+- [x] AC-03: A string query remains backward compatible and a bounded list of
   terms selects the union of matching nodes plus their immediate graph context.
-- [ ] AC-04: Secret-shaped, reference and arbitrary scalar values never become
+- [x] AC-04: Secret-shaped, reference and arbitrary scalar values never become
   node attributes; invalid or oversized queries fail closed.
-- [ ] AC-05: Positive, negative, full-stack and governance checks pass.
+- [x] AC-05: Positive, negative, full-stack and governance checks pass.
+
+## Validation evidence
+
+- `repositories[]` and `pull_requests[]` now become bounded entity nodes; the
+  scalar projection is restricted to 32 code-owned operational keys and
+  160-character, finite, non-secret values.
+- String queries remain compatible; lists accept at most 16 non-empty terms of
+  at most 80 characters and use deterministic OR semantics.
+- A live read-only PR-controller projection produced 11 failing entities plus
+  their source node (12 nodes, 11 edges), instead of the full cycle payload.
+- Complete suite: 144 passed; focused Ruff, governance and whitespace gates
+  pass. The existing jsonschema deprecation warning remains unchanged.
 
 ## Participants
 

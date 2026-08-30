@@ -346,7 +346,16 @@ class Data2DslSkill:
                         "required": ["uri", "document"],
                     },
                 },
-                "query": {"type": ["string", "null"]},
+                "query": {
+                    "oneOf": [
+                        {"type": "string", "maxLength": 80},
+                        {
+                            "type": "array", "minItems": 1, "maxItems": 16,
+                            "items": {"type": "string", "minLength": 1, "maxLength": 80},
+                        },
+                        {"type": "null"},
+                    ]
+                },
             },
             "required": ["sources"],
         }
@@ -491,7 +500,7 @@ class Data2DslSkill:
 
     @classmethod
     def execute_discover_data(
-        cls, sources: list[Dict[str, Any]], query: str | None = None,
+        cls, sources: list[Dict[str, Any]], query: str | list[str] | None = None,
     ) -> Dict[str, Any]:
         """Build a bounded graph without implicit filesystem or network reads."""
         try:

@@ -134,6 +134,79 @@ def test_discover_data_is_callable_over_mcp():
     assert payload["graph"]["summary"]["node_count"] >= 2
 
 
+def test_discover_data_selects_bounded_operational_bottlenecks_from_list_records():
+    sources = [{
+        "uri": "artifact://subactor/pr-controller/last-cycle/r1",
+        "document": {
+            "pull_requests": [
+                {
+                    "repository": "maskservice/update",
+                    "pull_request": 38,
+                    "action": "repair_failed",
+                    "child_state": "failed",
+                    "child_error": "repository_not_allowlisted",
+                    "head": "must-not-be-an-attribute",
+                    "api_token": "sk-secret-secret-secret-secret",
+                },
+                {
+                    "repository": "subactor/core",
+                    "pull_request": 252,
+                    "action": "repair_in_progress",
+                    "child_state": "ready",
+                },
+            ]
+        },
+    }]
+    result = Data2DslSkill.execute_discover_data(
+        sources, query=["failed", "usage_limit", "blocked"]
+    )
+    assert result["status"] == "OK"
+    graph = result["graph"]
+    entities = [node for node in graph["nodes"] if node["kind"] == "entity"]
+    assert len(entities) == 1
+    assert entities[0]["label"] == "repository:maskservice/update"
+    assert entities[0]["attributes"] == {
+        "action": "repair_failed",
+        "child_error": "repository_not_allowlisted",
+        "child_state": "failed",
+        "pull_request": 38,
+        "repository": "maskservice/update",
+    }
+    serialized = json.dumps(graph)
+    assert "must-not-be-an-attribute" not in serialized
+    assert "sk-secret-secret-secret-secret" not in serialized
+    assert "subactor/core" not in serialized
+
+
+@pytest.mark.parametrize(
+    "query",
+    [["ok"] * 17, [""], ["x" * 81], [1], {"term": "failed"}],
+)
+def test_discover_data_rejects_invalid_bottleneck_queries(query):
+    result = Data2DslSkill.execute_discover_data(
+        [{"uri": "repo://subactor/core", "document": {"repositories": []}}],
+        query=query,
+    )
+    assert result["status"] == "ERROR"
+    assert result["error_code"] == "DISCOVERY_INVALID"
+
+
+def test_discover_data_drops_secret_shaped_and_unbounded_operational_values():
+    source = {
+        "uri": "repo://subactor/coding-agent",
+        "document": {"providers": {"codex": {
+            "status": "sk-secret-secret-secret-secret",
+            "queue_depth": 2**80,
+            "provider": "codex",
+        }}},
+    }
+    result = Data2DslSkill.execute_discover_data([source], query="codex")
+    assert result["status"] == "OK"
+    entity = next(node for node in result["graph"]["nodes"] if node["kind"] == "entity")
+    assert entity["attributes"] == {"provider": "codex"}
+    assert "sk-secret-secret-secret-secret" not in json.dumps(result)
+
+
 def test_skill_self_test():
     res = Data2DslSkill.self_test()
     assert res["status"] == "PASS"
