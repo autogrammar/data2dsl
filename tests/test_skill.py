@@ -45,13 +45,93 @@ def base_query():
 
 def test_skill_tool_definitions():
     tools = Data2DslSkill.get_tool_definitions()
-    assert len(tools) == 4
+    assert len(tools) == 5
     tool_names = {t["name"] for t in tools}
     assert "data2dsl_compare" in tool_names
     assert "data2dsl_self_test" in tool_names
     assert "data2dsl_validate_envelope" in tool_names
     assert "data2dsl_simulate_healing" in tool_names
+    assert "data2dsl_discover_data" in tool_names
     assert "data2dsl_self_test" in tool_names
+
+
+def test_discover_data_builds_queryable_redacted_registry_graph():
+    sources = [
+        {
+            "uri": "artifact://subactor/platform/config/artifact-registry.json/r1",
+            "document": {
+                "schema": "subactor.artifact-registry/v1",
+                "artifacts": {
+                    "supervisor": {
+                        "canonical_uri": "artifact://subactor/supervisor/config.json/r2",
+                        "schema_ref": "https://subactor.dev/schemas/supervisor.json",
+                        "api_token": "must-not-leak",
+                        "accessToken": "must-also-not-leak",
+                        "callback_url": "https://example.invalid/callback?apiKey=hidden",
+                    }
+                },
+            },
+        },
+        {
+            "uri": "planfile://tickets/query/founder-work-status",
+            "document": {
+                "schema": "subactor.pull-request-controller-cycle/v1",
+                "repositories": {
+                    "subactor/supervisor": {
+                        "strategy_ref": "strategy://subactor/repair/v1"
+                    }
+                },
+            },
+        },
+    ]
+    result = Data2DslSkill.execute_discover_data(sources, query="supervisor")
+    assert result["status"] == "OK"
+    graph = result["graph"]
+    assert graph["schema"] == "autogrammar.data2dsl/data-network/v0"
+    assert graph["summary"]["source_count"] == 2
+    assert graph["summary"]["redacted_field_count"] == 3
+    assert graph["nodes"] == sorted(graph["nodes"], key=lambda node: node["id"])
+    assert "must-not-leak" not in json.dumps(graph)
+    assert "must-also-not-leak" not in json.dumps(graph)
+    assert "apiKey=hidden" not in json.dumps(graph)
+    assert any(node["kind"] == "entity" for node in graph["nodes"])
+    assert any(edge["relation"] == "references" for edge in graph["edges"])
+
+
+def test_discover_data_is_deterministic_and_bounded():
+    sources = [{"uri": "repo://subactor/registry", "document": {"entries": {"a": {"uri": "knowledge://subactor/a/v1"}}}}]
+    left = Data2DslSkill.execute_discover_data(sources)
+    right = Data2DslSkill.execute_discover_data(sources)
+    assert left == right
+    rejected = Data2DslSkill.execute_discover_data(sources * 33)
+    assert rejected["status"] == "ERROR"
+    assert rejected["error_code"] == "DISCOVERY_INVALID"
+
+    duplicate = Data2DslSkill.execute_discover_data(sources * 2)
+    assert duplicate["status"] == "ERROR"
+    assert "source_uri_duplicate" in duplicate["message"]
+
+
+def test_discover_data_is_callable_over_mcp():
+    response = handle_mcp_message({
+        "jsonrpc": "2.0",
+        "id": 73,
+        "method": "tools/call",
+        "params": {
+            "name": "data2dsl_discover_data",
+            "arguments": {
+                "sources": [{
+                    "uri": "repo://subactor/supervisor",
+                    "document": {"routes": {"repair": {"uri": "strategy://repair/v1"}}},
+                }],
+                "query": "repair",
+            },
+        },
+    })
+    assert response is not None
+    payload = json.loads(response["result"]["content"][0]["text"])
+    assert payload["status"] == "OK"
+    assert payload["graph"]["summary"]["node_count"] >= 2
 
 
 def test_skill_self_test():
@@ -487,7 +567,3 @@ def test_urirun_bindings_subactor():
     val_res = bindings["handler"]("data2dsl://host/subactor/validate", {"envelope": envelope_text})
     assert val_res["status"] == "OK"
     assert val_res["envelope"]["valid"] is True
-
-
-
-

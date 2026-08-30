@@ -15,7 +15,7 @@ def test_tools_list_returns_input_schema_for_all_tools():
     assert resp is not None
     assert "result" in resp
     tools = resp["result"]["tools"]
-    assert len(tools) == 4
+    assert len(tools) == 5
 
     for tool in tools:
         assert "inputSchema" in tool, f"Tool {tool.get('name')} is missing 'inputSchema'"
