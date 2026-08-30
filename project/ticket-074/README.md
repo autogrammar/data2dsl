@@ -2,8 +2,8 @@
 
 - **ID**: ticket-074
 - **Owner**: founder:tom-sapletta-com
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -30,6 +30,11 @@ cannot silently be omitted from the wheel.
   SHA-256 `2d86aa4ae3eaef4b443f29f858b3c398d35127c0a83e051877f53f36e8229bdd`.
 - Full suite: 130 tests passed. Governance and diff checks passed after build
   artifacts were removed from the delivery diff.
+- Protected Validator run `33303079089` approved exact head
+  `1e08ec9217f81f27b8f69c4191f5bb132241a220`; PR #63 merged it as
+  `2c69c35c3f0b7c3dff9542f6901eb96b895cadff`.
+- Integrated-main readback confirmed the module declaration and repeated all
+  130 tests before terminal closure.
 
 ## Coordination
 
