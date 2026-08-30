@@ -1,0 +1,55 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-076",
+  "summary": "Package public data2dsl CLI entry point",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "0fcafcb4c6537e7f1729750f6e4a1a48c278b984",
+    "targetBranch": "main",
+    "outcome": "Make the declared data2dsl console script executable from a clean wheel installation.",
+    "nonGoals": [
+      "Do not change CLI behavior or add dependencies.",
+      "Do not add filesystem or network discovery."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Include the already-declared console target in the explicit setuptools py-modules list and verify the built artifact outside the checkout.",
+      "components": [{"name": "wheel-manifest", "paths": ["pyproject.toml"]}],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove data2dsl_cli from the py-modules list."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-03",
+      "commands": [
+        "/usr/bin/python3 -m build --wheel --no-isolation",
+        "python -m venv <isolated> && <isolated>/bin/pip install --no-deps <wheel> && <isolated>/bin/data2dsl --self-test",
+        "python3 -m pytest -q",
+        "bash ./project/governance-check.sh"
+      ],
+      "evidence": "The installed console script imports only wheel contents and completes its self-test."
+    }]
+  },
+  "allowedPaths": ["project/ticket-076/**", "TODO.md", "project/TICKETS.md", "pyproject.toml"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
