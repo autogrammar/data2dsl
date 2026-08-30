@@ -5,3 +5,4 @@
 - Initial governance scaffold created.
 - No human participant identity or content was generated.
 - Bounded a systematic AST-based packaging import-closure regression test.
+- Added positive metadata closure and negative omitted-discovery probes.

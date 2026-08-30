@@ -3,7 +3,7 @@
 ## Packaging regression - ticket-074
 
 - [x] Package the discovery runtime.
-- [ ] Enforce local module import closure in dependent application ticket-075.
+- [x] Enforce local module import closure in dependent application ticket-075.
 
 ## Audit publication - ticket-072
 

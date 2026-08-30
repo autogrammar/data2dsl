@@ -24,6 +24,11 @@ wheel, and checkout-based tests do not expose that difference.
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
 - Activated only after ticket-074 reached terminal protected delivery.
+- Added an AST-based closure test over the modules explicitly enumerated in
+  `tool.setuptools.py-modules`.
+- Added a negative probe that removes `data2dsl_discovery` and confirms that
+  the omitted import is attributed to `data2dsl_skill`.
+- Verified 2 focused and 132 complete tests plus Ruff and governance.
 
 ## Blockers
 

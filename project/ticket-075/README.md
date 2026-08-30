@@ -3,7 +3,7 @@
 - **ID**: ticket-075
 - **Owner**: founder:tom-sapletta-com
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -16,10 +16,17 @@ packaged module is also declared in `tool.setuptools.py-modules`.
 
 - [x] AC-01: SESSION_EXECUTION_AUTHORIZATION is recorded from the founder's
   active autonomy repair request.
-- [ ] AC-02: Current packaging metadata has no omitted local runtime imports.
-- [ ] AC-03: A negative probe that removes `data2dsl_discovery` reproduces the
+- [x] AC-02: Current packaging metadata has no omitted local runtime imports.
+- [x] AC-03: A negative probe that removes `data2dsl_discovery` reproduces the
   exact missing dependency through `data2dsl_skill`.
-- [ ] AC-04: Full tests and governance pass.
+- [x] AC-04: Full tests and governance pass.
+
+## Validation evidence
+
+- The focused positive and negative probes pass: 2 tests.
+- The complete checkout suite passes: 132 tests, with one pre-existing
+  `jsonschema.RefResolver` deprecation warning.
+- Ruff, governance and whitespace checks pass.
 
 ## Participants
 
