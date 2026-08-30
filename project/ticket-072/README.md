@@ -2,8 +2,8 @@
 
 - **ID**: ticket-072
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-28
 
 ## Goal and scope
@@ -55,3 +55,11 @@ Latest SESSION_EXECUTION_AUTHORIZATION: user explicitly requested immediate merg
 Merge is authorized only through the protected GitHub boundary; no admin bypass or self-approval.
 While preparing publication, main advanced to bf98b515a144eb0cb64b65482549e396fbee036d via another PR. Merged that base into this branch, resolving only the audit conflict in favor of the updated report. Delivery base updated to this actual base; audit source remains 5eb2e32.
 Read-only workspace inventory found 38 pre-existing non-default branch findings across the workspace; preserved unknown/unique data. Goal CLI is unavailable; terminal lifecycle not claimed passed.
+
+## Protected delivery
+
+Validator App `ifuri-validator-agent` approved exact head
+`5be6f57087adedc9aab63047b8c064feac36b70d`. PR #59 merged that head as
+`4b9e42677e6d125e89d3901193c8ff0ea14bd10b`; the remote lifecycle checks
+passed. The integrated default branch contains the published audit, so the
+integration workstream reservation is released.

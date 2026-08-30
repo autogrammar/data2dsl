@@ -8,3 +8,5 @@
   of remaining fixes, reproduction evidence and acceptance conditions.
 - Recorded passing tests plus unresolved build/typing/behavioral checks;
   distinguished sandbox and unavailable-Docker limitations from code defects.
+- Reconciled the already completed protected publication and released the
+  stale integration workstream reservation.
