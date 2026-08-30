@@ -1,1 +1,2 @@
 2026-08-30T09:33:00Z Explicit stdin/file discovery, duplicate rejection and console-entry packaging closure pass; 136 complete tests, Ruff and governance clean.
+2026-08-30T09:40:00Z Protected Validator run 33304354058 merged exact head 2e50a07c6c22e6e61bf77dac4eae08d9e76f66a7 as 11e8969b3567fc619dd0e0cc4663aa16c32fd398; integrated wheel installed in Subactor venv and live stdin graph readback passed.
