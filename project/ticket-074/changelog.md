@@ -6,3 +6,4 @@
 - No human participant identity or content was generated.
 - Recorded the installed-wheel regression and held implementation behind the
   existing integration workstream lifecycle.
+- Activated the bounded packaging repair after protected ticket-072 closure.

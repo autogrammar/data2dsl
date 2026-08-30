@@ -15,15 +15,16 @@ Source-checkout tests therefore pass while an installed wheel fails at import.
 ## Execution plan
 
 1. Wait for the already-merged ticket-072 lifecycle to release integration.
-2. Add the missing module and a packaging-closure regression test.
+2. Add the missing module to the integration-owned packaging manifest.
 3. Build and install an isolated wheel, then call discovery through MCP.
+4. Route the systematic regression test to a dependent application ticket.
 
 ## Actual changes
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
-- Kept the ticket in BACKLOG because active ticket-072 still owns the
-  integration workstream required by `pyproject.toml`.
+- Kept the ticket in BACKLOG while active ticket-072 owned integration, then
+  activated it only after protected closure PR #62 reached main.
 
 ## Blockers
 
