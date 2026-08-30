@@ -7,6 +7,11 @@
 - [x] Package and verify the declared public CLI target in ticket-076.
 - [x] Expose bounded explicit data-network discovery through CLI in ticket-077.
 
+## Operational data graph - ticket-078
+
+- [ ] Expose bounded allowlisted operational attributes on entity nodes.
+- [ ] Support bounded multi-term bottleneck queries with deterministic OR semantics.
+
 ## Audit publication - ticket-072
 
 - [x] Re-audit local source 5eb2e32 and retain only remaining work.

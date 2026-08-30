@@ -1,0 +1,24 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-078",
+  "summary": "Expose bounded operational attributes and bottleneck queries",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-078/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_discovery.py",
+    "tests/test_skill.py",
+    "tests/test_cli.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-077"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
