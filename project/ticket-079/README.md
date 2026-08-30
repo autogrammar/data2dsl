@@ -2,8 +2,8 @@
 
 - **ID**: ticket-079
 - **Owner**: founder:tom-sapletta-com
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -30,10 +30,14 @@ string query retains its full graph metadata search behavior.
 - Regression fixture proves list terms `error` and `failed` do not select
   healthy repositories named `error_page` or `serialize-error`, while a
   legacy string query still finds `serialize-error` by identity.
-- Live fleet + PR-controller canary returned 11 operational failures in a
-  12-node, 11-edge graph and zero identity-only false positives.
+- Live fleet + PR-controller canary from the integrated, installed wheel
+  returned a digest-verified 11-node, 10-edge graph and zero identity-only
+  false positives against the current 21-PR controller cycle.
 - Complete suite: 145 passed; focused Ruff, governance and whitespace gates
   pass. The existing jsonschema deprecation warning remains unchanged.
+- Protected Validator run `33305732678` approved exact head
+  `907a19a8449456044a6f88e6c175e7d5808771bc`; PR #73 merged it as
+  `2c639c456d17bfbf7da41bd03f5ce62ffb8072bf`.
 
 ## Participants
 

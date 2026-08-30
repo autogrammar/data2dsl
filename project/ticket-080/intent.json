@@ -1,0 +1,47 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-080",
+  "summary": "Close identity-safe bottleneck query delivery",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "2c639c456d17bfbf7da41bd03f5ce62ffb8072bf",
+    "targetBranch": "main",
+    "outcome": "Close ticket-079 after protected delivery and installed runtime readback.",
+    "nonGoals": ["Do not modify executable source, tests or runtime authority."],
+    "complexity": "XS",
+    "estimatedMinutes": 5,
+    "budgets": {
+      "maxImplementationFiles": 0,
+      "maxAffectedComponents": 0,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Record governance-only closure after exact-head merge and live readback.",
+      "components": [],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Reopen ticket-079 if integrated evidence is invalidated."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-04",
+      "commands": ["bash project/governance-check.sh"],
+      "evidence": "Installed integrated wheel produced a digest-verified graph without identity-only false positives."
+    }]
+  },
+  "allowedPaths": ["project/ticket-079/**", "project/ticket-080/**", "TODO.md", "project/TICKETS.md"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-079"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
