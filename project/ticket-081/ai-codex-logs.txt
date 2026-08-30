@@ -2,3 +2,5 @@
 2026-08-30T21:12:00Z Recorded bounded application intent before implementation; issue #75 binds the regression.
 2026-08-30T21:13:00Z Added readiness_scope to the closed vocabulary; positive local_executable and negative secret-shaped fixtures retain all existing bounds.
 2026-08-30T21:14:00Z Complete validation passed: 145 tests, focused Ruff, managed governance, and whitespace checks.
+2026-08-30T21:15:18Z Protected Validator merged PR #76 exact head 9d217b98120875d7391f94d74a6d42171f2a84d2 as fd623d092d90af54be544dcc4cccf3c87e139d21.
+2026-08-30T21:16:31Z Installed wheel readback passed: local_executable survived on all Hub tool nodes; graph healthy, warnings empty, redacted fields zero.
