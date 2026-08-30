@@ -1,0 +1,2 @@
+2026-08-30T08:54:00Z SESSION_EXECUTION_AUTHORIZATION recorded; source checkout passes but pyproject.toml omits imported data2dsl_discovery from wheel packaging.
+2026-08-30T08:54:00Z ticket-074 retained in BACKLOG because ticket-072 still reserves integration despite its merged publication.
