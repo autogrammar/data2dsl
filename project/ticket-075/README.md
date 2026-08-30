@@ -2,8 +2,8 @@
 
 - **ID**: ticket-075
 - **Owner**: founder:tom-sapletta-com
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -27,6 +27,9 @@ packaged module is also declared in `tool.setuptools.py-modules`.
 - The complete checkout suite passes: 132 tests, with one pre-existing
   `jsonschema.RefResolver` deprecation warning.
 - Ruff, governance and whitespace checks pass.
+- Protected Validator run `33303497600` approved exact head
+  `e697a22418f7209dfb3d3ecbf453cd7c5bdccad5`; PR #65 merged it as
+  `c168b20a9ecbc262e30716397e6006d9abbbf49c`.
 
 ## Participants
 
