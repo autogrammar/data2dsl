@@ -25,6 +25,11 @@ Source-checkout tests therefore pass while an installed wheel fails at import.
   from the request to execute this work.
 - Kept the ticket in BACKLOG while active ticket-072 owned integration, then
   activated it only after protected closure PR #62 reached main.
+- Added `data2dsl_discovery` to the explicit setuptools module list.
+- Built and installed an isolated wheel, then executed discovery through the
+  installed MCP dispatcher outside the source checkout.
+- Removed build-generated egg-info from the diff and passed the repository
+  suite and managed governance gate.
 
 ## Blockers
 

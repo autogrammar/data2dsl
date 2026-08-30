@@ -3,7 +3,7 @@
 - **ID**: ticket-074
 - **Owner**: founder:tom-sapletta-com
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -17,9 +17,19 @@ cannot silently be omitted from the wheel.
 
 - [x] AC-01: SESSION_EXECUTION_AUTHORIZATION is recorded from the active
   founder request.
-- [ ] AC-02: The built wheel contains `data2dsl_discovery.py`.
-- [ ] AC-03: An isolated installed-wheel MCP discovery call succeeds.
-- [ ] AC-04: Tests and governance pass.
+- [x] AC-02: The built wheel contains `data2dsl_discovery.py`.
+- [x] AC-03: An isolated installed-wheel MCP discovery call succeeds.
+- [x] AC-04: Tests and governance pass.
+
+## Validation evidence
+
+- `/usr/bin/python3 -m build --wheel --no-isolation` produced a 20-file wheel
+  containing `data2dsl_discovery.py`.
+- A clean venv installed that wheel, imported `data2dsl_skill` outside the
+  checkout and completed `data2dsl_discover_data` with status `OK` and graph
+  SHA-256 `2d86aa4ae3eaef4b443f29f858b3c398d35127c0a83e051877f53f36e8229bdd`.
+- Full suite: 130 tests passed. Governance and diff checks passed after build
+  artifacts were removed from the delivery diff.
 
 ## Coordination
 

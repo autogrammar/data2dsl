@@ -7,3 +7,4 @@
 - Recorded the installed-wheel regression and held implementation behind the
   existing integration workstream lifecycle.
 - Activated the bounded packaging repair after protected ticket-072 closure.
+- Packaged the discovery runtime and verified an installed-wheel MCP call.
