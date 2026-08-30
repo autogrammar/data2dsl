@@ -1,0 +1,5 @@
+2026-08-30T08:54:00Z SESSION_EXECUTION_AUTHORIZATION recorded; source checkout passes but pyproject.toml omits imported data2dsl_discovery from wheel packaging.
+2026-08-30T08:54:00Z ticket-074 retained in BACKLOG because ticket-072 still reserves integration despite its merged publication.
+2026-08-30T08:58:00Z Protected PR #62 merged ticket-072 lifecycle as fd49f045348447a2cacb2ea159c7be8c70219468; ticket-074 rebased and activated as the sole integration owner.
+2026-08-30T09:00:00Z Isolated wheel contains data2dsl_discovery.py; installed MCP discovery returned OK with graph SHA-256 2d86aa4ae3eaef4b443f29f858b3c398d35127c0a83e051877f53f36e8229bdd.
+2026-08-30T09:00:00Z Full suite passed 130 tests; generated egg-info was excluded from delivery; governance passed with zero errors and warnings.

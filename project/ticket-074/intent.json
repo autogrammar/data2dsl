@@ -1,0 +1,59 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-074",
+  "summary": "Package data discovery runtime in wheel",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P0",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "fd49f045348447a2cacb2ea159c7be8c70219468",
+    "targetBranch": "main",
+    "outcome": "Package the discovery runtime so the installed MCP skill can execute its discovery tool.",
+    "nonGoals": [
+      "Do not refactor the module layout or fix unrelated CLI packaging.",
+      "Do not add runtime dependencies or change the discovery contract."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extend the explicit setuptools module list and verify the resulting wheel through an isolated installation canary.",
+      "components": [
+        {"name": "wheel-metadata", "paths": ["pyproject.toml"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert the module declaration and packaging metadata regression test."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-03",
+        "commands": ["python3 -m pip wheel --no-deps --no-build-isolation --wheel-dir <tmp> .", "python3 -m pytest -q", "bash ./project/governance-check.sh"],
+        "evidence": "An isolated installed wheel imports the MCP skill and executes data discovery."
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-074/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "pyproject.toml"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
