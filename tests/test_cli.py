@@ -125,7 +125,7 @@ def test_skill_definitions_and_execution() -> None:
     from data2dsl_skill import Data2DslSkill
 
     tools = Data2DslSkill.get_tool_definitions()
-    assert len(tools) == 4
+    assert len(tools) == 5
     tool_names = [t["name"] for t in tools]
     assert "data2dsl_compare" in tool_names
     assert "data2dsl_self_test" in tool_names
@@ -164,5 +164,4 @@ def test_skill_definitions_and_execution() -> None:
     )
     assert exec_res["status"] == "OK"
     assert exec_res["result"]["outcome"] == "MATCH"
-
 

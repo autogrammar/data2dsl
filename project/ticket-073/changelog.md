@@ -4,5 +4,8 @@
 
 - Initial governance scaffold created.
 - No human participant identity or content was generated.
-- Bounded the implementation to deterministic JSON registry discovery via CLI
-  and MCP with fail-closed limits and secret-field redaction.
+- Bounded the implementation to deterministic JSON registry discovery via MCP
+  with fail-closed limits and secret-field redaction.
+- Added stable evidence hashes, typed graph edges, connected-subgraph queries
+  and MCP dispatch coverage.
+- Verified four current Subactor projections in a read-only live canary.

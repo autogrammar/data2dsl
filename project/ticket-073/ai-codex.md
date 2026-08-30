@@ -17,7 +17,7 @@ references exist and how they connect.
 
 1. Normalize explicit JSON sources into a deterministic evidence graph.
 2. Add bounded query, redaction and limit enforcement.
-3. Expose the graph through CLI and MCP, then verify with heterogeneous
+3. Expose the graph through MCP, then verify with heterogeneous
    Subactor-shaped fixtures.
 
 ## Actual changes
@@ -26,6 +26,13 @@ references exist and how they connect.
   from the request to execute this work.
 - Selected a read-only discovery graph: no implicit disk scan, no credential
   resolution and no authority expansion.
+- Added deterministic source, entity and reference nodes, typed relationships,
+  stable hashes, queryable connected subgraphs and fail-closed resource limits.
+- Added secret-field redaction and duplicate-source rejection.
+- Exposed discovery through the existing MCP definition and dispatcher and
+  validated it through a real `tools/call` request.
+- Verified the full suite, scoped lint, governance and a four-source live
+  Subactor canary.
 
 ## Blockers
 

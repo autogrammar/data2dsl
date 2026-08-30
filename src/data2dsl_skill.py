@@ -39,6 +39,7 @@ from data2dsl_adapters import (
 )
 from data2dsl_comparator import DeterministicComparator
 from data2dsl_contract_v0.validate import self_test as contract_self_test
+from data2dsl_discovery import DiscoveryError, discover_data_network
 from data2dsl_subactor import simulate_self_healing_cycle, validate_delegation_envelope
 
 
@@ -331,6 +332,24 @@ class Data2DslSkill:
             },
             "required": ["query", "left_observation", "right_observation"]
         }
+        discovery_schema = {
+            "type": "object",
+            "properties": {
+                "sources": {
+                    "type": "array", "minItems": 1, "maxItems": 32,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "uri": {"type": "string"},
+                            "document": {"type": ["object", "array"]},
+                        },
+                        "required": ["uri", "document"],
+                    },
+                },
+                "query": {"type": ["string", "null"]},
+            },
+            "required": ["sources"],
+        }
         return [
             {
                 "name": "data2dsl_compare",
@@ -359,7 +378,13 @@ class Data2DslSkill:
                 "description": "Simulate a closed-loop DETECT -> PLAN -> EXECUTE -> VERIFY -> HEAL self-healing cycle.",
                 "inputSchema": healing_schema,
                 "parameters": healing_schema,
-            }
+            },
+            {
+                "name": "data2dsl_discover_data",
+                "description": "Build or query a deterministic evidence graph from explicit JSON registries and projections.",
+                "inputSchema": discovery_schema,
+                "parameters": discovery_schema,
+            },
         ]
 
     @classmethod
@@ -464,6 +489,16 @@ class Data2DslSkill:
                 "message": str(exc),
             }
 
+    @classmethod
+    def execute_discover_data(
+        cls, sources: list[Dict[str, Any]], query: str | None = None,
+    ) -> Dict[str, Any]:
+        """Build a bounded graph without implicit filesystem or network reads."""
+        try:
+            return {"status": "OK", "graph": discover_data_network(sources, query=query)}
+        except (DiscoveryError, TypeError, ValueError) as exc:
+            return {"status": "ERROR", "error_code": "DISCOVERY_INVALID", "message": str(exc)}
+
 
 def urirun_bindings() -> Dict[str, Any]:
     """Return urirun bindings descriptor and router for data2dsl:// URI schemes."""
@@ -551,6 +586,13 @@ def handle_mcp_message(msg: Dict[str, Any]) -> Optional[Dict[str, Any]]:
             }
         elif tool_name == "data2dsl_simulate_healing":
             res = Data2DslSkill.execute_simulate_healing(**arguments)
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {"content": [{"type": "text", "text": json.dumps(res)}]},
+            }
+        elif tool_name == "data2dsl_discover_data":
+            res = Data2DslSkill.execute_discover_data(**arguments)
             return {
                 "jsonrpc": "2.0",
                 "id": msg_id,

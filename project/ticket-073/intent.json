@@ -8,20 +8,92 @@
     "priority": "P1",
     "origin": "requested"
   },
+  "delivery": {
+    "acceptedBaseSha": "4b9e42677e6d125e89d3901193c8ff0ea14bd10b",
+    "targetBranch": "main",
+    "outcome": "Expose one deterministic, bounded and secret-redacting data discovery graph through the existing data2dsl MCP skill.",
+    "nonGoals": [
+      "Do not scan implicit filesystem or network locations.",
+      "Do not resolve credentials or grant mutation authority.",
+      "Do not change runtime dependencies or persistent data ownership."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Normalize only explicitly supplied JSON documents into stable source, entity and reference nodes, expose the bounded projection through the existing MCP dispatcher, and verify it with deterministic unit and protocol tests.",
+      "components": [
+        {
+          "name": "discovery-skill",
+          "paths": [
+            "src/data2dsl_discovery.py",
+            "src/data2dsl_skill.py"
+          ]
+        },
+        {
+          "name": "discovery-tests",
+          "paths": [
+            "tests/test_skill.py",
+            "tests/test_mcp_protocol_compliance.py",
+            "tests/test_cli.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the discovery module and the bounded additions to the skill dispatcher and tests."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "python3 -m pytest -q"
+        ],
+        "evidence": "The full repository suite validates deterministic graph construction and existing behavior."
+      },
+      {
+        "criterion": "AC-03",
+        "commands": [
+          "python3 -m pytest -q tests/test_skill.py tests/test_mcp_protocol_compliance.py"
+        ],
+        "evidence": "MCP declaration and tools/call tests validate bounded discovery access."
+      },
+      {
+        "criterion": "AC-04",
+        "commands": [
+          "python3 -m ruff check src/data2dsl_discovery.py",
+          "bash ./project/governance-check.sh",
+          "git diff --check"
+        ],
+        "evidence": "Lint, governance and diff checks validate fail-closed boundaries and delivery scope."
+      }
+    ]
+  },
   "allowedPaths": [
     "project/ticket-073/**",
     "project/TICKETS.md",
     "src/data2dsl_discovery.py",
-    "src/data2dsl_cli.py",
     "src/data2dsl_skill.py",
-    "tests/test_data_network_discovery.py"
+    "tests/test_skill.py",
+    "tests/test_mcp_protocol_compliance.py",
+    "tests/test_cli.py"
   ],
   "forbiddenPaths": ["project/ticket-*/user-*.md"],
   "stacks": [],
-  "dependsOn": [
-    "artifact://subactor/platform/config/artifact-registry.json",
-    "knowledge://subactor/architecture.autonomy-definition/v1"
-  ],
+  "dependsOn": [],
   "conflictsWith": [],
   "integrationTicket": null
 }
