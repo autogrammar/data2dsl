@@ -1,0 +1,27 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-073",
+  "summary": "Build autonomous data-source discovery graph",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-073/**",
+    "project/TICKETS.md",
+    "src/data2dsl_discovery.py",
+    "src/data2dsl_cli.py",
+    "src/data2dsl_skill.py",
+    "tests/test_data_network_discovery.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": [
+    "artifact://subactor/platform/config/artifact-registry.json",
+    "knowledge://subactor/architecture.autonomy-definition/v1"
+  ],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

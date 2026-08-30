@@ -1,0 +1,2 @@
+2026-08-30T08:35:03Z SESSION_EXECUTION_AUTHORIZATION recorded from founder request to continue autonomous repairs and build data2dsl-backed data discovery.
+2026-08-30T08:38:00Z Selected explicit-source deterministic graph; implicit filesystem scans, secret resolution and mutation authority remain forbidden.
