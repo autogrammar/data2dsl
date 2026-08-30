@@ -3,8 +3,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 from data2dsl_adapters import (
     DiagitCommitMetricResponse,
@@ -71,6 +72,20 @@ def build_parser() -> argparse.ArgumentParser:
     )
     val_parser.add_argument(
         "--bundle", required=True, type=Path, help="Path to bundle JSON."
+    )
+
+    # discover
+    discover_parser = subparsers.add_parser(
+        "discover",
+        help="Build a bounded data graph from one explicit JSON source envelope.",
+    )
+    discover_parser.add_argument(
+        "--input",
+        default="-",
+        help="Path to {sources, query} JSON, or '-' to read it from stdin.",
+    )
+    discover_parser.add_argument(
+        "--output", type=Path, default=None, help="Optional output JSON path."
     )
 
     # feed-consumer
@@ -296,6 +311,33 @@ def main(argv: Sequence[str] | None = None) -> int:
         bundle_doc = json.loads(args.bundle.read_text(encoding="utf-8"))
         validate_document(bundle_doc)
         print(f"VALID: {args.bundle}")
+        return 0
+
+    if args.command == "discover":
+        from data2dsl_discovery import DiscoveryError, discover_data_network
+
+        try:
+            raw = sys.stdin.read() if args.input == "-" else Path(args.input).read_text(encoding="utf-8")
+            envelope = json.loads(raw)
+            if not isinstance(envelope, dict) or set(envelope) - {"sources", "query"}:
+                raise DiscoveryError("discovery_envelope_invalid")
+            sources = envelope.get("sources")
+            if not isinstance(sources, list):
+                raise DiscoveryError("discovery_sources_invalid")
+            graph = discover_data_network(sources, query=envelope.get("query"))
+        except (DiscoveryError, json.JSONDecodeError, OSError, TypeError, ValueError) as exc:
+            error = {
+                "status": "ERROR",
+                "error_code": "DISCOVERY_INVALID",
+                "message": str(exc),
+            }
+            print(json.dumps(error, ensure_ascii=False), file=sys.stderr)
+            return 2
+        output_str = json.dumps(graph, indent=2, ensure_ascii=False)
+        if args.output:
+            args.output.write_text(output_str + "\n", encoding="utf-8")
+        else:
+            print(output_str)
         return 0
 
     if args.command == "feed-consumer":
