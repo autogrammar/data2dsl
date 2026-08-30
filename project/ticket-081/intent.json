@@ -1,0 +1,50 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-081",
+  "summary": "Preserve bounded readiness scope",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "a49cdb4c3350a98bbaaf827d0773676d73362bd3",
+    "targetBranch": "main",
+    "outcome": "Preserve bounded readiness scope in operational entity attributes.",
+    "nonGoals": [
+      "Do not accept arbitrary attributes.",
+      "Do not expose credentials, paths, references, or secret-shaped values."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add readiness_scope to the existing closed operational attribute vocabulary and retain every current value bound.",
+      "components": [{"name": "discovery-core", "paths": ["src/data2dsl_discovery.py", "tests/test_skill.py"]}],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove the readiness_scope vocabulary entry and its fixture."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-04",
+      "commands": ["python -m pytest -q", "python -m ruff check src/data2dsl_discovery.py tests/test_skill.py", "bash project/governance-check.sh"],
+      "evidence": "Focused regression plus live Supervisor graph readback."
+    }]
+  },
+  "allowedPaths": ["project/ticket-081/**", "TODO.md", "project/TICKETS.md", "src/data2dsl_discovery.py", "tests/test_skill.py"],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
