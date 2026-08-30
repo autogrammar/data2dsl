@@ -4,6 +4,7 @@
 
 - [x] Package the discovery runtime.
 - [x] Enforce local module import closure in dependent application ticket-075.
+- [ ] Package and verify the declared public CLI target in ticket-076.
 
 ## Audit publication - ticket-072
 
