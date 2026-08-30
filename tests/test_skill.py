@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+
 import pytest
+
 from data2dsl_adapters import (
     Code2LogicMetricResponse,
     Code2SchemaMetricResponse,
@@ -145,6 +147,7 @@ def test_discover_data_selects_bounded_operational_bottlenecks_from_list_records
                     "action": "repair_failed",
                     "child_state": "failed",
                     "child_error": "repository_not_allowlisted",
+                    "readiness_scope": "local_executable",
                     "head": "must-not-be-an-attribute",
                     "api_token": "sk-secret-secret-secret-secret",
                 },
@@ -170,6 +173,7 @@ def test_discover_data_selects_bounded_operational_bottlenecks_from_list_records
         "child_error": "repository_not_allowlisted",
         "child_state": "failed",
         "pull_request": 38,
+        "readiness_scope": "local_executable",
         "repository": "maskservice/update",
     }
     serialized = json.dumps(graph)
@@ -197,6 +201,7 @@ def test_discover_data_drops_secret_shaped_and_unbounded_operational_values():
         "document": {"providers": {"codex": {
             "status": "sk-secret-secret-secret-secret",
             "queue_depth": 2**80,
+            "readiness_scope": "sk-secret-secret-secret-secret",
             "provider": "codex",
         }}},
     }
@@ -459,6 +464,7 @@ def test_urirun_bindings(base_query):
 
 def test_handle_mcp_message_protocol(base_query):
     import json
+
     from data2dsl_skill import handle_mcp_message
 
     # Test initialize

@@ -29,8 +29,8 @@ OPERATIONAL_ATTRIBUTE_KEYS = frozenset({
     "coding_ticket", "conclusion", "disposition", "enabled", "error_code",
     "failure_code", "health", "mode", "model", "ok", "open_issues",
     "open_pull_requests", "pending_count", "provider", "pull_request",
-    "queue_depth", "ready", "ready_count", "repository", "running_count",
-    "stage", "state", "status", "transport", "waiting_count",
+    "queue_depth", "readiness_scope", "ready", "ready_count", "repository",
+    "running_count", "stage", "state", "status", "transport", "waiting_count",
 })
 ENTITY_LABEL_KEYS = ("repository", "name", "id", "ticket", "coding_ticket", "pull_request")
 IDENTITY_ATTRIBUTE_KEYS = frozenset({"coding_ticket", "pull_request", "repository"})

@@ -1,2 +1,4 @@
 2026-08-30T21:10:24Z Allocated ticket-081 from the clone-wide high-water mark for live readiness_scope loss observed in Supervisor.
 2026-08-30T21:12:00Z Recorded bounded application intent before implementation; issue #75 binds the regression.
+2026-08-30T21:13:00Z Added readiness_scope to the closed vocabulary; positive local_executable and negative secret-shaped fixtures retain all existing bounds.
+2026-08-30T21:14:00Z Complete validation passed: 145 tests, focused Ruff, managed governance, and whitespace checks.
