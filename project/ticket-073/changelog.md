@@ -9,3 +9,6 @@
 - Added stable evidence hashes, typed graph edges, connected-subgraph queries
   and MCP dispatch coverage.
 - Verified four current Subactor projections in a read-only live canary.
+- Delivered through protected exact-head Validator review and merge, repeated
+  tests and live canary from integrated main, and repaired the generated ticket
+  index projection before closure.

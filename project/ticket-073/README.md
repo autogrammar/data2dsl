@@ -2,8 +2,8 @@
 
 - **ID**: ticket-073
 - **Owner**: founder:tom-sapletta-com
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -34,6 +34,12 @@ authority or reading implicit filesystem locations.
   `1defb70a7564a7cac3d2d9ced798ec4cedadb8d7d40ad24f6169bbfa8f70a661`.
 - Queries resolved connected subgraphs for `subactor/supervisor` and
   `maskservice/update` without copying source values into the graph.
+- Protected Validator run `33302343161` approved exact head
+  `954fed20a32aa1a313330271d7a7f20de5763dfe` and merged PR #60 as
+  `3ecdb6670bc8553db3aa0d18ec02bac7d52b6b60`.
+- Integrated-main readback passed all 130 tests and repeated the four-source
+  canary. The ticket index was deterministically regenerated and now includes
+  ticket-073.
 
 ## Participants
 
