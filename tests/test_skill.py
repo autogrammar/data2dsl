@@ -207,6 +207,42 @@ def test_discover_data_drops_secret_shaped_and_unbounded_operational_values():
     assert "sk-secret-secret-secret-secret" not in json.dumps(result)
 
 
+def test_bottleneck_list_query_ignores_identity_only_matches_but_string_query_keeps_them():
+    sources = [
+        {
+            "uri": "artifact://subactor/registry/fleet/r1",
+            "document": {"repositories": [
+                {"repository": "tom-sapletta-com/error_page", "mode": "read-only"},
+                {"repository": "letjson/serialize-error", "mode": "read-only"},
+            ]},
+        },
+        {
+            "uri": "artifact://subactor/pr-controller/cycle/r1",
+            "document": {"pull_requests": [{
+                "repository": "subactor/twin",
+                "pull_request": 13,
+                "action": "repair_failed",
+                "child_state": "failed",
+                "child_error": "repository_tests_failed",
+            }]},
+        },
+    ]
+
+    bottlenecks = Data2DslSkill.execute_discover_data(
+        sources, query=["error", "failed"]
+    )["graph"]
+    entities = [node for node in bottlenecks["nodes"] if node["kind"] == "entity"]
+    assert [node["attributes"]["repository"] for node in entities] == ["subactor/twin"]
+
+    identity_search = Data2DslSkill.execute_discover_data(
+        sources, query="serialize-error"
+    )["graph"]
+    assert any(
+        node.get("attributes", {}).get("repository") == "letjson/serialize-error"
+        for node in identity_search["nodes"]
+    )
+
+
 def test_skill_self_test():
     res = Data2DslSkill.self_test()
     assert res["status"] == "PASS"

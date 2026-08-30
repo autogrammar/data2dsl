@@ -11,7 +11,7 @@
 
 - [x] Expose bounded allowlisted operational attributes on entity nodes.
 - [x] Support bounded multi-term bottleneck queries with deterministic OR semantics.
-- [ ] Exclude entity identity-only matches from operational list queries — ticket-079.
+- [x] Exclude entity identity-only matches from operational list queries — ticket-079.
 
 ## Audit publication - ticket-072
 

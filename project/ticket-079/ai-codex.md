@@ -24,6 +24,10 @@ a Supervisor policy problem.
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
+- Restricted list-query entity matching to non-identity operational attributes.
+- Preserved the legacy single-string full-metadata lookup.
+- Re-ran the live two-source canary and removed all three identity-only false
+  positives while retaining every actual PR-controller failure.
 
 ## Blockers
 

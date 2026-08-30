@@ -4,3 +4,5 @@
 
 - Initial governance scaffold created.
 - No human participant identity or content was generated.
+- Removed repository/ticket/pull-request identity from operational list-query
+  matching while preserving full-metadata single-string queries.
