@@ -1,0 +1,3 @@
+2026-08-30T10:05:06Z Allocated regression ticket-079 from the live Supervisor fleet + PR data-network canary.
+2026-08-30T10:07:00Z Separated operational list-query text from entity identity while retaining string-query compatibility.
+2026-08-30T10:08:00Z Live canary returned 11 operational failures, 12 nodes, 11 edges and zero identity-only false positives; 145 tests passed.

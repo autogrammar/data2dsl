@@ -33,6 +33,7 @@ OPERATIONAL_ATTRIBUTE_KEYS = frozenset({
     "stage", "state", "status", "transport", "waiting_count",
 })
 ENTITY_LABEL_KEYS = ("repository", "name", "id", "ticket", "coding_ticket", "pull_request")
+IDENTITY_ATTRIBUTE_KEYS = frozenset({"coding_ticket", "pull_request", "repository"})
 REFERENCE_KEYS = frozenset({
     "$id", "$schema", "artifact_id", "canonical_uri", "href", "locator",
     "main_resource", "policy", "schema", "schema_ref", "source_uri", "uri",
@@ -158,6 +159,18 @@ def _entity_label(value: Any, fallback: str) -> str:
     return fallback
 
 
+def _queryable_node_text(node: Mapping[str, Any], *, operational_only: bool) -> str:
+    if not operational_only:
+        return json.dumps(node, ensure_ascii=False, sort_keys=True).casefold()
+    if node.get("kind") != "entity" or not isinstance(node.get("attributes"), Mapping):
+        return ""
+    attributes = {
+        key: value for key, value in node["attributes"].items()
+        if str(key).casefold() not in IDENTITY_ATTRIBUTE_KEYS
+    }
+    return json.dumps(attributes, ensure_ascii=False, sort_keys=True).casefold()
+
+
 def discover_data_network(
     sources: Iterable[Mapping[str, Any]], *, query: str | list[str] | None = None,
 ) -> dict[str, Any]:
@@ -166,6 +179,7 @@ def discover_data_network(
     if not 1 <= len(source_rows) <= MAX_SOURCES:
         raise DiscoveryError("source_count_out_of_bounds")
     query_terms = _query_terms(query)
+    operational_query = isinstance(query, list)
 
     nodes: dict[str, dict[str, Any]] = {}
     edges: dict[tuple[str, str, str, str], dict[str, Any]] = {}
@@ -288,7 +302,7 @@ def discover_data_network(
         matched = {
             node["id"] for node in ordered_nodes
             if any(
-                term in json.dumps(node, ensure_ascii=False, sort_keys=True).casefold()
+                term in _queryable_node_text(node, operational_only=operational_query)
                 for term in query_terms
             )
         }

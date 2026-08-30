@@ -1,0 +1,63 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-079",
+  "summary": "Prevent identity fields from matching bottleneck queries",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "d40f8decacc98730c6deb937c24068da6de6315a",
+    "targetBranch": "main",
+    "outcome": "Remove identity-only false positives from operational multi-term bottleneck graphs.",
+    "nonGoals": [
+      "Do not change single-string query behavior.",
+      "Do not add discovery authority, dependencies or remediation decisions."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "For list queries, match entity operational attributes excluding identity keys; retain full node matching for string queries.",
+      "components": [{
+        "name": "discovery-query",
+        "paths": ["src/data2dsl_discovery.py", "tests/test_skill.py"]
+      }],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Restore full-node matching for list queries."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-05",
+      "commands": [
+        "python -m pytest -q",
+        "python -m ruff check src/data2dsl_discovery.py",
+        "bash project/governance-check.sh"
+      ],
+      "evidence": "Regression fixture and live installed CLI fleet + PR canary exclude repository-name false positives."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-079/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_discovery.py",
+    "tests/test_skill.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-078"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
