@@ -3,7 +3,7 @@
 - **ID**: ticket-077
 - **Owner**: founder:tom-sapletta-com
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -16,13 +16,22 @@ a deterministic data graph without granting filesystem or network discovery.
 
 - [x] AC-01: SESSION_EXECUTION_AUTHORIZATION is recorded from the founder's
   active autonomy repair request.
-- [ ] AC-02: `data2dsl discover` accepts one JSON envelope from a named file or
+- [x] AC-02: `data2dsl discover` accepts one JSON envelope from a named file or
   stdin and emits the deterministic graph.
-- [ ] AC-03: Invalid or duplicate sources fail closed with a structured error
+- [x] AC-03: Invalid or duplicate sources fail closed with a structured error
   and non-zero exit status.
-- [ ] AC-04: Packaging metadata tests require every console entry-point module
+- [x] AC-04: Packaging metadata tests require every console entry-point module
   to be included in the wheel.
-- [ ] AC-05: Full tests and governance pass.
+- [x] AC-05: Full tests and governance pass.
+
+## Validation evidence
+
+- Positive stdin and named-file graphs and the duplicate-source rejection pass.
+- The packaging test now binds every local console entry-point target to an
+  included standalone wheel module and reproduces omission of `data2dsl_cli`.
+- Focused CLI/packaging tests: 10 passed; complete suite: 136 passed with one
+  pre-existing jsonschema deprecation warning.
+- Ruff, governance and whitespace gates pass.
 
 ## Participants
 

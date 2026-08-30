@@ -24,6 +24,11 @@ single closed JSON envelope over stdin and performs no implicit discovery.
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
+- Added the fixed `discover` CLI adapter for one explicit JSON envelope from
+  stdin or a named file.
+- Preserved bounded discovery failures as structured stderr with exit code 2.
+- Extended packaging closure to declared console entry points and verified 136
+  complete tests plus Ruff and governance.
 
 ## Blockers
 

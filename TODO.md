@@ -5,7 +5,7 @@
 - [x] Package the discovery runtime.
 - [x] Enforce local module import closure in dependent application ticket-075.
 - [x] Package and verify the declared public CLI target in ticket-076.
-- [ ] Expose bounded explicit data-network discovery through CLI in ticket-077.
+- [x] Expose bounded explicit data-network discovery through CLI in ticket-077.
 
 ## Audit publication - ticket-072
 

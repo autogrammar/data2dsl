@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import io
 import json
+import sys
 from pathlib import Path
+
 import pytest
+
 from data2dsl_cli import main
 
 
@@ -11,6 +15,44 @@ def test_cli_self_test(capsys: pytest.CaptureFixture[str]) -> None:
     assert code == 0
     captured = capsys.readouterr()
     assert "data2dsl CLI self-test passed." in captured.out
+
+
+def test_cli_discovers_explicit_sources_from_stdin(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    envelope = {
+        "sources": [{
+            "uri": "repo://subactor/registry",
+            "document": {"repositories": {"subactor/supervisor": {"uri": "repo://subactor/supervisor"}}},
+        }],
+        "query": "supervisor",
+    }
+    monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(envelope)))
+
+    assert main(["discover", "--input", "-"]) == 0
+    graph = json.loads(capsys.readouterr().out)
+    assert graph["schema"] == "autogrammar.data2dsl/data-network/v0"
+    assert graph["query"] == "supervisor"
+    assert graph["summary"]["source_count"] == 1
+    assert graph["summary"]["node_count"] >= 2
+
+
+def test_cli_discovers_from_file_and_fails_closed_on_duplicate_sources(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    source = {"uri": "repo://subactor/registry", "document": {"repositories": {}}}
+    input_path = tmp_path / "sources.json"
+    output_path = tmp_path / "graph.json"
+    input_path.write_text(json.dumps({"sources": [source]}), encoding="utf-8")
+
+    assert main(["discover", "--input", str(input_path), "--output", str(output_path)]) == 0
+    assert json.loads(output_path.read_text(encoding="utf-8"))["summary"]["source_count"] == 1
+
+    input_path.write_text(json.dumps({"sources": [source, source]}), encoding="utf-8")
+    assert main(["discover", "--input", str(input_path)]) == 2
+    error = json.loads(capsys.readouterr().err)
+    assert error["error_code"] == "DISCOVERY_INVALID"
+    assert "source_uri_duplicate" in error["message"]
 
 
 def test_cli_compare_golden_match(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -164,4 +206,3 @@ def test_skill_definitions_and_execution() -> None:
     )
     assert exec_res["status"] == "OK"
     assert exec_res["result"]["outcome"] == "MATCH"
-

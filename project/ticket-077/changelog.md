@@ -5,3 +5,4 @@
 - Initial governance scaffold created.
 - No human participant identity or content was generated.
 - Bounded the explicit stdin/file discovery CLI adapter.
+- Added governed CLI transport and systematic console-target packaging checks.

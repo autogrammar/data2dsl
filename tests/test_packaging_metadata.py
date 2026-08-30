@@ -11,10 +11,18 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = ROOT / "src"
 
 
-def _declared_modules() -> set[str]:
+def _project_metadata() -> dict:
     with (ROOT / "pyproject.toml").open("rb") as stream:
-        project = tomllib.load(stream)
-    return set(project["tool"]["setuptools"]["py-modules"])
+        return tomllib.load(stream)
+
+
+def _declared_modules() -> set[str]:
+    return set(_project_metadata()["tool"]["setuptools"]["py-modules"])
+
+
+def _console_entry_point_modules() -> set[str]:
+    targets = _project_metadata()["project"].get("scripts", {}).values()
+    return {target.partition(":")[0].partition(".")[0] for target in targets}
 
 
 def _local_modules() -> set[str]:
@@ -46,9 +54,21 @@ def test_packaged_modules_include_every_local_runtime_import() -> None:
     assert _missing_local_imports(_declared_modules()) == {}
 
 
+def test_console_entry_points_are_included_in_standalone_module_wheel() -> None:
+    assert (_console_entry_point_modules() & _local_modules()) <= _declared_modules()
+
+
 def test_regression_probe_detects_omitted_discovery_runtime() -> None:
     declared = _declared_modules() - {"data2dsl_discovery"}
 
     assert _missing_local_imports(declared)["data2dsl_skill"] == {
         "data2dsl_discovery"
+    }
+
+
+def test_regression_probe_detects_omitted_console_target() -> None:
+    declared = _declared_modules() - {"data2dsl_cli"}
+
+    assert (_console_entry_point_modules() & _local_modules()) - declared == {
+        "data2dsl_cli"
     }

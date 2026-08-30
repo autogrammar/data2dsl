@@ -9,7 +9,7 @@
     "origin": "requested"
   },
   "delivery": {
-    "acceptedBaseSha": "5ac04deb17003b7d815f301984beec9c8873655e",
+    "acceptedBaseSha": "33290d1971ced342129c885061553ce3e2906b29",
     "targetBranch": "main",
     "outcome": "Allow governed runtimes to stream explicit sanitized registries and projections into deterministic data2dsl graphs.",
     "nonGoals": [
