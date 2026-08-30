@@ -2,8 +2,8 @@
 
 - **ID**: ticket-078
 - **Owner**: founder:tom-sapletta-com
-- **Status**: IN_PROGRESS
-- **Workflow state**: PUBLICATION
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-30
 
 ## Goal and scope
@@ -36,6 +36,12 @@ query may select a bounded list of terms using deterministic OR semantics.
   their source node (12 nodes, 11 edges), instead of the full cycle payload.
 - Complete suite: 144 passed; focused Ruff, governance and whitespace gates
   pass. The existing jsonschema deprecation warning remains unchanged.
+- Protected Validator run `33305042438` approved exact head
+  `bdd913252a7a03ecd820e9c6a1e8767b39b01e65`; PR #71 merged it as
+  `98aa427f707880ee31fbfc743192d9e1d5c0f374`.
+- The wheel built from integrated `main` was installed into the Subactor
+  runtime venv. Live installed-CLI readback returned 12 current bottleneck
+  entities in a 13-node, 12-edge graph.
 
 ## Participants
 

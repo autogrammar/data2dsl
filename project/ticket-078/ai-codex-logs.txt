@@ -1,3 +1,5 @@
 2026-08-30T09:44:50Z Recorded SESSION_EXECUTION_AUTHORIZATION and allocated bounded application ticket-078.
 2026-08-30T09:51:00Z Implemented list-record entities, allowlisted operational attributes and bounded OR queries.
+2026-08-30T09:52:36Z Protected Validator run 33305042438 approved exact head bdd913252a7a03ecd820e9c6a1e8767b39b01e65 and merged PR #71 as 98aa427f707880ee31fbfc743192d9e1d5c0f374.
 2026-08-30T09:53:00Z Live PR-controller canary returned 11 bottleneck entities in a 12-node, 11-edge graph; full 144 tests and governance passed.
+2026-08-30T09:55:00Z Installed the wheel built from integrated main; live installed CLI returned 12 bottleneck entities in a 13-node graph.
