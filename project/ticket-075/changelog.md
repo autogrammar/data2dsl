@@ -6,3 +6,4 @@
 - No human participant identity or content was generated.
 - Bounded a systematic AST-based packaging import-closure regression test.
 - Added positive metadata closure and negative omitted-discovery probes.
+- Closed after exact-head Validator approval and protected merge of PR #65.
