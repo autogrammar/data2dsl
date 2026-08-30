@@ -6,3 +6,5 @@
 - No human participant identity or content was generated.
 - Added bounded operational entity attributes and list-record discovery.
 - Added backward-compatible string and bounded multi-term bottleneck queries.
+- Closed after exact-head Validator approval, protected merge and installed
+  runtime readback from integrated `main`.
