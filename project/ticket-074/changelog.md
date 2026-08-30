@@ -8,3 +8,4 @@
   existing integration workstream lifecycle.
 - Activated the bounded packaging repair after protected ticket-072 closure.
 - Packaged the discovery runtime and verified an installed-wheel MCP call.
+- Closed after exact-head protected merge and integrated-main readback.
