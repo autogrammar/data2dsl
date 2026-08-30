@@ -1,0 +1,65 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-077",
+  "summary": "Expose bounded data-network discovery through CLI",
+  "workstream": "application",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "5ac04deb17003b7d815f301984beec9c8873655e",
+    "targetBranch": "main",
+    "outcome": "Allow governed runtimes to stream explicit sanitized registries and projections into deterministic data2dsl graphs.",
+    "nonGoals": [
+      "Do not crawl filesystems, networks or repositories.",
+      "Do not add authority, execution, planning or LLM behavior."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add a fixed CLI adapter that reads exactly one explicit JSON envelope from stdin or a named file and delegates to the existing bounded deterministic discovery core.",
+      "components": [
+        {"name": "discovery-cli", "paths": ["src/data2dsl_cli.py", "tests/test_cli.py"]},
+        {"name": "packaging-regression", "paths": ["tests/test_packaging_metadata.py"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove the discover subcommand and its tests."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-02",
+      "commands": [
+        "python3 -m pytest -q tests/test_cli.py tests/test_packaging_metadata.py",
+        "python3 -m pytest -q",
+        "python3 -m ruff check src/data2dsl_cli.py tests/test_cli.py tests/test_packaging_metadata.py",
+        "bash ./project/governance-check.sh"
+      ],
+      "evidence": "Positive stdin/file graphs, negative duplicate rejection and console-target packaging closure pass."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-077/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_cli.py",
+    "tests/test_cli.py",
+    "tests/test_packaging_metadata.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-076"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
