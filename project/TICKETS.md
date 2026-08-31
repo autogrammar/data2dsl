@@ -86,4 +86,5 @@ analysis-generated `project/README.md`.
 | **ticket-079** | [`README.md`](./ticket-079/README.md) | [`preprompt.md`](./ticket-079/preprompt.md) | - |  [`ai-codex.md`](./ticket-079/ai-codex.md) |  [`ai-codex-logs.txt`](./ticket-079/ai-codex-logs.txt) | [`changelog.md`](./ticket-079/changelog.md) |
 | **ticket-080** | [`README.md`](./ticket-080/README.md) | [`preprompt.md`](./ticket-080/preprompt.md) | - |  [`ai-codex.md`](./ticket-080/ai-codex.md) |  [`ai-codex-logs.txt`](./ticket-080/ai-codex-logs.txt) | [`changelog.md`](./ticket-080/changelog.md) |
 | **ticket-081** | [`README.md`](./ticket-081/README.md) | [`preprompt.md`](./ticket-081/preprompt.md) | - |  [`ai-codex.md`](./ticket-081/ai-codex.md) |  [`ai-codex-logs.txt`](./ticket-081/ai-codex-logs.txt) | [`changelog.md`](./ticket-081/changelog.md) |
+| **ticket-082** | [`README.md`](./ticket-082/README.md) | [`preprompt.md`](./ticket-082/preprompt.md) | - |  [`ai-gemini.md`](./ticket-082/ai-gemini.md) |  [`ai-gemini-logs.txt`](./ticket-082/ai-gemini-logs.txt) | [`changelog.md`](./ticket-082/changelog.md) |
 <!-- AUTO:TICKET_INDEX:END -->

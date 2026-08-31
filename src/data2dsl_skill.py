@@ -43,26 +43,34 @@ from data2dsl_discovery import DiscoveryError, discover_data_network
 from data2dsl_subactor import simulate_self_healing_cycle, validate_delegation_envelope
 
 
+def _coalesce_numeric(*values: Any) -> Any:
+    """Return first non-None value, treating 0/0.0 as valid."""
+    for v in values:
+        if v is not None:
+            return v
+    return None
+
+
 def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any], side: str = "left") -> Dict[str, Any]:
     """Helper to normalize raw input via corresponding source adapter."""
     st = source_type.lower().replace("-", "_")
     if st == "markdown":
-        adapter = WorkSummaryMarkdownAdapter()
+        md_adapter = WorkSummaryMarkdownAdapter()
         md_text = raw.get("markdown_content", "")
-        claim = adapter.extract_commit_claim(
+        claim = md_adapter.extract_commit_claim(
             markdown_text=md_text,
             actor=query["subject"]["actor"],
             path=raw.get("path", "work-summary.md"),
             source_uri=raw.get("source_uri"),
             source_revision=raw.get("source_revision"),
         )
-        return adapter.normalize(query, claim, side=side)
+        return md_adapter.normalize(query, claim, side=side)
     elif st == "github":
-        adapter = GitHubDiagitAdapter()
+        gh_adapter = GitHubDiagitAdapter()
         resp = raw.get("response")
         if not isinstance(resp, DiagitCommitMetricResponse):
             pages_raw = raw.get("pages", ())
-            pages_obj = []
+            pages_obj: list[DiagitPageEvidence] = []
             for p in pages_raw:
                 if isinstance(p, DiagitPageEvidence):
                     pages_obj.append(p)
@@ -77,23 +85,23 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                         source_uri=p.get("source_uri", "https://api.github.com"),
                     ))
             resp = DiagitCommitMetricResponse(
-                status="OK" if raw.get("commit_count") is not None else raw.get("status", "NOT_FOUND"),
+                status=raw.get("status", "OK" if raw.get("commit_count") is not None else "NOT_FOUND"),
                 commit_count=raw.get("commit_count"),
                 pages=tuple(pages_obj),
                 error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
+        return gh_adapter.normalize(query, resp, side=side)
     elif st == "curllm":
-        adapter = CurllmAdapter()
+        curllm_adapter = CurllmAdapter()
         resp = raw.get("response")
         if not isinstance(resp, CurllmMetricResponse):
-            pages_raw = raw.get("pages", ())
-            pages_obj = []
-            for p in pages_raw:
+            curllm_pages_raw = raw.get("pages", ())
+            curllm_pages_obj: list[CurllmPageEvidence] = []
+            for p in curllm_pages_raw:
                 if isinstance(p, CurllmPageEvidence):
-                    pages_obj.append(p)
+                    curllm_pages_obj.append(p)
                 elif isinstance(p, dict):
-                    pages_obj.append(CurllmPageEvidence(
+                    curllm_pages_obj.append(CurllmPageEvidence(
                         url=p.get("url", ""),
                         digest_sha256=p.get("digest_sha256", ""),
                         page=p.get("page", 1),
@@ -102,32 +110,32 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                         media_type=p.get("media_type", "text/html"),
                     ))
             resp = CurllmMetricResponse(
-                status="OK" if raw.get("value") is not None else raw.get("status", "ERROR"),
+                status=raw.get("status", "OK" if raw.get("value") is not None else "ERROR"),
                 value=raw.get("value"),
-                pages=tuple(pages_obj),
+                pages=tuple(curllm_pages_obj),
                 error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
+        return curllm_adapter.normalize(query, resp, side=side)
     elif st == "code2logic":
-        adapter = Code2LogicAdapter()
+        c2l_adapter = Code2LogicAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2LogicMetricResponse):
             resp = Code2LogicMetricResponse(
-                status="OK" if raw.get("value") is not None else raw.get("status", "ERROR"),
+                status=raw.get("status", "OK" if raw.get("value") is not None else "ERROR"),
                 value=raw.get("value"),
                 error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
+        return c2l_adapter.normalize(query, resp, side=side)
     elif st == "code2schema":
-        adapter = Code2SchemaAdapter()
+        c2s_adapter = Code2SchemaAdapter()
         resp = raw.get("response")
         if not isinstance(resp, Code2SchemaMetricResponse):
             resp = Code2SchemaMetricResponse(
-                status="OK" if raw.get("value") is not None else raw.get("status", "ERROR"),
-                value=raw.get("value"),
+                status=raw.get("status", "OK" if raw.get("entities") is not None else "ERROR"),
+                entities=raw.get("entities", ()),
                 error_message=raw.get("error_message"),
             )
-        return adapter.normalize(query, resp, side=side)
+        return c2s_adapter.normalize(query, resp, side=side)
     elif st == "planfile":
         planfile_adapter = PlanfileAdapter()
         resp = raw.get("response")
@@ -228,10 +236,10 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 path=raw.get("path", "logs/sensor.jsonl"),
                 start_line=raw.get("start_line", 1),
                 end_line=raw.get("end_line", 1),
-                avg_sample_rate_hz=raw.get("avg_sample_rate_hz") or raw.get("sample_rate_hz") or raw.get("sample_rate"),
-                peak_temperature_celsius=raw.get("peak_temperature_celsius") or raw.get("max_temperature_celsius") or raw.get("temperature"),
-                observed_frequency_mhz=raw.get("observed_frequency_mhz") or raw.get("frequency_mhz"),
-                avg_packet_throughput=raw.get("avg_packet_throughput") or raw.get("packet_throughput") or raw.get("throughput"),
+                avg_sample_rate_hz=_coalesce_numeric(raw.get("avg_sample_rate_hz"), raw.get("sample_rate_hz"), raw.get("sample_rate")),
+                peak_temperature_celsius=_coalesce_numeric(raw.get("peak_temperature_celsius"), raw.get("max_temperature_celsius"), raw.get("temperature")),
+                observed_frequency_mhz=_coalesce_numeric(raw.get("observed_frequency_mhz"), raw.get("frequency_mhz")),
+                avg_packet_throughput=_coalesce_numeric(raw.get("avg_packet_throughput"), raw.get("packet_throughput"), raw.get("throughput")),
                 active_pins=raw.get("active_pins", ()),
                 active_buses=raw.get("active_buses") or raw.get("buses", ()),
                 error_message=raw.get("error_message"),
@@ -243,10 +251,10 @@ def _normalize_raw(source_type: str, raw: Dict[str, Any], query: Dict[str, Any],
                 path=raw.get("path", "scenarios/sensor.oql.json"),
                 start_line=raw.get("start_line", 1),
                 end_line=raw.get("end_line", 1),
-                sample_rate_hz=raw.get("sample_rate_hz") or raw.get("sample_rate"),
-                max_temperature_celsius=raw.get("max_temperature_celsius") or raw.get("temperature"),
+                sample_rate_hz=_coalesce_numeric(raw.get("sample_rate_hz"), raw.get("sample_rate")),
+                max_temperature_celsius=_coalesce_numeric(raw.get("max_temperature_celsius"), raw.get("temperature")),
                 frequency_mhz=raw.get("frequency_mhz"),
-                packet_throughput=raw.get("packet_throughput") or raw.get("throughput"),
+                packet_throughput=_coalesce_numeric(raw.get("packet_throughput"), raw.get("throughput")),
                 active_pins=raw.get("active_pins", ()),
                 buses=raw.get("buses", ()),
                 error_message=raw.get("error_message"),
@@ -430,22 +438,10 @@ class Data2DslSkill:
             if left_observation is None:
                 if left_raw is not None and left_source_type is not None:
                     left_observation = _normalize_raw(left_source_type, left_raw, query, side="left")
-                else:
-                    return {
-                        "status": "ERROR",
-                        "error_code": "MISSING_LEFT_OBSERVATION",
-                        "message": "Either left_observation or (left_raw and left_source_type) must be provided."
-                    }
 
             if right_observation is None:
                 if right_raw is not None and right_source_type is not None:
                     right_observation = _normalize_raw(right_source_type, right_raw, query, side="right")
-                else:
-                    return {
-                        "status": "ERROR",
-                        "error_code": "MISSING_RIGHT_OBSERVATION",
-                        "message": "Either right_observation or (right_raw and right_source_type) must be provided."
-                    }
 
             comparator = DeterministicComparator()
             bundle = comparator.compare(query, left_observation, right_observation)

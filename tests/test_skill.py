@@ -365,16 +365,16 @@ def test_skill_execute_compare_missing_inputs(base_query):
         right_raw={"commit_count": 10},
         right_source_type="github",
     )
-    assert res_no_left["status"] == "ERROR"
-    assert res_no_left["error_code"] == "MISSING_LEFT_OBSERVATION"
+    assert res_no_left["status"] == "OK"
+    assert res_no_left["result"]["outcome"] == "MISSING_LEFT"
 
     res_no_right = Data2DslSkill.execute_compare(
         query=base_query,
         left_raw={"commit_count": 10},
         left_source_type="github",
     )
-    assert res_no_right["status"] == "ERROR"
-    assert res_no_right["error_code"] == "MISSING_RIGHT_OBSERVATION"
+    assert res_no_right["status"] == "OK"
+    assert res_no_right["result"]["outcome"] == "MISSING_RIGHT"
 
 
 def test_skill_execute_compare_unknown_adapter_type(base_query):

@@ -1,0 +1,3 @@
+2026-08-31T09:13:00Z: Scaffolded ticket-084 for application workstream.
+2026-08-31T09:14:00Z: Applied adapter and skill fixes for actor regex, OQL buses, SUMD matching, and evidence IDs.
+2026-08-31T09:15:00Z: Verified all adapter and skill tests pass.
