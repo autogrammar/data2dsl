@@ -1,6 +1,16 @@
 # TODO
 
-## Packaging regression - ticket-074
+## Audit P1 Resolution — 2026-08-31 (ticket-082, 083, 084, 085, 086)
+
+- [x] **P1.1**: Package and verify CLI entry point in wheel with isolated tests — ticket-083.
+- [x] **P1.2**: Comparability validation (`_is_compatible` side, unit, version, semantics) — ticket-082.
+- [x] **P1.3**: Batch deduplication and ambiguity detection (`BatchMultiQueryComparator`) — ticket-085.
+- [x] **P1.4**: Adapter deserialization & semantics (OQL buses, Code2Schema entities, numeric 0 handling) — ticket-084.
+- [x] **P1.5**: Exact actor word boundary and SUMD exact key matching — ticket-084.
+- [x] **P1.6**: Evidence ID sanitization and Doctor/Remediation feed fallbacks — ticket-084, ticket-086.
+- [x] **Type Safety**: Full strict mypy compliance across all 13 source files with 0 errors — ticket-083, ticket-086.
+- [x] **Test Suite**: 158 tests passing cleanly with 0 failures — ticket-082..086.
+
 
 - [x] Package the discovery runtime.
 - [x] Enforce local module import closure in dependent application ticket-075.
