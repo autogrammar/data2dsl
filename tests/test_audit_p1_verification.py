@@ -1,24 +1,12 @@
 """Dedicated regression tests for all findings in AUDYT_KODU_2026-08-28.md (P1.1 - P1.6)."""
 
-from __future__ import annotations
-
-import json
-from typing import Any
-
-import pytest
-
 from data2dsl_adapters import (
     Code2LogicAdapter,
-    Code2SchemaAdapter,
-    CurllmAdapter,
-    OqlTelemetryAdapter,
     SUMDAdapter,
     WorkSummaryMarkdownAdapter,
 )
 from data2dsl_batch import BatchMultiQueryComparator
 from data2dsl_comparator import DeterministicComparator
-from data2dsl_doctor import DiagnosticProfileFormatter
-from data2dsl_remediation import RemediationIntentFormatter
 from data2dsl_skill import Data2DslSkill
 
 
