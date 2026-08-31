@@ -76,11 +76,15 @@ class RemediationIntentFormatter:
                 )
 
             outcome = result.get("outcome", "UNEVALUABLE")
-            outcomes.append(outcome)
             delta = result.get("delta")
 
-            subject = query.get("subject") if query else bundle.get("subject")
-            metric = query.get("metric") if query else bundle.get("metric")
+            subject = query.get("subject", bundle.get("subject")) if query else bundle.get("subject")
+            metric = query.get("metric", bundle.get("metric")) if query else bundle.get("metric")
+
+            if not subject:
+                subject = {"actor": "unknown", "repository": "unknown"}
+            if not metric:
+                metric = {"id": "unknown"}
 
             # Extract observations by side
             obs_by_side = {
@@ -88,8 +92,20 @@ class RemediationIntentFormatter:
                 for obs in observations
                 if isinstance(obs, dict)
             }
+
+            if not observations:
+                outcome = "UNEVALUABLE"
+                delta = {"message": "Both observations absent."}
+
+            outcomes.append(outcome)
+
             left_evidence = _extract_evidence(obs_by_side.get("left"))
             right_evidence = _extract_evidence(obs_by_side.get("right"))
+
+            if outcome == "MATCH":
+                qd = query.get("digest") if query else bundle.get("digest")
+                if qd:
+                    evidence_digests.add(qd)
 
             for ev in left_evidence + right_evidence:
                 sha = ev.get("digest_sha256")
