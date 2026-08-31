@@ -1,0 +1,61 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-085",
+  "summary": "Audit P1.3: Batch deduplication and ambiguity detection",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Detect duplicate conflicting observations in BatchMultiQueryComparator and mark ambiguous outcomes as UNEVALUABLE.",
+    "nonGoals": [
+      "Do not silently overwrite earlier observation values."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Introduce _AMBIGUOUS sentinel and ambiguity tracking in BatchMultiQueryComparator.",
+      "components": [
+        {"name": "batch-engine", "paths": ["src/data2dsl_batch.py", "tests/test_batch_compare.py"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert batch deduplication changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-02",
+      "commands": [
+        "python -m pytest tests/test_batch_compare.py",
+        "python -m ruff check src/data2dsl_batch.py",
+        "python -m mypy src/data2dsl_batch.py"
+      ],
+      "evidence": "Batch tests pass and ambiguous duplicates are detected."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-085/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_batch.py",
+    "tests/test_batch_compare.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-084"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

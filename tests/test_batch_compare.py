@@ -173,9 +173,9 @@ def test_batch_cli(tmp_path: Path):
     output_file = tmp_path / "report.json"
 
     queries_file.write_text(json.dumps([QUERY_1]), encoding="utf-8")
-    obs = {
+    left_obs = {
         "schema": "autogrammar.data2dsl/observation/v0",
-        "observation_id": "obs:1",
+        "observation_id": "obs:left:1",
         "query_id": "query:batch:tasks",
         "side": "left",
         "subject": QUERY_1["subject"],
@@ -185,8 +185,9 @@ def test_batch_cli(tmp_path: Path):
         "value": {"kind": "integer", "value": "10"},
         "evidence": [{"evidence_id": "ev:1", "digest_sha256": "1111", "source_uri": "uri:1", "source_revision": "sha256:1111"}],
     }
-    left_file.write_text(json.dumps([obs]), encoding="utf-8")
-    right_file.write_text(json.dumps([obs]), encoding="utf-8")
+    right_obs = dict(left_obs, side="right", observation_id="obs:right:1")
+    left_file.write_text(json.dumps([left_obs]), encoding="utf-8")
+    right_file.write_text(json.dumps([right_obs]), encoding="utf-8")
 
     exit_code = cli_main([
         "batch",
@@ -210,9 +211,9 @@ def test_batch_cli_markdown(tmp_path: Path):
     output_file = tmp_path / "report.md"
 
     queries_file.write_text(json.dumps([QUERY_1]), encoding="utf-8")
-    obs = {
+    left_obs = {
         "schema": "autogrammar.data2dsl/observation/v0",
-        "observation_id": "obs:1",
+        "observation_id": "obs:left:1",
         "query_id": "query:batch:tasks",
         "side": "left",
         "subject": QUERY_1["subject"],
@@ -222,8 +223,9 @@ def test_batch_cli_markdown(tmp_path: Path):
         "value": {"kind": "integer", "value": "10"},
         "evidence": [{"evidence_id": "ev:1", "digest_sha256": "1111", "source_uri": "uri:1", "source_revision": "sha256:1111"}],
     }
-    left_file.write_text(json.dumps([obs]), encoding="utf-8")
-    right_file.write_text(json.dumps([obs]), encoding="utf-8")
+    right_obs = dict(left_obs, side="right", observation_id="obs:right:1")
+    left_file.write_text(json.dumps([left_obs]), encoding="utf-8")
+    right_file.write_text(json.dumps([right_obs]), encoding="utf-8")
 
     exit_code = cli_main([
         "batch",

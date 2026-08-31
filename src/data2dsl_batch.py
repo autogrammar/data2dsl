@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 from data2dsl_comparator import DeterministicComparator
 
+_AMBIGUOUS = object()
 
 def _compute_sha256(content: str | bytes) -> str:
     if isinstance(content, str):
@@ -31,6 +32,7 @@ class BatchComparisonSummary:
     missing_left: int
     missing_right: int
     unevaluable: int
+    ambiguous_count: int
     clean_ratio: float
     is_clean: bool
 
@@ -42,6 +44,7 @@ class BatchComparisonSummary:
             "missing_left": self.missing_left,
             "missing_right": self.missing_right,
             "unevaluable": self.unevaluable,
+            "ambiguous_count": self.ambiguous_count,
             "clean_ratio": round(self.clean_ratio, 4),
             "is_clean": self.is_clean,
         }
@@ -83,9 +86,18 @@ class BatchMultiQueryComparator:
         batch_id: Optional[str] = None,
     ) -> BatchComparisonReport:
         """Run batch comparison for all queries."""
+        def _add_obs(d: dict, k: Any, obs: dict) -> None:
+            if k in d:
+                ext = d[k]
+                if ext is not _AMBIGUOUS:
+                    if ext.get("value", {}) != obs.get("value", {}):
+                        d[k] = _AMBIGUOUS
+            else:
+                d[k] = obs
+
         # Index left observations by query_id and by composite (repo, actor, metric_id)
-        left_by_qid: Dict[str, Dict[str, Any]] = {}
-        left_by_key: Dict[tuple, Dict[str, Any]] = {}
+        left_by_qid: Dict[str, Any] = {}
+        left_by_key: Dict[tuple, Any] = {}
         if isinstance(left_observations, dict):
             left_by_qid = dict(left_observations)
         else:
@@ -93,16 +105,16 @@ class BatchMultiQueryComparator:
                 if not isinstance(obs, dict):
                     continue
                 if "query_id" in obs and obs["query_id"]:
-                    left_by_qid[obs["query_id"]] = obs
+                    _add_obs(left_by_qid, obs["query_id"], obs)
                 subj = obs.get("subject", {})
                 met = obs.get("metric", {})
                 if subj and met and "id" in met:
                     key = (subj.get("repository"), subj.get("actor"), met.get("id"))
-                    left_by_key[key] = obs
+                    _add_obs(left_by_key, key, obs)
 
         # Index right observations by query_id and by composite (repo, actor, metric_id)
-        right_by_qid: Dict[str, Dict[str, Any]] = {}
-        right_by_key: Dict[tuple, Dict[str, Any]] = {}
+        right_by_qid: Dict[str, Any] = {}
+        right_by_key: Dict[tuple, Any] = {}
         if isinstance(right_observations, dict):
             right_by_qid = dict(right_observations)
         else:
@@ -110,12 +122,12 @@ class BatchMultiQueryComparator:
                 if not isinstance(obs, dict):
                     continue
                 if "query_id" in obs and obs["query_id"]:
-                    right_by_qid[obs["query_id"]] = obs
+                    _add_obs(right_by_qid, obs["query_id"], obs)
                 subj = obs.get("subject", {})
                 met = obs.get("metric", {})
                 if subj and met and "id" in met:
                     key = (subj.get("repository"), subj.get("actor"), met.get("id"))
-                    right_by_key[key] = obs
+                    _add_obs(right_by_key, key, obs)
 
         bundles: List[Dict[str, Any]] = []
         matches = 0
@@ -123,24 +135,56 @@ class BatchMultiQueryComparator:
         missing_left = 0
         missing_right = 0
         unevaluable = 0
+        ambiguous_count = 0
 
         for q in queries:
             qid = q.get("query_id", "")
             subj = q.get("subject", {})
             met = q.get("metric", {})
             q_key = (subj.get("repository"), subj.get("actor"), met.get("id")) if subj and met else None
+            
+            ambiguous = False
 
             left_obs = left_by_qid.get(qid)
             if left_obs is None and q_key:
                 candidate = left_by_key.get(q_key)
-                if candidate and candidate.get("query_id") in (None, "", qid):
+                if candidate and (candidate is _AMBIGUOUS or candidate.get("query_id") in (None, "", qid)):
                     left_obs = candidate
+                    
+            if left_obs is _AMBIGUOUS:
+                ambiguous = True
+                left_obs = {
+                    "observation_id": f"ambiguous:{qid}:left",
+                    "query_id": qid,
+                    "side": "left",
+                    "subject": q.get("subject", {}),
+                    "metric": q.get("metric", {}),
+                    "window": q.get("window", {}),
+                    "state": "UNEVALUABLE",
+                    "evidence": [],
+                }
 
             right_obs = right_by_qid.get(qid)
             if right_obs is None and q_key:
                 candidate = right_by_key.get(q_key)
-                if candidate and candidate.get("query_id") in (None, "", qid):
+                if candidate and (candidate is _AMBIGUOUS or candidate.get("query_id") in (None, "", qid)):
                     right_obs = candidate
+
+            if right_obs is _AMBIGUOUS:
+                ambiguous = True
+                right_obs = {
+                    "observation_id": f"ambiguous:{qid}:right",
+                    "query_id": qid,
+                    "side": "right",
+                    "subject": q.get("subject", {}),
+                    "metric": q.get("metric", {}),
+                    "window": q.get("window", {}),
+                    "state": "UNEVALUABLE",
+                    "evidence": [],
+                }
+
+            if ambiguous:
+                ambiguous_count += 1
 
             bundle = self._comparator.compare(q, left_obs, right_obs)
             bundles.append(bundle)
@@ -159,7 +203,7 @@ class BatchMultiQueryComparator:
 
         total = len(queries)
         clean_ratio = (matches / total) if total > 0 else 1.0
-        is_clean = (conflicts == 0 and missing_left == 0 and missing_right == 0 and unevaluable == 0 and matches == total)
+        is_clean = (conflicts == 0 and missing_left == 0 and missing_right == 0 and unevaluable == 0 and ambiguous_count == 0 and matches == total)
 
         summary = BatchComparisonSummary(
             total_queries=total,
@@ -168,6 +212,7 @@ class BatchMultiQueryComparator:
             missing_left=missing_left,
             missing_right=missing_right,
             unevaluable=unevaluable,
+            ambiguous_count=ambiguous_count,
             clean_ratio=clean_ratio,
             is_clean=is_clean,
         )
@@ -245,6 +290,7 @@ def format_markdown_report(report_or_bundle: Any) -> str:
         lines.append(f"- **Conflicts**: {summary.get('conflicts', 0)}")
         lines.append(f"- **Missing Left / Right**: {summary.get('missing_left', 0)} / {summary.get('missing_right', 0)}")
         lines.append(f"- **Unevaluable**: {summary.get('unevaluable', 0)}")
+        lines.append(f"- **Ambiguous**: {summary.get('ambiguous_count', 0)}")
         clean_ratio = summary.get("clean_ratio", 0.0)
         lines.append(f"- **Clean Ratio**: {clean_ratio:.2%}\n")
 
