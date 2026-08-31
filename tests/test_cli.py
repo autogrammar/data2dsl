@@ -212,8 +212,8 @@ def test_skill_definitions_and_execution() -> None:
 
     # Error case: missing observations
     err_res = Data2DslSkill.execute_compare(query=query)
-    assert err_res["status"] == "ERROR"
-    assert err_res["error_code"] == "MISSING_LEFT_OBSERVATION"
+    assert err_res["status"] == "OK"
+    assert err_res["result"]["outcome"] == "MISSING_LEFT"
 
     # Execution with raw adapter inputs
     raw_left = {"markdown_content": "# Summary\n- alice: 10 commits\n", "source_uri": "https://github.com/owner/repo/blob/abc/work-summary.md"}

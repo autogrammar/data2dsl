@@ -1,0 +1,3 @@
+2026-08-31T09:16:00Z: Scaffolded ticket-085 for application workstream.
+2026-08-31T09:17:00Z: Verified BatchMultiQueryComparator detects duplicate conflicting observations.
+2026-08-31T09:18:00Z: Verified all tests in tests/test_batch_compare.py pass.

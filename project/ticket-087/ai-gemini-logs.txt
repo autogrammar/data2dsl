@@ -1,0 +1,3 @@
+2026-08-31T09:41:00Z: Scaffolded ticket-087 for governance workstream.
+2026-08-31T09:42:00Z: Updated README.md with Mermaid architecture flowchart and updated test statistics.
+2026-08-31T09:43:00Z: Verified governance check passes.

@@ -1,0 +1,62 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-084",
+  "summary": "Audit P1.4-P1.6: Adapter semantics exact matching and evidence IDs",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Fix actor regex word boundary, OQL buses attribute, SUMD exact key match, Code2Schema entities keyword, and sanitized evidence IDs.",
+    "nonGoals": [
+      "Do not break existing adapter interfaces or valid contract v0 fixtures."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Use exact regex word boundaries for actor matching, getattr for OQL buses, exact SUMD table keys, entities keyword for Code2Schema, and colon sanitization for evidence IDs.",
+      "components": [
+        {"name": "adapters-and-skill", "paths": ["src/data2dsl_adapters.py", "src/data2dsl_skill.py", "tests/test_skill.py"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert adapter and skill changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-02",
+      "commands": [
+        "python -m pytest tests/test_skill.py",
+        "python -m ruff check src/data2dsl_adapters.py src/data2dsl_skill.py",
+        "python -m mypy src/data2dsl_adapters.py src/data2dsl_skill.py"
+      ],
+      "evidence": "Adapter and skill tests pass with exact matching and sanitized evidence IDs."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-084/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_adapters.py",
+    "src/data2dsl_skill.py",
+    "tests/test_skill.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-082"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

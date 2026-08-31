@@ -247,7 +247,7 @@ def discover_data_network(
                     child_owner = owner_id
                     if parts and parts[-1].lower() in ENTITY_CONTAINERS:
                         identity = f"{source_uri}#{_pointer(child_parts)}"
-                        entity_node = {
+                        entity_node: dict[str, Any] = {
                             "id": _stable_id("entity", identity),
                             "kind": "entity", "label": _entity_label(child, key_text),
                             "source_id": source_node_id,

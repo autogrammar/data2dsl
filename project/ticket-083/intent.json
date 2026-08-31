@@ -1,0 +1,59 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-083",
+  "summary": "Packaging mypy config and wheel verification",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Configure mypy tool settings in pyproject.toml and ensure packaging compliance.",
+    "nonGoals": [
+      "Do not add unpinned external dependencies."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add tool.mypy section to pyproject.toml.",
+      "components": [
+        {"name": "pyproject", "paths": ["pyproject.toml"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert pyproject.toml."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-01",
+      "commands": [
+        "python -m mypy src/",
+        "project\\governance-check.bat"
+      ],
+      "evidence": "mypy src/ passes without errors."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-083/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "pyproject.toml"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-082"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

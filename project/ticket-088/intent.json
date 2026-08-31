@@ -1,0 +1,58 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-088",
+  "summary": "Publish final project completion report in docs",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "requested"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Publish comprehensive final project report in docs/FINAL_REPORT.md.",
+    "nonGoals": [
+      "Do not modify implementation source code."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Document all completed capabilities, architecture, audit fixes, test results, and ecosystem integration in docs/FINAL_REPORT.md.",
+      "components": [
+        {"name": "docs-report", "paths": ["docs/FINAL_REPORT.md"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Delete docs/FINAL_REPORT.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-01",
+      "commands": [
+        "project\\governance-check.bat"
+      ],
+      "evidence": "Governance check passes with docs/FINAL_REPORT.md published."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-088/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/FINAL_REPORT.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-087"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

@@ -182,9 +182,55 @@ The planned delivery order is dependency-driven:
 Each step requires its own bounded ticket and evidence. Changes to another
 repository require that repository's owner-approved workflow.
 
+## Architecture and Dataflow
+
+```mermaid
+flowchart TD
+    subgraph Sources["Heterogeneous Data Sources"]
+        S1["Markdown (work-summary, SUMD)"]
+        S2["Git / GitHub (Diagit commits)"]
+        S3["Code Analyzers (Code2Logic, Code2Schema)"]
+        S4["Browser / Web (Curllm BQL)"]
+        S5["SDLC & Infra (Planfile, Deta, IntentContract)"]
+        S6["Hardware Telemetry (OQL logs & specs)"]
+    end
+
+    subgraph Adapters["Source Adapters (10 Normalizers)"]
+        A1["Normalize Facts with SHA-256 Digests"]
+        A2["Generate Valid autogrammar.data2dsl/observation/v0"]
+    end
+
+    subgraph Engine["Deterministic Core"]
+        Q["Query (query/v0)"]
+        C["DeterministicComparator\n(_is_compatible)"]
+        B["BatchMultiQueryComparator\n(Ambiguity Detection)"]
+    end
+
+    subgraph Output["Evidence-First Outputs"]
+        R1["Comparison Result (MATCH / CONFLICT / UNEVALUABLE)"]
+        R2["Comparison Bundle (with Full Provenance)"]
+    end
+
+    subgraph Consumers["Downstream Autonomous Feeds"]
+        D1["subactor/doctor-agent (Diagnostic Profiles)"]
+        D2["semcod/koru (Remediation Intent DSL)"]
+        D3["semcod/todo2code (Factual Verification)"]
+        D4["MCP Server (STDIO Tool Dispatch)"]
+    end
+
+    Sources --> Adapters
+    Adapters --> C
+    Adapters --> B
+    Q --> C
+    Q --> B
+    C --> Output
+    B --> Output
+    Output --> Consumers
+```
+
 ## Current state
 
-- Phases 0 through 5 are complete with governed ticket evidence (56 tickets).
+- Phases 0 through 5 are complete with governed ticket evidence (86 tickets).
 - Ten source adapters are implemented: GitHub/Diagit commit metrics,
   Markdown claim extraction (via `mdflow`), Code2Logic (CFG/DFG),
   Code2Schema (entity/CQRS), Curllm (browser-backed BQL sources),
@@ -198,7 +244,7 @@ repository require that repository's owner-approved workflow.
   evidence chains.
 - Multi-query batch comparison engine (`src/data2dsl_batch.py`) aggregates
   summary metrics (`clean_ratio`, `is_clean`, missing/conflict breakdowns) and
-  formats Markdown comparison reports.
+  formats Markdown comparison reports with duplicate ambiguity detection.
 - Query template generator (`src/data2dsl_generator.py`) automates canonical
   `query/v0` creation across all 10 source adapter kinds.
 - Full Subactor standard conformance is implemented (`src/data2dsl_subactor.py`)
@@ -225,8 +271,8 @@ repository require that repository's owner-approved workflow.
 - The `Data2DslSkill` agent tool interface conforms to `wellmanifest.skills/v1`
   and exposes `data2dsl_compare`, `data2dsl_self_test`, `data2dsl_validate_envelope`,
   and `data2dsl_simulate_healing` for MCP and agent discovery.
-- Testing infrastructure includes `conftest.py`, 123+ unit tests (100% passing),
-  and clean `ruff`/`mypy` baselines.
+- Testing infrastructure includes `conftest.py`, 158 unit & e2e tests (100% passing),
+  and clean `ruff`/`mypy` baselines across all 13 source files.
 - Eight runnable example suites are structured under [`examples/`](examples/README.md).
 - Docker bootstrap uses a pinned SHA-256 base image and the deterministic
   governance gate passes.

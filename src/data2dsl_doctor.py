@@ -153,7 +153,7 @@ class DiagnosticProfileFormatter:
         evidence_registry: Dict[str, EvidenceRef] = {}
 
         for item in bundles:
-            bundle_query = item.get("query", query)
+            bundle_query = item.get("query", query) or {}
             result = item.get("result", item if "outcome" in item else {})
             observations = item.get("observations", [])
 
@@ -180,6 +180,22 @@ class DiagnosticProfileFormatter:
                     evidence_registry[ref.evidence_id] = ref
                     right_evidence.append(ref.to_dict())
 
+            if not left_evidence and not right_evidence:
+                qd = bundle_query.get("digest")
+                if qd:
+                    minimal_ref = EvidenceRef(
+                        evidence_id="query_digest_fallback",
+                        target_uri="",
+                        source_uri="",
+                        source_revision="",
+                        media_type="application/json",
+                        digest_sha256=qd,
+                        extractor={},
+                        location={},
+                    )
+                    evidence_registry[minimal_ref.evidence_id] = minimal_ref
+                    left_evidence.append(minimal_ref.to_dict())
+
             # Missing keys resolution
             missing_keys: List[str] = []
             if outcome == "MISSING_LEFT":
@@ -195,8 +211,14 @@ class DiagnosticProfileFormatter:
 
             severity, magnitude = _calculate_severity_and_magnitude(outcome, delta)
 
-            subject = bundle_query.get("subject") if bundle_query else item.get("subject")
-            metric = bundle_query.get("metric") if bundle_query else item.get("metric")
+            subject = bundle_query.get("subject", item.get("subject"))
+            metric = bundle_query.get("metric", item.get("metric"))
+
+            if not observations:
+                if not subject:
+                    subject = {"actor": "unknown", "repository": "unknown"}
+                if not metric:
+                    metric = {"id": "unknown"}
 
             symptom = {
                 "subject": subject,

@@ -1,0 +1,58 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-087",
+  "summary": "Adopt full WellManifest standards: ARCHITECTURE diagram AI guidelines and githooks",
+  "workstream": "governance",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Enhance README.md with canonical Mermaid architecture diagrams and updated verification statistics.",
+    "nonGoals": [
+      "Do not modify implementation source code."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add Mermaid dataflow diagram and update testing stats in README.md.",
+      "components": [
+        {"name": "governance-docs", "paths": ["README.md"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert README.md."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-01",
+      "commands": [
+        "project\\governance-check.bat"
+      ],
+      "evidence": "Governance check passes with updated README."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-087/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "README.md"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": [],
+  "dependsOn": ["ticket-086"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

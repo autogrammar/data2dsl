@@ -232,7 +232,7 @@ class WorkSummaryMarkdownAdapter:
 
         for idx, line in enumerate(lines, start=1):
             line_lower = line.lower()
-            if normalized_actor in line_lower:
+            if re.search(r'(?:^|\b)' + re.escape(normalized_actor) + r'(?:\b|$)', line_lower):
                 match = re.search(r"(\d+)\s*(?:commits|commit)|commits?[:\s]+(\d+)", line, re.IGNORECASE)
                 if match:
                     val_str = match.group(1) or match.group(2)
@@ -433,7 +433,7 @@ class Code2LogicAdapter:
             "value": val_obj,
             "evidence": [
                 {
-                    "evidence_id": f"evidence:code2logic:{response.path}:{response.start_line}-{response.end_line}",
+                    "evidence_id": f"evidence:code2logic:{response.path.replace('/', ':')}:{response.start_line}-{response.end_line}",
                     "target_uri": target_uri,
                     "source_uri": f"{target_uri}/blob/{digest}/{response.path}",
                     "source_revision": src_rev,
@@ -546,7 +546,7 @@ class Code2SchemaAdapter:
             "value": val_obj,
             "evidence": [
                 {
-                    "evidence_id": f"evidence:code2schema:{response.path}:{response.start_line}-{response.end_line}",
+                    "evidence_id": f"evidence:code2schema:{response.path.replace('/', ':')}:{response.start_line}-{response.end_line}",
                     "target_uri": target_uri,
                     "source_uri": f"{target_uri}/blob/{digest}/{response.path}",
                     "source_revision": src_rev,
@@ -817,7 +817,7 @@ class PlanfileAdapter:
             src_rev = response.source_revision or f"sha256:{digest}"
             evidence_list.append(
                 {
-                    "evidence_id": f"evidence:planfile:{response.path}:{digest[:8]}",
+                    "evidence_id": f"evidence:planfile:{response.path.replace('/', ':')}:{digest[:8]}",
                     "target_uri": target_uri,
                     "source_uri": f"{target_uri}/{response.path}",
                     "source_revision": src_rev,
@@ -1303,7 +1303,7 @@ class OqlTelemetryAdapter:
         metric_id = (metric.get("id") or metric.get("name") or "").lower()
         metric_prop = metric.get("property", "").lower()
 
-        val_obj: dict[str, Any]
+        val_obj: dict[str, Any] | None
         if "sample_rate" in metric_id or "sample_rate" in metric_prop:
             raw_val = response.sample_rate_hz
             if raw_val is None:
@@ -1469,7 +1469,7 @@ class OqlTelemetryAdapter:
         metric_id = (metric.get("id") or metric.get("name") or "").lower()
         metric_prop = metric.get("property", "").lower()
 
-        val_obj: dict[str, Any]
+        val_obj: dict[str, Any] | None
         if "sample_rate" in metric_id or "sample_rate" in metric_prop:
             raw_val = response.avg_sample_rate_hz
             if raw_val is None:
@@ -1509,7 +1509,7 @@ class OqlTelemetryAdapter:
             else:
                 val_obj = {"kind": "string-set", "items": pins_sorted}
         elif "bus" in metric_id or "buses" in metric_prop:
-            buses_sorted = sorted(list(response.observed_buses))
+            buses_sorted = sorted(list(getattr(response, "active_buses", getattr(response, "buses", ()))))
             if val_kind == "integer":
                 val_obj = {"kind": "integer", "value": str(len(buses_sorted))}
             else:
@@ -1629,7 +1629,7 @@ class SUMDAdapter:
                 cells = [c.strip() for c in line.split("|") if c.strip()]
                 if len(cells) >= 2:
                     k, v = cells[0].lower(), cells[1]
-                    if k == clean_key or clean_key in k:
+                    if k == clean_key:
                         if v.endswith("%"):
                             val: Any = float(v.rstrip("%").strip())
                             kind = "percentage"
@@ -1667,7 +1667,7 @@ class SUMDAdapter:
             match = re.match(r"^([a-zA-Z0-9_.-]+)\s*:\s*(.*)$", line.strip())
             if match:
                 k, v = match.group(1).lower(), match.group(2).strip()
-                if k == clean_key or clean_key in k:
+                if k == clean_key:
                     if v.endswith("%"):
                         val = float(v.rstrip("%").strip())
                         kind = "percentage"

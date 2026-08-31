@@ -1,0 +1,6 @@
+2026-08-31T08:33:00Z: Scaffolded ticket-082 for audit P1 fixes.
+2026-08-31T08:36:00Z: Fixed DeterministicComparator._is_compatible.
+2026-08-31T08:38:00Z: Fixed data2dsl_adapters.py, data2dsl_skill.py, data2dsl_batch.py, data2dsl_doctor.py, data2dsl_remediation.py.
+2026-08-31T08:44:00Z: Verified all 145 tests pass.
+2026-08-31T08:48:00Z: Added tests/test_audit_p1_verification.py (10 dedicated tests).
+2026-08-31T09:03:00Z: Full test suite passes: 158 tests, 0 failures.

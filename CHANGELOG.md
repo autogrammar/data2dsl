@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+### Audit P1 resolution and hardening (2026-08-31)
+
+- Fix `DeterministicComparator._is_compatible` to check observation side, metric unit, version, and window semantics (ticket-082).
+- Fix `BatchMultiQueryComparator` duplicate observation ambiguity detection and error handling (ticket-085).
+- Fix `WorkSummaryMarkdownAdapter` actor matching with exact word boundary regex (ticket-084).
+- Fix `OqlTelemetryAdapter` buses attribute resolution for logs and scenario specs (ticket-084).
+- Fix `SUMDAdapter` exact table metric key matching without substring ambiguity (ticket-084).
+- Fix `data2dsl_skill.py` Code2Schema entities keyword and numeric 0 coalescing (ticket-084).
+- Sanitize evidence IDs to replace path slashes with colons (ticket-084).
+- Supply safe fallback defaults for `data2dsl_doctor.py` and `data2dsl_remediation.py` feeds (ticket-086).
+- Configure `tool.mypy` in `pyproject.toml` with 100% type safety across all 13 source files (ticket-083).
+- Expand test suite to 158 tests passing with 0 failures (ticket-082..086).
+
 ### Governance housekeeping
 
 - Close ticket-016 from integrated default branch evidence (ticket-017).

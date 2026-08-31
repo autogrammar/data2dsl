@@ -1,0 +1,64 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-086",
+  "summary": "Audit P1.2 feeds: Doctor and remediation fallback defaults and discovery typing",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Add safe fallback defaults for Doctor/Remediation feeds and type annotations for discovery graph.",
+    "nonGoals": [
+      "Do not break existing feed schemas or contract formats."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Supply default subject/metric dicts for empty observation sets in doctor and remediation feeds, and annotate discovery entity_node types.",
+      "components": [
+        {"name": "feeds", "paths": ["src/data2dsl_doctor.py", "src/data2dsl_remediation.py", "tests/test_remediation_f09.py"]},
+        {"name": "discovery", "paths": ["src/data2dsl_discovery.py"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert feed and discovery changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-02",
+      "commands": [
+        "python -m pytest tests/test_remediation_f09.py tests/test_remediation_feed.py tests/test_doctor_feed.py",
+        "python -m ruff check src/data2dsl_doctor.py src/data2dsl_remediation.py src/data2dsl_discovery.py",
+        "python -m mypy src/data2dsl_doctor.py src/data2dsl_remediation.py src/data2dsl_discovery.py"
+      ],
+      "evidence": "Doctor, remediation, and discovery tests and typing pass cleanly."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-086/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_doctor.py",
+    "src/data2dsl_remediation.py",
+    "src/data2dsl_discovery.py",
+    "tests/test_remediation_f09.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": ["ticket-085"],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
