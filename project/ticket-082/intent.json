@@ -1,0 +1,63 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-082",
+  "summary": "Audit P1.2: Comparability validation and side checking",
+  "workstream": "application",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "delivery": {
+    "acceptedBaseSha": "26f8c783f8a9490c7b2ba8854b54eba10b1bffbe",
+    "targetBranch": "main",
+    "outcome": "Validate observation side, metric unit, version, and window semantics in DeterministicComparator.",
+    "nonGoals": [
+      "Do not break backward compatibility with valid v0 contracts."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 4,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Enhance _is_compatible with expected_side, unit, version, and window semantics checks.",
+      "components": [
+        {"name": "comparator", "paths": ["src/data2dsl_comparator.py", "tests/test_audit_p1_verification.py", "tests/test_cli.py", "tests/test_wheel_build_and_cli.py"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert comparator changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [{
+      "criterion": "AC-02",
+      "commands": [
+        "python -m pytest tests/test_audit_p1_verification.py tests/test_cli.py tests/test_wheel_build_and_cli.py",
+        "python -m ruff check src/data2dsl_comparator.py",
+        "python -m mypy src/data2dsl_comparator.py"
+      ],
+      "evidence": "Comparator tests pass with expected side and unit validation."
+    }]
+  },
+  "allowedPaths": [
+    "project/ticket-082/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_comparator.py",
+    "tests/test_audit_p1_verification.py",
+    "tests/test_cli.py",
+    "tests/test_wheel_build_and_cli.py"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}

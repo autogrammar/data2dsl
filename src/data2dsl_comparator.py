@@ -146,6 +146,9 @@ class DeterministicComparator:
         expected_side: str = "",
     ) -> bool:
         """Verify that an observation matches the query parameters."""
+        if expected_side and obs.get("side") is not None and expected_side != obs.get("side"):
+            return False
+
         # Check query_id if present
         if "query_id" in obs and query.get("query_id") and obs["query_id"] != query["query_id"]:
             return False
@@ -165,11 +168,19 @@ class DeterministicComparator:
             return False
         if q_met.get("value_kind") != o_met.get("value_kind"):
             return False
+            
+        if q_met.get("unit") is not None and o_met.get("unit") is not None and q_met.get("unit") != o_met.get("unit"):
+            return False
+        if q_met.get("version") is not None and o_met.get("version") is not None and q_met.get("version") != o_met.get("version"):
+            return False
 
         # Check window
         q_win = query.get("window", {})
         o_win = obs.get("window", {})
         if q_win.get("start") != o_win.get("start") or q_win.get("end") != o_win.get("end"):
+            return False
+
+        if q_win.get("semantics") is not None and o_win.get("semantics") is not None and q_win.get("semantics") != o_win.get("semantics"):
             return False
 
         return True
