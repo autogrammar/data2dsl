@@ -2,8 +2,8 @@
 
 - **ID**: ticket-082
 - **Owner**: gemini (SESSION_EXECUTION_AUTHORIZATION)
-- **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Status**: DONE
+- **Workflow state**: DONE
 - **Created**: 2026-08-31
 - **Workstream**: application
 
