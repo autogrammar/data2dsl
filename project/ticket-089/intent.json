@@ -1,0 +1,69 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-089",
+  "summary": "Split data2dsl_adapters god module",
+  "workstream": "application",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "delivery": {
+    "acceptedBaseSha": "50554b5e8d8a1a15d6f3cbca33623052c2e6c96f",
+    "targetBranch": "main",
+    "outcome": "Split the 1796-line data2dsl_adapters god module into per-family submodules with a stable facade import surface.",
+    "nonGoals": [
+      "Change adapter normalization semantics",
+      "Add runtime dependencies",
+      "Change pyproject.toml packaging metadata"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 13,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extract adapter families into data2dsl_adapter_parts/<family>.py modules sharing common.py; keep data2dsl_adapters.py as a re-export facade discovered by existing py-modules metadata.",
+      "components": [
+        {
+          "name": "source-adapters",
+          "paths": [
+            "src/data2dsl_adapters.py",
+            "src/data2dsl_adapter_parts/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Restore monolithic src/data2dsl_adapters.py and remove data2dsl_adapter_parts/."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-04",
+        "commands": ["python -m pytest -q", "python -m ruff check src/data2dsl_adapters.py src/data2dsl_adapter_parts"],
+        "evidence": "project/ticket-089/ai-ai-cursor-auto-logs.txt"
+      }
+    ]
+  },
+  "allowedPaths": [
+    "project/ticket-089/**",
+    "project/ticket-081/README.md",
+    "project/ticket-090/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/data2dsl_adapters.py",
+    "src/data2dsl_adapter_parts/**"
+  ],
+  "forbiddenPaths": ["project/ticket-*/user-*.md"],
+  "stacks": ["python"],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null
+}
