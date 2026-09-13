@@ -2,8 +2,8 @@
 
 - **ID**: ticket-089
 - **Owner**: unresolved:human
-- **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Status**: DONE
+- **Workflow state**: DONE — merged via commit 1fec9e9 (ticket-089-adapters-split) on main
 - **Created**: 2026-09-01
 
 ## Goal and scope
