@@ -341,3 +341,7 @@ Analiza ekosystemu `semcod/*` (56 pakietów), `subactor/*` (75 modułów),
 - [x] **Pakiet `examples/08-batch-multi-query/`**: Utworzenie gotowego pakietu demonstracyjnego z fixtures i instrukcją. — ticket-057
 - [x] **Aktualizacja `examples/README.md`**: Włączenie Przykładu 08 do indeksu przykładów. — ticket-057
 - [x] **Synchronizacja głównego `README.md`**: Uzupełnienie opisów 10 adapterów, subkomend CLI, generatora i Subactora. — ticket-057
+
+## Automatic Planfile synchronization — 2026-09-15
+
+- [x] Add the reusable GitHub Actions caller workflow pinned to `v0.1.126` — ticket-093.

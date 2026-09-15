@@ -94,4 +94,5 @@ analysis-generated `project/README.md`.
 | **ticket-087** | [`README.md`](./ticket-087/README.md) | [`preprompt.md`](./ticket-087/preprompt.md) | - |  [`ai-gemini.md`](./ticket-087/ai-gemini.md) |  [`ai-gemini-logs.txt`](./ticket-087/ai-gemini-logs.txt) | [`changelog.md`](./ticket-087/changelog.md) |
 | **ticket-088** | [`README.md`](./ticket-088/README.md) | [`preprompt.md`](./ticket-088/preprompt.md) | - |  [`ai-gemini.md`](./ticket-088/ai-gemini.md) |  [`ai-gemini-logs.txt`](./ticket-088/ai-gemini-logs.txt) | [`changelog.md`](./ticket-088/changelog.md) |
 | **ticket-089** | [`README.md`](./ticket-089/README.md) | [`preprompt.md`](./ticket-089/preprompt.md) | - |  [`ai-ai-cursor-auto.md`](./ticket-089/ai-ai-cursor-auto.md) |  [`ai-ai-cursor-auto-logs.txt`](./ticket-089/ai-ai-cursor-auto-logs.txt) | [`changelog.md`](./ticket-089/changelog.md) |
+| **ticket-091** | [`README.md`](./ticket-091/README.md) | [`preprompt.md`](./ticket-091/preprompt.md) | - |  [`ai-devin.md`](./ticket-091/ai-devin.md) |  [`ai-devin-logs.txt`](./ticket-091/ai-devin-logs.txt) | [`changelog.md`](./ticket-091/changelog.md) |
 <!-- AUTO:TICKET_INDEX:END -->
