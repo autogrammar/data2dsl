@@ -1,0 +1,49 @@
+# regix.yaml — Regression Index configuration for data2dsl.
+#
+# Detects code quality regressions BEFORE they land:
+#   - cyclomatic complexity (CC) increases
+#   - maintainability index (MI) drops
+#   - test coverage drops
+#   - architectural smells (god_function, stub_regression, monolith_collapse)
+#
+# Common usage:
+#   regix check --diff HEAD~1        # compare HEAD~1 vs HEAD
+#   regix check --staged             # working-tree vs HEAD (pre-commit)
+
+regix:
+  workdir: .
+
+  metrics:
+    cc_max: 15              # cyclomatic complexity per function
+    mi_min: 20              # maintainability index (radon)
+    coverage_min: 50        # test coverage %
+    length_max: 100         # function length in lines
+    docstring_min: 30       # docstring coverage %
+
+  thresholds:
+    delta_warn: 2           # CC +2, MI -2 → warning
+    delta_error: 5          # CC +5, MI -5 → error (blocks commit)
+
+  backends:
+    cc: lizard
+    mi: radon
+    coverage: pytest-cov
+    quality: none
+
+  include:
+    - "src/**"
+
+  exclude:
+    - "tests/**"
+    - "**/test_*.py"
+    - "examples/**"
+    - "docs/**"
+    - "project/**"
+    - "archive/**"
+    - "**/__pycache__/**"
+    - "**/node_modules/**"
+    - "**/.venv/**"
+
+  output:
+    format: rich
+    show_improvements: true

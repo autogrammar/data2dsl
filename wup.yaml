@@ -1,0 +1,61 @@
+# wup.yaml — WUP (What's Up) intelligent on-change regression watcher.
+#
+# Sits BETWEEN file save and `git commit`. Three layers:
+#   [1] Detection — file watcher with debounce + excludes
+#   [2] Priority  — quick CLI smoke scenario related to changed code
+#   [3] Detail    — only on quick-fail: full testql scenarios + blame
+#
+# Common usage:
+#   wup init                   # generate config (interactive)
+#   wup watch                  # start daemon (foreground)
+#   wup map-deps               # rebuild dependency map after refactor
+#   wup status                 # show map + config summary
+
+project:
+  name: "data2dsl"
+  description: "On-change regression watcher driven by testql scenarios."
+
+watch:
+  paths:
+    - "src/**"
+  file_types:
+    - ".py"
+  excludes:
+    - "**/__pycache__/**"
+    - "**/.venv/**"
+    - "**/node_modules/**"
+    - "**/dist/**"
+    - "**/build/**"
+    - "**/*.test.*"
+    - "**/*.md"
+
+services:
+  - name: "data2dsl"
+    root: "src"
+    paths:
+      - "src/**"
+    type: "cli"
+    quick_tests:
+      scope: "all"
+      max_endpoints: 3
+    full_tests:
+      scenario: "testql-scenarios/generated-cli-smoke.testql.toon.yaml"
+
+test_strategy:
+  quick:
+    debounce_s: 2
+    max_queue: 5
+    timeout_s: 10
+  full:
+    debounce_s: 5
+    timeout_s: 60
+    only_on_quick_fail: true
+
+reporting:
+  dashboard: true
+  blame_log: ".wup/blame-history.jsonl"
+  webhook_url: "${WUP_WEBHOOK_URL:-}"
+
+resources:
+  max_cpu_percent: 70
+  defer_below_idle_percent: 20
