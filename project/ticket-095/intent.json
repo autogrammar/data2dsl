@@ -1,8 +1,8 @@
 {
   "schema": "new-project.intent/v3",
   "ticket": "ticket-095",
-  "summary": "Bootstrap regix/wup/testql on-change regression gates (planfile PLF bootstrap tickets)",
-  "workstream": "quality",
+  "summary": "Bootstrap regix/wup/testql on-change gates — BLOCKED: root gate configs have no owning workstream; manifest fix needs governance workstream held by ticket-094.",
+  "workstream": "infrastructure",
   "classification": {
     "kind": "SERVICE",
     "priority": "P2",
@@ -20,7 +20,9 @@
     "project/ticket-*/user-*.md"
   ],
   "stacks": [],
-  "dependsOn": [],
+  "dependsOn": [
+    "ticket-094"
+  ],
   "conflictsWith": [],
   "integrationTicket": null,
   "delivery": {
