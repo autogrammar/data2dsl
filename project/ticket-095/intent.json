@@ -24,24 +24,56 @@
   "conflictsWith": [],
   "integrationTicket": null,
   "delivery": {
-    "acceptedBaseSha": "b81665e",
+    "acceptedBaseSha": "b81665e795b10bac0c33e622f44401cee599a023",
     "targetBranch": "main",
-    "outcome": "Repository gains regix.yaml, wup.yaml and a testql CLI smoke scenario — the on-change regression gate stack.",
+    "outcome": "The repository gains regix.yaml, wup.yaml and a testql CLI smoke scenario — the on-change regression gate stack, satisfying the planfile bootstrap tickets.",
     "nonGoals": [
       "Change application source behavior.",
       "Add runtime dependencies.",
-      "Enable CI enforcement of the gates."
+      "Enable CI enforcement of the gates.",
+      "Modify human-owned ticket input."
     ],
-    "complexityClass": "XS",
-    "affectedComponents": [
-      "build-config"
-    ],
-    "implementationFiles": [
-      "regix.yaml",
-      "wup.yaml",
-      "testql-scenarios/generated-cli-smoke.testql.toon.yaml"
-    ],
-    "publicInterfaceChanges": 0,
-    "runtimeDependenciesAdded": 0
+    "complexity": "XS",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add root-level gate configs adapted from the koru/redsl templates to the data2dsl src-layout plus one generated testql CLI smoke scenario.",
+      "components": [
+        {
+          "name": "quality-gates",
+          "paths": [
+            "regix.yaml",
+            "wup.yaml",
+            "testql-scenarios/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove the three added gate files; application source remains unchanged."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "git diff --check"
+        ],
+        "evidence": "The bounded ticket and gate configs pass the repository governance gate."
+      }
+    ]
   }
 }
