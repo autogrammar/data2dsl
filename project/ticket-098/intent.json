@@ -1,0 +1,82 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-098",
+  "summary": "Reduce CC in doctor/comparator/generator/subactor/discovery",
+  "workstream": "application",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-098/**",
+    "project/TICKETS.md",
+    "src/data2dsl_doctor.py",
+    "src/data2dsl_comparator.py",
+    "src/data2dsl_generator.py",
+    "src/data2dsl_subactor.py",
+    "src/data2dsl_discovery.py",
+    "tests/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "1b0662956ff13dec85f537f7b88892731ae0c5da",
+    "targetBranch": "main",
+    "outcome": "Reduce cyclomatic complexity to <=15 for _calculate_severity_and_magnitude + format_profile (doctor), _is_compatible (comparator), generate_query_template (generator), validate_delegation_envelope (subactor) and discover_data_network (discovery) via helper extraction, preserving behavior.",
+    "nonGoals": [
+      "Change application behavior or public interfaces.",
+      "Add runtime dependencies.",
+      "Modify human-owned ticket input."
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 90,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extract per-branch helpers inside existing modules; keep public signatures unchanged.",
+      "components": [
+        {
+          "name": "core-modules",
+          "paths": [
+            "src/data2dsl_doctor.py",
+            "src/data2dsl_comparator.py",
+            "src/data2dsl_generator.py",
+            "src/data2dsl_subactor.py",
+            "src/data2dsl_discovery.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert helper extraction; public functions keep behavior."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "python -m pytest -q"
+        ],
+        "evidence": "All tests pass; lizard reports CC<=15 on touched functions."
+      }
+    ]
+  }
+}

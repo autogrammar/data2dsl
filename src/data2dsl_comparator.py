@@ -148,42 +148,32 @@ class DeterministicComparator:
         """Verify that an observation matches the query parameters."""
         if expected_side and obs.get("side") is not None and expected_side != obs.get("side"):
             return False
-
         # Check query_id if present
         if "query_id" in obs and query.get("query_id") and obs["query_id"] != query["query_id"]:
             return False
+        return self._sections_compatible(query, obs)
 
-        # Check subject
-        q_subj = query.get("subject", {})
-        o_subj = obs.get("subject", {})
-        if q_subj.get("actor") != o_subj.get("actor"):
+    @staticmethod
+    def _fields_match(q_sec: dict[str, Any], o_sec: dict[str, Any], strict: tuple, optional: tuple) -> bool:
+        """Strict fields must always be equal; optional fields only when both present."""
+        if any(q_sec.get(k) != o_sec.get(k) for k in strict):
             return False
-        if q_subj.get("repository") != o_subj.get("repository"):
-            return False
+        return all(
+            q_sec.get(k) == o_sec.get(k)
+            for k in optional
+            if q_sec.get(k) is not None and o_sec.get(k) is not None
+        )
 
-        # Check metric
-        q_met = query.get("metric", {})
-        o_met = obs.get("metric", {})
-        if q_met.get("id") != o_met.get("id"):
-            return False
-        if q_met.get("value_kind") != o_met.get("value_kind"):
-            return False
-            
-        if q_met.get("unit") is not None and o_met.get("unit") is not None and q_met.get("unit") != o_met.get("unit"):
-            return False
-        if q_met.get("version") is not None and o_met.get("version") is not None and q_met.get("version") != o_met.get("version"):
-            return False
-
-        # Check window
-        q_win = query.get("window", {})
-        o_win = obs.get("window", {})
-        if q_win.get("start") != o_win.get("start") or q_win.get("end") != o_win.get("end"):
-            return False
-
-        if q_win.get("semantics") is not None and o_win.get("semantics") is not None and q_win.get("semantics") != o_win.get("semantics"):
-            return False
-
-        return True
+    def _sections_compatible(self, query: dict[str, Any], obs: dict[str, Any]) -> bool:
+        checks = (
+            ("subject", ("actor", "repository"), ()),
+            ("metric", ("id", "value_kind"), ("unit", "version")),
+            ("window", ("start", "end"), ("semantics",)),
+        )
+        return all(
+            self._fields_match(query.get(section, {}), obs.get(section, {}), strict, optional)
+            for section, strict, optional in checks
+        )
 
 
 def compare_observations(

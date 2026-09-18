@@ -61,38 +61,12 @@ def generate_query_template(
     """
     clean_src = source_kind.lower().strip()
     clean_metric = metric_id.strip()
-
-    # Determine default unit if not explicitly overridden
-    if value_kind == "percentage":
-        unit = "percent"
-    elif value_kind == "string-set":
-        unit = "set"
-    elif "temperature" in clean_metric or "celsius" in clean_metric:
-        unit = "celsius"
-    elif "rate" in clean_metric or "hz" in clean_metric:
-        unit = "hz"
-    elif "commit" in clean_metric:
-        unit = "commits"
-
-    # Derive equality from value_kind using the contract's vocabulary.
-    # If the caller passes a contract-valid equality, use it; otherwise map.
-    if equality is None or equality == "exact":
-        equality = _EQUALITY_MAP.get(value_kind, "integer-exact")
-    elif equality == "set-exact":
-        # Legacy alias; map to the contract form.
-        equality = "string-set-exact"
+    unit = _default_unit(value_kind, clean_metric, unit)
+    equality = _resolve_equality(equality, value_kind)
 
     resolved_query_id = query_id or f"query:{clean_src}:{clean_metric}"
     r_kind = right_source_kind or _DEFAULT_RIGHT_SOURCE.get(clean_src, clean_src)
-
-    # Dynamic time window: default to current month if not specified.
-    if window_start is None or window_end is None:
-        now = datetime.now(timezone.utc)
-        w_start = window_start or f"{now.year}-{now.month:02d}-01T00:00:00Z"
-        w_end = window_end or now.strftime("%Y-%m-%dT00:00:00Z")
-    else:
-        w_start = window_start
-        w_end = window_end
+    w_start, w_end = _resolve_window(window_start, window_end)
 
     return {
         "schema": "autogrammar.data2dsl/query/v0",
@@ -126,3 +100,39 @@ def generate_query_template(
             "missing_is_zero": False,
         },
     }
+
+
+def _default_unit(value_kind: str, clean_metric: str, unit: str) -> str:
+    """Derive the default unit from value_kind or metric naming."""
+    if value_kind == "percentage":
+        return "percent"
+    if value_kind == "string-set":
+        return "set"
+    if "temperature" in clean_metric or "celsius" in clean_metric:
+        return "celsius"
+    if "rate" in clean_metric or "hz" in clean_metric:
+        return "hz"
+    if "commit" in clean_metric:
+        return "commits"
+    return unit
+
+
+def _resolve_equality(equality: Optional[str], value_kind: str) -> str:
+    """Map the requested equality to the contract's vocabulary."""
+    if equality is None or equality == "exact":
+        return _EQUALITY_MAP.get(value_kind, "integer-exact")
+    if equality == "set-exact":
+        # Legacy alias; map to the contract form.
+        return "string-set-exact"
+    return equality
+
+
+def _resolve_window(window_start: Optional[str], window_end: Optional[str]) -> tuple[str, str]:
+    """Default to the current month when either bound is missing."""
+    if window_start is not None and window_end is not None:
+        return window_start, window_end
+    now = datetime.now(timezone.utc)
+    return (
+        window_start or f"{now.year}-{now.month:02d}-01T00:00:00Z",
+        window_end or now.strftime("%Y-%m-%dT00:00:00Z"),
+    )
