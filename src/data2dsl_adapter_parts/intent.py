@@ -6,7 +6,16 @@ from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 
-from data2dsl_adapter_parts.common import DEFAULT_INTENT_CONTRACT_EXTRACTOR, SCHEMA_OBSERVATION, compute_sha256
+from data2dsl_adapter_parts.common import (
+    DEFAULT_INTENT_CONTRACT_EXTRACTOR,
+    SCHEMA_OBSERVATION,
+    compute_sha256,
+    error_observation,
+    evidence_entry,
+    observation_envelope,
+    set_value,
+    unsupported_observation,
+)
 
 @dataclass(frozen=True)
 class IntentContractResponse:
@@ -38,99 +47,32 @@ class IntentContractAdapter:
         observation_id: str | None = None,
     ) -> dict[str, Any]:
         """Normalize an Intent Contract response into a data2dsl observation envelope."""
-        query_id = query["query_id"]
-        subject = query["subject"]
-        metric = query["metric"]
-        window = query["window"]
-        target_uri = subject.get("repository", "file://local/contracts")
+        target_uri = query["subject"].get("repository", "file://local/contracts")
 
         if response.status != "OK" or response.error_message:
-            obs_id = observation_id or f"observation:intent_contract:unevaluable:{side}"
-            err_text = response.error_message or f"error:{response.status}"
-            err_digest = compute_sha256(err_text)
-            return {
-                "schema": SCHEMA_OBSERVATION,
-                "observation_id": obs_id,
-                "query_id": query_id,
-                "side": side,
-                "subject": subject,
-                "metric": metric,
-                "window": window,
-                "state": "UNEVALUABLE",
-                "value": None,
-                "evidence": [
-                    {
-                        "evidence_id": f"evidence:intent_contract:error:{side}",
-                        "target_uri": target_uri,
-                        "source_uri": f"{target_uri}/{response.path}",
-                        "source_revision": f"sha256:{err_digest}",
-                        "media_type": "application/json",
-                        "digest_sha256": err_digest,
-                        "extractor": self._extractor,
-                        "location": {
-                            "kind": "json-lines",
-                            "path": response.path,
-                            "start_line": 1,
-                            "end_line": 1,
-                        },
-                    }
-                ],
-            }
+            return error_observation(
+                query, prefix="intent_contract", side=side,
+                observation_id=observation_id, target_uri=target_uri,
+                path=response.path, status=response.status,
+                error_message=response.error_message, extractor=self._extractor,
+                location_kind="json-lines",
+            )
 
-        val_kind = metric.get("value_kind", "string-set")
-        metric_id = (metric.get("id") or metric.get("name") or "").lower()
-        metric_prop = metric.get("property", "").lower()
+        val_obj = self._metric_value(query["metric"], response)
+        if val_obj is None:
+            return unsupported_observation(
+                query, prefix="intent_contract", side=side,
+                observation_id=observation_id, obs_suffix="unsupported",
+                target_uri=target_uri, path=response.path,
+                source_revision=response.source_revision, extractor=self._extractor,
+                location_kind="json-lines",
+            )
 
-        val_obj: dict[str, Any]
-        if "party" in metric_id or "parties" in metric_id or "parties" in metric_prop or "party" in metric_prop:
-            parties_sorted = sorted(list(response.parties))
-            if val_kind == "integer":
-                val_obj = {"kind": "integer", "value": str(len(parties_sorted))}
-            else:
-                val_obj = {"kind": "string-set", "items": parties_sorted}
-        elif "obligation" in metric_id or "obligations" in metric_id or "obligations" in metric_prop or "obligation" in metric_prop:
-            obligations_sorted = sorted(list(response.obligations))
-            if val_kind == "integer":
-                val_obj = {"kind": "integer", "value": str(len(obligations_sorted))}
-            else:
-                val_obj = {"kind": "string-set", "items": obligations_sorted}
-        elif "deliverable" in metric_id or "deliverables" in metric_id or "deliverables" in metric_prop or "deliverable" in metric_prop or not metric_id:
-            deliverables_sorted = sorted(list(response.deliverables))
-            if val_kind == "integer":
-                val_obj = {"kind": "integer", "value": str(len(deliverables_sorted))}
-            else:
-                val_obj = {"kind": "string-set", "items": deliverables_sorted}
-        else:
-            return {
-                "schema": SCHEMA_OBSERVATION,
-                "observation_id": observation_id or f"observation:intent_contract:unsupported:{side}",
-                "query_id": query_id,
-                "side": side,
-                "subject": subject,
-                "metric": metric,
-                "window": window,
-                "state": "UNEVALUABLE",
-                "value": None,
-                "evidence": [
-                    {
-                        "evidence_id": f"evidence:intent_contract:unsupported:{side}",
-                        "target_uri": target_uri,
-                        "source_uri": f"{target_uri}/{response.path}",
-                        "source_revision": response.source_revision or f"sha256:{compute_sha256(response.path)}",
-                        "media_type": "application/json",
-                        "digest_sha256": compute_sha256(response.path),
-                        "extractor": self._extractor,
-                        "location": {
-                            "kind": "json-lines",
-                            "path": response.path,
-                            "start_line": 1,
-                            "end_line": 1,
-                        },
-                    }
-                ],
-            }
-
-        val_repr = ",".join(sorted(str(i) for i in val_obj["items"])) if val_obj.get("kind") == "string-set" else str(val_obj.get("value", ""))
+        val_repr = (
+            ",".join(sorted(str(i) for i in val_obj["items"]))
+            if val_obj.get("kind") == "string-set"
+            else str(val_obj.get("value", ""))
+        )
         parties_str = ",".join(sorted(response.parties))
         obligations_str = ",".join(sorted(response.obligations))
         deliverables_str = ",".join(sorted(response.deliverables))
@@ -139,39 +81,29 @@ class IntentContractAdapter:
         obs_id = observation_id or f"observation:intent_contract:{digest[:8]}"
 
         evidence_list = [
-            {
-                "evidence_id": f"evidence:intent_contract:{response.contract_id}:{digest[:8]}",
-                "target_uri": target_uri,
-                "source_uri": f"{target_uri}/{response.path}",
-                "source_revision": src_rev,
-                "media_type": "application/json",
-                "digest_sha256": digest,
-                "extractor": self._extractor,
-                "location": {
-                    "kind": "json-lines",
-                    "path": response.path,
-                    "start_line": response.start_line,
-                    "end_line": response.end_line,
-                },
-            }
+            evidence_entry(
+                evidence_id=f"evidence:intent_contract:{response.contract_id}:{digest[:8]}",
+                target_uri=target_uri, path=response.path,
+                source_revision=src_rev, digest=digest,
+                extractor=self._extractor, location_kind="json-lines",
+                start_line=response.start_line, end_line=response.end_line,
+            )
         ]
+        return observation_envelope(query, obs_id, side, "OBSERVED", val_obj, evidence_list)
 
-        return {
-            "schema": SCHEMA_OBSERVATION,
-            "observation_id": obs_id,
-            "query_id": query_id,
-            "side": side,
-            "subject": subject,
-            "metric": metric,
-            "window": window,
-            "state": "OBSERVED",
-            "value": val_obj,
-            "evidence": evidence_list,
-        }
+    @staticmethod
+    def _matches(metric_id: str, metric_prop: str, *keywords: str) -> bool:
+        return any(k in metric_id or k in metric_prop for k in keywords)
 
-
-# ---------------------------------------------------------------------------
-# OQL Scenario & Telemetry Adapter (oqlos)
-# ---------------------------------------------------------------------------
-
-
+    @classmethod
+    def _metric_value(cls, metric: dict[str, Any], response: IntentContractResponse) -> dict[str, Any] | None:
+        val_kind = metric.get("value_kind", "string-set")
+        metric_id = (metric.get("id") or metric.get("name") or "").lower()
+        metric_prop = metric.get("property", "").lower()
+        if cls._matches(metric_id, metric_prop, "party", "parties"):
+            return set_value(response.parties, val_kind)
+        if cls._matches(metric_id, metric_prop, "obligation", "obligations"):
+            return set_value(response.obligations, val_kind)
+        if cls._matches(metric_id, metric_prop, "deliverable", "deliverables") or not metric_id:
+            return set_value(response.deliverables, val_kind)
+        return None

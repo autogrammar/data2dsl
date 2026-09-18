@@ -1,0 +1,75 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-097",
+  "summary": "Reduce CC in adapter normalizers and batch comparison",
+  "workstream": "application",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-097/**",
+    "project/TICKETS.md",
+    "src/data2dsl_adapter_parts/**",
+    "tests/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "7adc13a5c5c1ffd002200c282ce745ce5b12d347",
+    "targetBranch": "main",
+    "outcome": "Reduce cyclomatic complexity to <=15 for normalize_spec and normalize_telemetry (oql.py), normalize (intent.py, deta.py, planfile.py) and extract_table_metric (sumd.py) via helper extraction, preserving behavior and covering regression tests.",
+    "nonGoals": [
+      "Change application behavior or public interfaces.",
+      "Add runtime dependencies.",
+      "Touch files outside src/data2dsl_adapter_parts and tests.",
+      "Modify human-owned ticket input."
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 60,
+    "budgets": {
+      "maxImplementationFiles": 8,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extract per-branch normalization helpers inside existing adapter modules; keep public signatures unchanged.",
+      "components": [
+        {
+          "name": "adapter-parts",
+          "paths": [
+            "src/data2dsl_adapter_parts/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert helper extraction; public functions keep behavior."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "python -m pytest -q"
+        ],
+        "evidence": "All tests pass; lizard reports CC<=15 on touched functions."
+      }
+    ]
+  }
+}

@@ -44,78 +44,67 @@ class SUMDAdapter:
 
         # Try markdown table row matching: | metric_name | value |
         for i, line in enumerate(lines, start=1):
-            if "|" in line:
-                cells = [c.strip() for c in line.split("|") if c.strip()]
-                if len(cells) >= 2:
-                    k, v = cells[0].lower(), cells[1]
-                    if k == clean_key:
-                        if v.endswith("%"):
-                            val: Any = float(v.rstrip("%").strip())
-                            kind = "percentage"
-                        else:
-                            try:
-                                val = int(v)
-                                kind = "integer"
-                            except ValueError:
-                                try:
-                                    val = float(v)
-                                    kind = "float"
-                                except ValueError:
-                                    if "," in v or ";" in v:
-                                        val = [item.strip() for item in re.split(r"[,;]+", v) if item.strip()]
-                                        kind = "string-set"
-                                    else:
-                                        val = v
-                                        kind = "string"
-
-                        digest = compute_sha256(markdown_text)
-                        return SUMDMetricResponse(
-                            status="OK",
-                            metric_key=metric_id,
-                            value=val,
-                            value_kind=kind,
-                            document_path=path,
-                            digest_sha256=digest,
-                            source_revision=source_revision or f"sha256:{digest}",
-                            start_line=i,
-                            end_line=i,
-                        )
+            match = self._table_row_match(line, clean_key)
+            if match:
+                val, kind = _parse_typed_value(match)
+                return self._metric_response(
+                    metric_id, val, kind, path,
+                    markdown_text, source_revision, i,
+                )
 
         # Try descriptor or key-value pattern: metric_id: value
         for i, line in enumerate(lines, start=1):
-            match = re.match(r"^([a-zA-Z0-9_.-]+)\s*:\s*(.*)$", line.strip())
+            match = self._descriptor_match(line, clean_key)
             if match:
-                k, v = match.group(1).lower(), match.group(2).strip()
-                if k == clean_key:
-                    if v.endswith("%"):
-                        val = float(v.rstrip("%").strip())
-                        kind = "percentage"
-                    else:
-                        try:
-                            val = int(v)
-                            kind = "integer"
-                        except ValueError:
-                            try:
-                                val = float(v)
-                                kind = "float"
-                            except ValueError:
-                                val = v
-                                kind = "string"
-
-                    digest = compute_sha256(markdown_text)
-                    return SUMDMetricResponse(
-                        status="OK",
-                        metric_key=metric_id,
-                        value=val,
-                        value_kind=kind,
-                        document_path=path,
-                        digest_sha256=digest,
-                        source_revision=source_revision or f"sha256:{digest}",
-                        start_line=i,
-                        end_line=i,
-                    )
+                val, kind = _parse_typed_value(match, allow_string_set=False)
+                return self._metric_response(
+                    metric_id, val, kind, path,
+                    markdown_text, source_revision, i,
+                )
 
         return None
+
+    @staticmethod
+    def _table_row_match(line: str, clean_key: str) -> str | None:
+        """Return the raw value cell when line is a `| key | value |` row for clean_key."""
+        if "|" not in line:
+            return None
+        cells = [cell.strip() for cell in line.split("|") if cell.strip()]
+        if len(cells) >= 2 and cells[0].lower() == clean_key:
+            return cells[1]
+        return None
+
+    @staticmethod
+    def _descriptor_match(line: str, clean_key: str) -> str | None:
+        """Return the raw value when line is a `key: value` descriptor for clean_key."""
+        match = re.match(r"^([a-zA-Z0-9_.-]+)\s*:\s*(.*)$", line.strip())
+        if match and match.group(1).lower() == clean_key:
+            return match.group(2).strip()
+        return None
+
+    @staticmethod
+    def _metric_response(
+        metric_id: str,
+        val: Any,
+        kind: str,
+        path: str,
+        markdown_text: str,
+        source_revision: str | None,
+        line_no: int,
+    ) -> SUMDMetricResponse:
+        digest = compute_sha256(markdown_text)
+        return SUMDMetricResponse(
+            status="OK",
+            metric_key=metric_id,
+            value=val,
+            value_kind=kind,
+            document_path=path,
+            digest_sha256=digest,
+            source_revision=source_revision or f"sha256:{digest}",
+            start_line=line_no,
+            end_line=line_no,
+        )
+
 
     def normalize(
         self,
@@ -213,3 +202,18 @@ class SUMDAdapter:
         }
 
 
+def _parse_typed_value(v: str, allow_string_set: bool = True) -> tuple[Any, str]:
+    """Parse a raw cell/descriptor value into a typed value and its kind."""
+    if v.endswith("%"):
+        return float(v.rstrip("%").strip()), "percentage"
+    try:
+        return int(v), "integer"
+    except ValueError:
+        pass
+    try:
+        return float(v), "float"
+    except ValueError:
+        pass
+    if allow_string_set and ("," in v or ";" in v):
+        return [item.strip() for item in re.split(r"[,;]+", v) if item.strip()], "string-set"
+    return v, "string"

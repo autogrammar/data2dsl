@@ -6,7 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any, Sequence
 
 
-from data2dsl_adapter_parts.common import DEFAULT_DETA_EXTRACTOR, SCHEMA_OBSERVATION, compute_sha256
+from data2dsl_adapter_parts.common import (
+    DEFAULT_DETA_EXTRACTOR,
+    SCHEMA_OBSERVATION,
+    compute_sha256,
+    error_observation,
+    evidence_entry,
+    observation_envelope,
+)
 
 @dataclass(frozen=True)
 class DetaServiceEvidence:
@@ -49,131 +56,64 @@ class DetaAdapter:
         observation_id: str | None = None,
     ) -> dict[str, Any]:
         """Normalize a Deta topology response into a data2dsl observation envelope."""
-        query_id = query["query_id"]
-        subject = query["subject"]
-        metric = query["metric"]
-        window = query["window"]
-        target_uri = subject.get("repository", "file://local/infra")
+        target_uri = query["subject"].get("repository", "file://local/infra")
 
         if response.status != "OK" or (response.service_count is None and not response.services and not response.ports and response.error_message):
-            obs_id = observation_id or f"observation:deta:unevaluable:{side}"
-            err_text = response.error_message or f"error:{response.status}"
-            err_digest = compute_sha256(err_text)
-            return {
-                "schema": SCHEMA_OBSERVATION,
-                "observation_id": obs_id,
-                "query_id": query_id,
-                "side": side,
-                "subject": subject,
-                "metric": metric,
-                "window": window,
-                "state": "UNEVALUABLE",
-                "value": None,
-                "evidence": [
-                    {
-                        "evidence_id": f"evidence:deta:error:{side}",
-                        "target_uri": target_uri,
-                        "source_uri": f"{target_uri}/{response.manifest_path}",
-                        "source_revision": f"sha256:{err_digest}",
-                        "media_type": "application/yaml",
-                        "digest_sha256": err_digest,
-                        "extractor": self._extractor,
-                        "location": {
-                            "kind": "yaml-lines",
-                            "path": response.manifest_path,
-                            "start_line": 1,
-                            "end_line": 1,
-                        },
-                    }
-                ],
-            }
+            return error_observation(
+                query, prefix="deta", side=side,
+                observation_id=observation_id, target_uri=target_uri,
+                path=response.manifest_path, status=response.status,
+                error_message=response.error_message, extractor=self._extractor,
+                location_kind="yaml-lines", media_type="application/yaml",
+            )
 
+        val_obj = self._metric_value(query["metric"], response)
+        evidence_list = self._evidence(response, target_uri)
+        evidence_list.sort(key=lambda e: e["evidence_id"])
+        first_digest = evidence_list[0]["digest_sha256"][:8] if evidence_list else "00000000"
+        obs_id = observation_id or f"observation:deta:{first_digest}"
+        return observation_envelope(query, obs_id, side, "OBSERVED", val_obj, evidence_list)
+
+    @staticmethod
+    def _metric_value(metric: dict[str, Any], response: DetaTopologyResponse) -> dict[str, Any]:
         val_kind = metric.get("value_kind", "integer")
         metric_id = (metric.get("id") or metric.get("name") or "").lower()
         metric_prop = metric.get("property", "").lower()
         is_port_query = "port" in metric_id or "port" in metric_prop or "ports" in metric_id or "ports" in metric_prop
-
-        val_obj: dict[str, Any]
         if is_port_query:
             if val_kind == "string-set":
-                val_obj = {"kind": "string-set", "items": sorted(list(response.ports))}
-            else:
-                val_obj = {"kind": "integer", "value": str(len(response.ports))}
-        else:
-            if val_kind == "string-set":
-                service_names = sorted([s.name for s in response.services])
-                val_obj = {"kind": "string-set", "items": service_names}
-            elif val_kind == "integer":
-                count = response.service_count if response.service_count is not None else len(response.services)
-                val_obj = {"kind": "integer", "value": str(count)}
-            else:
-                count = response.service_count if response.service_count is not None else len(response.services)
-                val_obj = {"kind": "string", "value": str(count)}
+                return {"kind": "string-set", "items": sorted(list(response.ports))}
+            return {"kind": "integer", "value": str(len(response.ports))}
+        if val_kind == "string-set":
+            return {"kind": "string-set", "items": sorted([s.name for s in response.services])}
+        count = response.service_count if response.service_count is not None else len(response.services)
+        if val_kind == "integer":
+            return {"kind": "integer", "value": str(count)}
+        return {"kind": "string", "value": str(count)}
 
-        evidence_list = []
+    def _evidence(self, response: DetaTopologyResponse, target_uri: str) -> list[dict[str, Any]]:
         if response.services:
-            for s in response.services:
-                digest = s.digest_sha256 or compute_sha256(f"{s.name}:{s.service_type}")
-                src_rev = response.source_revision or f"sha256:{digest}"
-                evidence_list.append(
-                    {
-                        "evidence_id": f"evidence:deta:service:{s.name}:{digest[:8]}",
-                        "target_uri": target_uri,
-                        "source_uri": f"{target_uri}/{s.manifest_path}",
-                        "source_revision": src_rev,
-                        "media_type": s.media_type,
-                        "digest_sha256": digest,
-                        "extractor": self._extractor,
-                        "location": {
-                            "kind": "yaml-lines",
-                            "path": s.manifest_path,
-                            "start_line": s.start_line,
-                            "end_line": s.end_line,
-                        },
-                    }
-                )
-        else:
-            ports_str = ",".join(str(p) for p in sorted(response.ports))
-            digest = compute_sha256(f"topology:{response.manifest_path}:{response.service_count}:{ports_str}")
-            src_rev = response.source_revision or f"sha256:{digest}"
-            evidence_list.append(
-                {
-                    "evidence_id": f"evidence:deta:{response.manifest_path}:{digest[:8]}",
-                    "target_uri": target_uri,
-                    "source_uri": f"{target_uri}/{response.manifest_path}",
-                    "source_revision": src_rev,
-                    "media_type": "application/yaml",
-                    "digest_sha256": digest,
-                    "extractor": self._extractor,
-                    "location": {
-                        "kind": "yaml-lines",
-                        "path": response.manifest_path,
-                        "start_line": 1,
-                        "end_line": 1,
-                    },
-                }
-            )
+            return [self._service_evidence(response, s, target_uri) for s in response.services]
+        return [self._topology_evidence(response, target_uri)]
 
-        evidence_list.sort(key=lambda e: e["evidence_id"])
-        first_digest = evidence_list[0]["digest_sha256"][:8] if evidence_list else "00000000"
-        obs_id = observation_id or f"observation:deta:{first_digest}"
+    def _service_evidence(self, response: DetaTopologyResponse, service: Any, target_uri: str) -> dict[str, Any]:
+        digest = service.digest_sha256 or compute_sha256(f"{service.name}:{service.service_type}")
+        return evidence_entry(
+            evidence_id=f"evidence:deta:service:{service.name}:{digest[:8]}",
+            target_uri=target_uri, path=service.manifest_path,
+            source_revision=response.source_revision or f"sha256:{digest}",
+            digest=digest, extractor=self._extractor,
+            location_kind="yaml-lines", media_type=service.media_type,
+            start_line=service.start_line, end_line=service.end_line,
+        )
 
-        return {
-            "schema": SCHEMA_OBSERVATION,
-            "observation_id": obs_id,
-            "query_id": query_id,
-            "side": side,
-            "subject": subject,
-            "metric": metric,
-            "window": window,
-            "state": "OBSERVED",
-            "value": val_obj,
-            "evidence": evidence_list,
-        }
-
-
-# ---------------------------------------------------------------------------
-# Subactor Intent Contract Adapter
-# ---------------------------------------------------------------------------
-
-
+    def _topology_evidence(self, response: DetaTopologyResponse, target_uri: str) -> dict[str, Any]:
+        ports_str = ",".join(str(p) for p in sorted(response.ports))
+        digest = compute_sha256(f"topology:{response.manifest_path}:{response.service_count}:{ports_str}")
+        return evidence_entry(
+            evidence_id=f"evidence:deta:{response.manifest_path}:{digest[:8]}",
+            target_uri=target_uri, path=response.manifest_path,
+            source_revision=response.source_revision or f"sha256:{digest}",
+            digest=digest, extractor=self._extractor,
+            location_kind="yaml-lines", media_type="application/yaml",
+        )
