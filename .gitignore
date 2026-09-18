@@ -15,3 +15,25 @@ build/
 /.subactor/receipts/
 /.subactor/cache/
 /.subactor/snapshots/
+
+# Planfile/Koru runtime state (generated; never delivery output)
+/.planfile/
+/.koru/
+/.planfile_analysis/
+
+# Generated analysis artifacts (code2llm scan output)
+/project/analysis.toon.yaml
+/project/calls.*
+/project/compact_flow.*
+/project/evolution.toon.yaml
+/project/map.toon.yaml
+/project/project.toon.yaml
+/project/planfile-tickets.yaml
+/project/context.md
+/project/index.html
+/project/mermaid.export
+/project/prompt.txt
+/project/flow.*
+
+# Python packaging byproducts
+*.egg-info/

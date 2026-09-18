@@ -1,6 +1,6 @@
 # ticket-095 — Bootstrap regix/wup/testql on-change gates
 
-- **Status**: BLOCKED
+- **Status**: DONE
 - **Maps planfile**: STARTER-022 (regix), STARTER-023 (testql), STARTER-024 (wup)
 
 ## Goal

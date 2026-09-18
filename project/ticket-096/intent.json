@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-096",
+  "summary": "Ignore generated runtime and analysis artifacts",
+  "workstream": "governance",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-096/**",
+    "project/ticket-094/README.md",
+    "project/ticket-095/README.md",
+    "TODO.md",
+    "project/TICKETS.md",
+    ".gitignore"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "8225fa956b89f6d805013ec3feebdb632ae67520",
+    "targetBranch": "main",
+    "outcome": "Ignore generated Planfile/Koru runtime state and code2llm analysis artifacts so autonomous lanes no longer create pending-delta blockers; reconcile merged ticket-094/095 records to DONE.",
+    "nonGoals": [
+      "Change application source behavior.",
+      "Add runtime dependencies.",
+      "Modify human-owned ticket input.",
+      "Reopen or alter the merged ticket-094/095 deliverables."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extend .gitignore with runtime/generated patterns and update two merged ticket status lines.",
+      "components": [
+        {
+          "name": "workspace-hygiene",
+          "paths": [
+            ".gitignore"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the .gitignore additions and status lines."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "git diff --check"
+        ],
+        "evidence": "Governance gate passes and working tree stays clean during lane operation."
+      }
+    ]
+  }
+}
