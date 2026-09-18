@@ -95,63 +95,12 @@ def validate_delegation_envelope(
     payload: Union[str, Dict[str, Any]]
 ) -> SubactorDelegationEnvelope:
     """Validate a Subactor delegation envelope in string or dictionary form."""
-    if isinstance(payload, str):
-        trimmed = payload.strip()
-        if trimmed.startswith("{") and trimmed.endswith("}"):
-            try:
-                data = json.loads(trimmed)
-            except Exception:
-                data = parse_delegation_envelope_text(payload)
-        else:
-            data = parse_delegation_envelope_text(payload)
-    elif isinstance(payload, dict):
-        data = payload
-    else:
-        raise TypeError(f"Payload must be str or dict, got {type(payload)}")
+    data = _coerce_envelope_payload(payload)
 
     errors: List[EnvelopeValidationError] = []
-
-    required_fields = ["role", "goal", "scope", "acceptance", "authority", "limits", "report"]
-    extracted: Dict[str, str] = {}
-
-    for req in required_fields:
-        val = data.get(req)
-        if not val or not str(val).strip():
-            errors.append(
-                EnvelopeValidationError(
-                    code="COMM-ENVELOPE-001",
-                    field_name=req,
-                    message=f"Missing required envelope field '{req}'.",
-                )
-            )
-            extracted[req] = ""
-        else:
-            extracted[req] = str(val).strip()
-
-    # Validate role
-    role = extracted.get("role", "").lower()
-    if role and role not in VALID_ROLES:
-        errors.append(
-            EnvelopeValidationError(
-                code="COMM-ROLE-001",
-                field_name="role",
-                message=f"Invalid role '{role}'. Must be one of: {sorted(list(VALID_ROLES))}.",
-            )
-        )
-
-    # Validate authority
-    authority = extracted.get("authority", "").lower()
-    if authority:
-        tokens = [t.lower() for t in re.split(r"[\s,+;:|]+", authority) if t]
-        has_valid_keyword = any(tok in VALID_AUTHORITY_KEYWORDS for tok in tokens)
-        if not has_valid_keyword:
-            errors.append(
-                EnvelopeValidationError(
-                    code="COMM-AUTH-001",
-                    field_name="authority",
-                    message=f"Authority '{authority}' does not contain recognized keywords ({sorted(list(VALID_AUTHORITY_KEYWORDS))}).",
-                )
-            )
+    extracted = _extract_required_fields(data, errors)
+    _check_role(extracted, errors)
+    _check_authority(extracted, errors)
 
     is_valid = len(errors) == 0
     return SubactorDelegationEnvelope(
@@ -234,3 +183,66 @@ def simulate_self_healing_cycle(
             "is_clean": is_clean,
         },
     }
+
+
+def _coerce_envelope_payload(payload: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
+    """Parse a string payload or pass through a dict."""
+    if isinstance(payload, dict):
+        return payload
+    if not isinstance(payload, str):
+        raise TypeError(f"Payload must be str or dict, got {type(payload)}")
+    trimmed = payload.strip()
+    if trimmed.startswith("{") and trimmed.endswith("}"):
+        try:
+            return json.loads(trimmed)
+        except Exception:
+            pass
+    return parse_delegation_envelope_text(payload)
+
+
+def _extract_required_fields(
+    data: Dict[str, Any], errors: List[EnvelopeValidationError]
+) -> Dict[str, str]:
+    """Collect the seven required envelope fields, recording missing ones."""
+    extracted: Dict[str, str] = {}
+    for req in ("role", "goal", "scope", "acceptance", "authority", "limits", "report"):
+        val = data.get(req)
+        if not val or not str(val).strip():
+            errors.append(
+                EnvelopeValidationError(
+                    code="COMM-ENVELOPE-001",
+                    field_name=req,
+                    message=f"Missing required envelope field '{req}'.",
+                )
+            )
+            extracted[req] = ""
+        else:
+            extracted[req] = str(val).strip()
+    return extracted
+
+
+def _check_role(extracted: Dict[str, str], errors: List[EnvelopeValidationError]) -> None:
+    role = extracted.get("role", "").lower()
+    if role and role not in VALID_ROLES:
+        errors.append(
+            EnvelopeValidationError(
+                code="COMM-ROLE-001",
+                field_name="role",
+                message=f"Invalid role '{role}'. Must be one of: {sorted(list(VALID_ROLES))}.",
+            )
+        )
+
+
+def _check_authority(extracted: Dict[str, str], errors: List[EnvelopeValidationError]) -> None:
+    authority = extracted.get("authority", "").lower()
+    if not authority:
+        return
+    tokens = [t.lower() for t in re.split(r"[\s,+;:|]+", authority) if t]
+    if not any(tok in VALID_AUTHORITY_KEYWORDS for tok in tokens):
+        errors.append(
+            EnvelopeValidationError(
+                code="COMM-AUTH-001",
+                field_name="authority",
+                message=f"Authority '{authority}' does not contain recognized keywords ({sorted(list(VALID_AUTHORITY_KEYWORDS))}).",
+            )
+        )
