@@ -105,6 +105,17 @@ def _expected_delta(left: dict[str, Any], right: dict[str, Any]) -> dict[str, An
 
 
 def validate_document(document: dict[str, Any]) -> None:
+    _check_schema(document)
+    query = document["query"]
+    result = document["result"]
+    observations = document["observations"]
+    _check_query_result(query, result)
+    sides, evidence_ids = _check_observations(query, observations)
+    _check_result_references(result, sides, evidence_ids)
+    _check_outcome(result, sides)
+
+
+def _check_schema(document: dict[str, Any]) -> None:
     validator = _schema_validator()
     errors = sorted(validator.iter_errors(document), key=lambda item: list(item.path))
     if errors:
@@ -112,17 +123,13 @@ def validate_document(document: dict[str, Any]) -> None:
         location = "/".join(str(item) for item in first.absolute_path) or "$"
         raise ContractError(f"schema violation at {location}: {first.message}")
 
-    query = document["query"]
-    result = document["result"]
-    observations = document["observations"]
-    query_id = query["query_id"]
-    if result["query_id"] != query_id:
-        raise ContractError("result query_id must match query")
 
+def _check_query_result(query: dict[str, Any], result: dict[str, Any]) -> None:
+    if result["query_id"] != query["query_id"]:
+        raise ContractError("result query_id must match query")
     window = query["window"]
     if _utc(window["start"]) >= _utc(window["end"]):
         raise ContractError("query window must have start before end")
-
     value_kind = query["metric"]["value_kind"]
     policy = query["comparison"]
     if policy["equality"] != _expected_policy(value_kind):
@@ -130,45 +137,82 @@ def validate_document(document: dict[str, Any]) -> None:
     if result["comparison"] != policy:
         raise ContractError("result comparison policy must equal query policy")
 
+
+def _check_observations(
+    query: dict[str, Any], observations: list[dict[str, Any]]
+) -> tuple[dict[str, dict[str, Any]], set[str]]:
+    """Validate per-observation coherence; return (sides, evidence_ids)."""
     sides: dict[str, dict[str, Any]] = {}
     observation_ids: set[str] = set()
     evidence_ids: set[str] = set()
+    query_id = query["query_id"]
+    value_kind = query["metric"]["value_kind"]
     for observation in observations:
-        side = observation["side"]
-        if side in sides:
-            raise ContractError(f"duplicate observation side: {side}")
-        sides[side] = observation
-        if observation["observation_id"] in observation_ids:
-            raise ContractError("observation_id values must be unique")
-        observation_ids.add(observation["observation_id"])
-        if observation["query_id"] != query_id:
-            raise ContractError("observation query_id must match query")
-        for key in ("subject", "metric", "window"):
-            if observation[key] != query[key]:
-                raise ContractError(f"observation {side} {key} must match query")
-        value = observation["value"]
-        if observation["state"] == "OBSERVED":
-            if value is None:
-                raise ContractError("OBSERVED requires a value")
-            if value["kind"] != value_kind:
-                raise ContractError("observation value kind must match metric")
-            _canonical_value(value)
-        elif value is not None:
-            raise ContractError("UNEVALUABLE and EXPIRED observations require null value")
-        for evidence in observation["evidence"]:
-            evidence_id = evidence["evidence_id"]
-            if evidence_id in evidence_ids:
-                raise ContractError("evidence_id values must be unique")
-            evidence_ids.add(evidence_id)
-            if evidence["target_uri"] != query["subject"]["repository"]:
-                raise ContractError("evidence target_uri must match query repository")
-            location = evidence["location"]
-            if location["kind"] == "markdown-lines" and location["end_line"] < location["start_line"]:
-                raise ContractError("markdown evidence end_line must not precede start_line")
+        _check_observation(
+            query, observation, sides, observation_ids, query_id, value_kind, evidence_ids
+        )
+    return sides, evidence_ids
 
+
+def _check_observation(
+    query: dict[str, Any],
+    observation: dict[str, Any],
+    sides: dict[str, dict[str, Any]],
+    observation_ids: set[str],
+    query_id: str,
+    value_kind: str,
+    evidence_ids: set[str],
+) -> None:
+    side = observation["side"]
+    if side in sides:
+        raise ContractError(f"duplicate observation side: {side}")
+    sides[side] = observation
+    if observation["observation_id"] in observation_ids:
+        raise ContractError("observation_id values must be unique")
+    observation_ids.add(observation["observation_id"])
+    if observation["query_id"] != query_id:
+        raise ContractError("observation query_id must match query")
+    for key in ("subject", "metric", "window"):
+        if observation[key] != query[key]:
+            raise ContractError(f"observation {side} {key} must match query")
+    _check_observation_value(observation, value_kind)
+    _check_observation_evidence(query, observation, evidence_ids)
+
+
+def _check_observation_value(observation: dict[str, Any], value_kind: str) -> None:
+    value = observation["value"]
+    if observation["state"] == "OBSERVED":
+        if value is None:
+            raise ContractError("OBSERVED requires a value")
+        if value["kind"] != value_kind:
+            raise ContractError("observation value kind must match metric")
+        _canonical_value(value)
+    elif value is not None:
+        raise ContractError("UNEVALUABLE and EXPIRED observations require null value")
+
+
+def _check_observation_evidence(
+    query: dict[str, Any], observation: dict[str, Any], evidence_ids: set[str]
+) -> None:
+    for evidence in observation["evidence"]:
+        evidence_id = evidence["evidence_id"]
+        if evidence_id in evidence_ids:
+            raise ContractError("evidence_id values must be unique")
+        evidence_ids.add(evidence_id)
+        if evidence["target_uri"] != query["subject"]["repository"]:
+            raise ContractError("evidence target_uri must match query repository")
+        location = evidence["location"]
+        if location["kind"] == "markdown-lines" and location["end_line"] < location["start_line"]:
+            raise ContractError("markdown evidence end_line must not precede start_line")
+
+
+def _check_result_references(
+    result: dict[str, Any],
+    sides: dict[str, dict[str, Any]],
+    evidence_ids: set[str],
+) -> None:
     if result["evidence_ids"] != sorted(evidence_ids):
         raise ContractError("result evidence_ids must be the sorted complete evidence set")
-
     left = sides.get("left")
     right = sides.get("right")
     expected_left_id = left["observation_id"] if left else None
@@ -178,21 +222,27 @@ def validate_document(document: dict[str, Any]) -> None:
     if result["right_observation_id"] != expected_right_id:
         raise ContractError("right_observation_id does not resolve to the right observation")
 
-    if left is None:
-        expected_outcome, expected_delta = "MISSING_LEFT", None
-    elif right is None:
-        expected_outcome, expected_delta = "MISSING_RIGHT", None
-    elif left["state"] != "OBSERVED" or right["state"] != "OBSERVED":
-        expected_outcome, expected_delta = "UNEVALUABLE", None
-    else:
-        left_value = _canonical_value(left["value"])
-        right_value = _canonical_value(right["value"])
-        if left_value == right_value:
-            expected_outcome, expected_delta = "MATCH", None
-        else:
-            expected_outcome = "CONFLICT"
-            expected_delta = _expected_delta(left["value"], right["value"])
 
+def _expected_outcome(
+    sides: dict[str, dict[str, Any]]
+) -> tuple[str, Any]:
+    left = sides.get("left")
+    right = sides.get("right")
+    if left is None:
+        return "MISSING_LEFT", None
+    if right is None:
+        return "MISSING_RIGHT", None
+    if left["state"] != "OBSERVED" or right["state"] != "OBSERVED":
+        return "UNEVALUABLE", None
+    left_value = _canonical_value(left["value"])
+    right_value = _canonical_value(right["value"])
+    if left_value == right_value:
+        return "MATCH", None
+    return "CONFLICT", _expected_delta(left["value"], right["value"])
+
+
+def _check_outcome(result: dict[str, Any], sides: dict[str, dict[str, Any]]) -> None:
+    expected_outcome, expected_delta = _expected_outcome(sides)
     if result["outcome"] != expected_outcome:
         raise ContractError(f"outcome must be {expected_outcome}")
     if result["delta"] != expected_delta:
