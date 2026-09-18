@@ -1,0 +1,82 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-099",
+  "summary": "Reduce CC in skill/cli/batch/remediation/contract validation",
+  "workstream": "application",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-099/**",
+    "project/TICKETS.md",
+    "src/data2dsl_skill.py",
+    "src/data2dsl_cli.py",
+    "src/data2dsl_batch.py",
+    "src/data2dsl_remediation.py",
+    "src/data2dsl_contract_v0/**",
+    "tests/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "eab0c3f8579184804bdddcff1e763fbe8e9b7e4b",
+    "targetBranch": "main",
+    "outcome": "Reduce cyclomatic complexity to <=15 for _normalize_raw (skill), main (cli), compare_batch + format_markdown_report (batch), format_intent (remediation) and validate_document (contract_v0/validate) via helper extraction, preserving behavior.",
+    "nonGoals": [
+      "Change application behavior or public interfaces.",
+      "Add runtime dependencies.",
+      "Split modules into new files (covered by STARTER-003/004/006)."
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 120,
+    "budgets": {
+      "maxImplementationFiles": 6,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extract per-branch helpers inside existing modules; keep public signatures unchanged.",
+      "components": [
+        {
+          "name": "core-modules",
+          "paths": [
+            "src/data2dsl_skill.py",
+            "src/data2dsl_cli.py",
+            "src/data2dsl_batch.py",
+            "src/data2dsl_remediation.py",
+            "src/data2dsl_contract_v0/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert helper extraction; public functions keep behavior."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "python -m pytest -q"
+        ],
+        "evidence": "All tests pass; lizard reports CC<=15 on touched functions."
+      }
+    ]
+  }
+}

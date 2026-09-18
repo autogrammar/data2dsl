@@ -86,122 +86,31 @@ class BatchMultiQueryComparator:
         batch_id: Optional[str] = None,
     ) -> BatchComparisonReport:
         """Run batch comparison for all queries."""
-        def _add_obs(d: dict, k: Any, obs: dict) -> None:
-            if k in d:
-                ext = d[k]
-                if ext is not _AMBIGUOUS:
-                    if ext.get("value", {}) != obs.get("value", {}):
-                        d[k] = _AMBIGUOUS
-            else:
-                d[k] = obs
-
-        # Index left observations by query_id and by composite (repo, actor, metric_id)
-        left_by_qid: Dict[str, Any] = {}
-        left_by_key: Dict[tuple, Any] = {}
-        if isinstance(left_observations, dict):
-            left_by_qid = dict(left_observations)
-        else:
-            for obs in left_observations:
-                if not isinstance(obs, dict):
-                    continue
-                if "query_id" in obs and obs["query_id"]:
-                    _add_obs(left_by_qid, obs["query_id"], obs)
-                subj = obs.get("subject", {})
-                met = obs.get("metric", {})
-                if subj and met and "id" in met:
-                    key = (subj.get("repository"), subj.get("actor"), met.get("id"))
-                    _add_obs(left_by_key, key, obs)
-
-        # Index right observations by query_id and by composite (repo, actor, metric_id)
-        right_by_qid: Dict[str, Any] = {}
-        right_by_key: Dict[tuple, Any] = {}
-        if isinstance(right_observations, dict):
-            right_by_qid = dict(right_observations)
-        else:
-            for obs in right_observations:
-                if not isinstance(obs, dict):
-                    continue
-                if "query_id" in obs and obs["query_id"]:
-                    _add_obs(right_by_qid, obs["query_id"], obs)
-                subj = obs.get("subject", {})
-                met = obs.get("metric", {})
-                if subj and met and "id" in met:
-                    key = (subj.get("repository"), subj.get("actor"), met.get("id"))
-                    _add_obs(right_by_key, key, obs)
+        left_by_qid, left_by_key = _index_observations(left_observations)
+        right_by_qid, right_by_key = _index_observations(right_observations)
 
         bundles: List[Dict[str, Any]] = []
-        matches = 0
-        conflicts = 0
-        missing_left = 0
-        missing_right = 0
-        unevaluable = 0
+        counts = {"MATCH": 0, "CONFLICT": 0, "MISSING_LEFT": 0, "MISSING_RIGHT": 0, "UNEVALUABLE": 0}
         ambiguous_count = 0
 
         for q in queries:
-            qid = q.get("query_id", "")
-            subj = q.get("subject", {})
-            met = q.get("metric", {})
-            q_key = (subj.get("repository"), subj.get("actor"), met.get("id")) if subj and met else None
-            
-            ambiguous = False
-
-            left_obs = left_by_qid.get(qid)
-            if left_obs is None and q_key:
-                candidate = left_by_key.get(q_key)
-                if candidate and (candidate is _AMBIGUOUS or candidate.get("query_id") in (None, "", qid)):
-                    left_obs = candidate
-                    
-            if left_obs is _AMBIGUOUS:
-                ambiguous = True
-                left_obs = {
-                    "observation_id": f"ambiguous:{qid}:left",
-                    "query_id": qid,
-                    "side": "left",
-                    "subject": q.get("subject", {}),
-                    "metric": q.get("metric", {}),
-                    "window": q.get("window", {}),
-                    "state": "UNEVALUABLE",
-                    "evidence": [],
-                }
-
-            right_obs = right_by_qid.get(qid)
-            if right_obs is None and q_key:
-                candidate = right_by_key.get(q_key)
-                if candidate and (candidate is _AMBIGUOUS or candidate.get("query_id") in (None, "", qid)):
-                    right_obs = candidate
-
-            if right_obs is _AMBIGUOUS:
-                ambiguous = True
-                right_obs = {
-                    "observation_id": f"ambiguous:{qid}:right",
-                    "query_id": qid,
-                    "side": "right",
-                    "subject": q.get("subject", {}),
-                    "metric": q.get("metric", {}),
-                    "window": q.get("window", {}),
-                    "state": "UNEVALUABLE",
-                    "evidence": [],
-                }
-
-            if ambiguous:
+            left_obs, left_ambiguous = _resolve_observation(q, left_by_qid, left_by_key, "left")
+            right_obs, right_ambiguous = _resolve_observation(q, right_by_qid, right_by_key, "right")
+            if left_ambiguous or right_ambiguous:
                 ambiguous_count += 1
 
             bundle = self._comparator.compare(q, left_obs, right_obs)
             bundles.append(bundle)
-
             outcome = bundle["result"]["outcome"]
-            if outcome == "MATCH":
-                matches += 1
-            elif outcome == "CONFLICT":
-                conflicts += 1
-            elif outcome == "MISSING_LEFT":
-                missing_left += 1
-            elif outcome == "MISSING_RIGHT":
-                missing_right += 1
-            elif outcome == "UNEVALUABLE":
-                unevaluable += 1
+            if outcome in counts:
+                counts[outcome] += 1
 
         total = len(queries)
+        matches = counts["MATCH"]
+        conflicts = counts["CONFLICT"]
+        missing_left = counts["MISSING_LEFT"]
+        missing_right = counts["MISSING_RIGHT"]
+        unevaluable = counts["UNEVALUABLE"]
         clean_ratio = (matches / total) if total > 0 else 1.0
         is_clean = (conflicts == 0 and missing_left == 0 and missing_right == 0 and unevaluable == 0 and ambiguous_count == 0 and matches == total)
 
@@ -280,81 +189,143 @@ def format_markdown_report(report_or_bundle: Any) -> str:
     lines.append("# data2dsl Comparison Report\n")
 
     if "summary" in doc and "bundles" in doc:
-        summary = doc["summary"]
-        status_str = "CLEAN (All Match)" if summary.get("is_clean") else "CONFLICTS/DISCREPANCIES DETECTED"
-        lines.append("## Summary\n")
-        lines.append(f"- **Batch ID**: `{doc.get('batch_id', summary.get('batch_id', 'batch'))}`")
-        lines.append(f"- **Status**: `{status_str}`")
-        lines.append(f"- **Total Queries**: {summary.get('total_queries', 0)}")
-        lines.append(f"- **Matches**: {summary.get('matches', 0)}")
-        lines.append(f"- **Conflicts**: {summary.get('conflicts', 0)}")
-        lines.append(f"- **Missing Left / Right**: {summary.get('missing_left', 0)} / {summary.get('missing_right', 0)}")
-        lines.append(f"- **Unevaluable**: {summary.get('unevaluable', 0)}")
-        lines.append(f"- **Ambiguous**: {summary.get('ambiguous_count', 0)}")
-        clean_ratio = summary.get("clean_ratio", 0.0)
-        lines.append(f"- **Clean Ratio**: {clean_ratio:.2%}\n")
-
-        lines.append("## Query Details\n")
-        lines.append("| Query ID | Metric | Left Value | Right Value | Outcome | Delta |")
-        lines.append("| :--- | :--- | :--- | :--- | :--- | :--- |")
-
-        for b in doc.get("bundles", []):
-            q = b.get("query", {})
-            res = b.get("result", {})
-            obs = b.get("observations", [])
-            qid = q.get("query_id", "")
-            mid = q.get("metric", {}).get("id", "")
-            outcome = res.get("outcome", "")
-
-            l_obs = None
-            r_obs = None
-            if isinstance(obs, list):
-                for o in obs:
-                    if isinstance(o, dict):
-                        if o.get("side") == "left":
-                            l_obs = o
-                        elif o.get("side") == "right":
-                            r_obs = o
-            elif isinstance(obs, dict):
-                l_obs = obs.get("left")
-                r_obs = obs.get("right")
-
-            l_val = _format_val(l_obs)
-            r_val = _format_val(r_obs)
-            delta_val = _format_delta(res.get("delta"))
-
-            lines.append(f"| `{qid}` | `{mid}` | `{l_val}` | `{r_val}` | **{outcome}** | `{delta_val}` |")
-
+        lines.extend(_batch_report_lines(doc))
     elif "query" in doc and "result" in doc:
-        q = doc["query"]
-        res = doc["result"]
-        obs = doc.get("observations", [])
-        qid = q.get("query_id", "")
-        mid = q.get("metric", {}).get("id", "")
-        outcome = res.get("outcome", "")
-        l_obs = None
-        r_obs = None
-        if isinstance(obs, list):
-            for o in obs:
-                if isinstance(o, dict):
-                    if o.get("side") == "left":
-                        l_obs = o
-                    elif o.get("side") == "right":
-                        r_obs = o
-        elif isinstance(obs, dict):
-            l_obs = obs.get("left")
-            r_obs = obs.get("right")
-
-        l_val = _format_val(l_obs)
-        r_val = _format_val(r_obs)
-        delta_val = _format_delta(res.get("delta"))
-
-        lines.append("## Single Comparison Result\n")
-        lines.append(f"- **Query ID**: `{qid}`")
-        lines.append(f"- **Metric**: `{mid}`")
-        lines.append(f"- **Outcome**: **{outcome}**")
-        lines.append(f"- **Left Value**: `{l_val}`")
-        lines.append(f"- **Right Value**: `{r_val}`")
-        lines.append(f"- **Delta**: `{delta_val}`")
+        lines.extend(_single_report_lines(doc))
 
     return "\n".join(lines) + "\n"
+
+
+def _side_observations(obs: Any) -> tuple[Any, Any]:
+    """Extract (left, right) observations from a list-of-dicts or a dict."""
+    if isinstance(obs, list):
+        left = right = None
+        for o in obs:
+            if isinstance(o, dict):
+                if o.get("side") == "left":
+                    left = o
+                elif o.get("side") == "right":
+                    right = o
+        return left, right
+    if isinstance(obs, dict):
+        return obs.get("left"), obs.get("right")
+    return None, None
+
+
+def _batch_report_lines(doc: dict) -> list[str]:
+    """Summary table + per-query rows for a batch report document."""
+    summary = doc["summary"]
+    status_str = "CLEAN (All Match)" if summary.get("is_clean") else "CONFLICTS/DISCREPANCIES DETECTED"
+    lines = [
+        "## Summary\n",
+        f"- **Batch ID**: `{doc.get('batch_id', summary.get('batch_id', 'batch'))}`",
+        f"- **Status**: `{status_str}`",
+        f"- **Total Queries**: {summary.get('total_queries', 0)}",
+        f"- **Matches**: {summary.get('matches', 0)}",
+        f"- **Conflicts**: {summary.get('conflicts', 0)}",
+        f"- **Missing Left / Right**: {summary.get('missing_left', 0)} / {summary.get('missing_right', 0)}",
+        f"- **Unevaluable**: {summary.get('unevaluable', 0)}",
+        f"- **Ambiguous**: {summary.get('ambiguous_count', 0)}",
+        f"- **Clean Ratio**: {summary.get('clean_ratio', 0.0):.2%}\n",
+        "## Query Details\n",
+        "| Query ID | Metric | Left Value | Right Value | Outcome | Delta |",
+        "| :--- | :--- | :--- | :--- | :--- | :--- |",
+    ]
+    for b in doc.get("bundles", []):
+        lines.append(_bundle_row(b))
+    return lines
+
+
+def _bundle_row(b: dict) -> str:
+    q = b.get("query", {})
+    res = b.get("result", {})
+    l_obs, r_obs = _side_observations(b.get("observations", []))
+    qid = q.get("query_id", "")
+    mid = q.get("metric", {}).get("id", "")
+    outcome = res.get("outcome", "")
+    l_val = _format_val(l_obs)
+    r_val = _format_val(r_obs)
+    delta_val = _format_delta(res.get("delta"))
+    return f"| `{qid}` | `{mid}` | `{l_val}` | `{r_val}` | **{outcome}** | `{delta_val}` |"
+
+
+def _single_report_lines(doc: dict) -> list[str]:
+    q = doc["query"]
+    res = doc["result"]
+    l_obs, r_obs = _side_observations(doc.get("observations", []))
+    qid = q.get("query_id", "")
+    mid = q.get("metric", {}).get("id", "")
+    outcome = res.get("outcome", "")
+    return [
+        "## Single Comparison Result\n",
+        f"- **Query ID**: `{qid}`",
+        f"- **Metric**: `{mid}`",
+        f"- **Outcome**: **{outcome}**",
+        f"- **Left Value**: `{_format_val(l_obs)}`",
+        f"- **Right Value**: `{_format_val(r_obs)}`",
+        f"- **Delta**: `{_format_delta(res.get('delta'))}`",
+    ]
+
+
+
+def _index_observations(
+    observations: Sequence[Dict[str, Any]] | Dict[str, Dict[str, Any]],
+) -> tuple[Dict[str, Any], Dict[tuple, Any]]:
+    """Index observations by query_id and by composite (repo, actor, metric_id)."""
+    by_qid: Dict[str, Any] = {}
+    by_key: Dict[tuple, Any] = {}
+    if isinstance(observations, dict):
+        return dict(observations), by_key
+    for obs in observations:
+        if not isinstance(obs, dict):
+            continue
+        if obs.get("query_id"):
+            _add_obs(by_qid, obs["query_id"], obs)
+        subj = obs.get("subject", {})
+        met = obs.get("metric", {})
+        if subj and met and "id" in met:
+            key = (subj.get("repository"), subj.get("actor"), met.get("id"))
+            _add_obs(by_key, key, obs)
+    return by_qid, by_key
+
+
+def _add_obs(d: dict, k: Any, obs: dict) -> None:
+    if k in d:
+        ext = d[k]
+        if ext is not _AMBIGUOUS:
+            if ext.get("value", {}) != obs.get("value", {}):
+                d[k] = _AMBIGUOUS
+    else:
+        d[k] = obs
+
+
+def _resolve_observation(
+    query: Dict[str, Any],
+    by_qid: Dict[str, Any],
+    by_key: Dict[tuple, Any],
+    side: str,
+) -> tuple[Any, bool]:
+    """Resolve the observation for one query side; ambiguity yields an UNEVALUABLE stub."""
+    qid = query.get("query_id", "")
+    subj = query.get("subject", {})
+    met = query.get("metric", {})
+    q_key = (subj.get("repository"), subj.get("actor"), met.get("id")) if subj and met else None
+
+    obs = by_qid.get(qid)
+    if obs is None and q_key:
+        candidate = by_key.get(q_key)
+        if candidate and (candidate is _AMBIGUOUS or candidate.get("query_id") in (None, "", qid)):
+            obs = candidate
+
+    if obs is _AMBIGUOUS:
+        return {
+            "observation_id": f"ambiguous:{qid}:{side}",
+            "query_id": qid,
+            "side": side,
+            "subject": query.get("subject", {}),
+            "metric": query.get("metric", {}),
+            "window": query.get("window", {}),
+            "state": "UNEVALUABLE",
+            "evidence": [],
+        }, True
+    return obs, False
