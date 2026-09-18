@@ -1,0 +1,105 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-100",
+  "summary": "Split large modules batch/cli/discovery/skill into cohesive submodules",
+  "workstream": "application",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-100/**",
+    "project/TICKETS.md",
+    "src/data2dsl_batch.py",
+    "src/data2dsl_batch_report.py",
+    "src/data2dsl_cli.py",
+    "src/data2dsl_cli_commands.py",
+    "src/data2dsl_discovery.py",
+    "src/data2dsl_discovery_graph.py",
+    "src/data2dsl_skill.py",
+    "src/data2dsl_skill_norms.py",
+    "src/data2dsl_skill_mcp.py",
+    "tests/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "815805936dd8d50cb0b5771dc08ebc3e0d248050",
+    "targetBranch": "main",
+    "outcome": "Split large/hot modules into cohesive flat submodules: markdown report helpers from data2dsl_batch -> data2dsl_batch_report; command handlers from data2dsl_cli -> data2dsl_cli_commands; graph walker internals from data2dsl_discovery -> data2dsl_discovery_graph; MCP stdio transport from data2dsl_skill -> data2dsl_skill_mcp; adapter normalizer dispatch already lives in data2dsl_skill_norms. Keep backward-compatible re-exports. Wheel py-modules declarations land in the companion integration ticket.",
+    "nonGoals": [
+      "Change application behavior or public interfaces.",
+      "Add runtime dependencies.",
+      "Modify human-owned ticket input."
+    ],
+    "complexity": "L",
+    "estimatedMinutes": 120,
+    "budgets": {
+      "maxImplementationFiles": 12,
+      "maxAffectedComponents": 4,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Extract cohesive flat py-modules; original modules re-export moved symbols for compatibility.",
+      "components": [
+        {
+          "name": "batch",
+          "paths": [
+            "src/data2dsl_batch.py",
+            "src/data2dsl_batch_report.py"
+          ]
+        },
+        {
+          "name": "cli",
+          "paths": [
+            "src/data2dsl_cli.py",
+            "src/data2dsl_cli_commands.py"
+          ]
+        },
+        {
+          "name": "discovery",
+          "paths": [
+            "src/data2dsl_discovery.py",
+            "src/data2dsl_discovery_graph.py"
+          ]
+        },
+        {
+          "name": "skill",
+          "paths": [
+            "src/data2dsl_skill.py",
+            "src/data2dsl_skill_norms.py",
+            "src/data2dsl_skill_mcp.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert module split; original modules regain moved symbols."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "python -m pytest -q"
+        ],
+        "evidence": "All tests pass; public imports unchanged."
+      }
+    ]
+  }
+}
