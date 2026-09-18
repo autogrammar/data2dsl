@@ -1,0 +1,74 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-101",
+  "summary": "Declare new data2dsl split modules in wheel py-modules",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-101/**",
+    "project/TICKETS.md",
+    "pyproject.toml"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "6392d034e0aa8a39c368a565c6e7b940df6c4b73",
+    "targetBranch": "main",
+    "outcome": "Declare the new flat split modules introduced by ticket-100 (data2dsl_batch_report, data2dsl_cli_commands, data2dsl_discovery_graph, data2dsl_skill_mcp) plus the already-present undeclared data2dsl_skill_norms in setuptools py-modules so the wheel ships every local runtime import.",
+    "nonGoals": [
+      "Do not change application behavior or CLI surfaces.",
+      "Do not add runtime dependencies.",
+      "Do not modify human-owned ticket input."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 10,
+    "budgets": {
+      "maxImplementationFiles": 1,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Append the new flat module names to tool.setuptools py-modules; no other packaging change.",
+      "components": [
+        {
+          "name": "wheel-manifest",
+          "paths": [
+            "pyproject.toml"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove the five added entries from the py-modules list."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python -m pytest -q tests/test_packaging_metadata.py",
+          "python -m pytest -q",
+          "bash ./project/governance-check.sh"
+        ],
+        "evidence": "Packaging metadata tests pass and every declared local runtime import resolves."
+      }
+    ]
+  }
+}
