@@ -1,0 +1,81 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-095",
+  "summary": "Bootstrap regix/wup/testql on-change gates — BLOCKED: root gate configs have no owning workstream; manifest fix needs governance workstream held by ticket-094.",
+  "workstream": "infrastructure",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-095/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "regix.yaml",
+    "wup.yaml",
+    "testql-scenarios/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [
+    "ticket-094"
+  ],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "b81665e795b10bac0c33e622f44401cee599a023",
+    "targetBranch": "main",
+    "outcome": "The repository gains regix.yaml, wup.yaml and a testql CLI smoke scenario — the on-change regression gate stack, satisfying the planfile bootstrap tickets.",
+    "nonGoals": [
+      "Change application source behavior.",
+      "Add runtime dependencies.",
+      "Enable CI enforcement of the gates.",
+      "Modify human-owned ticket input."
+    ],
+    "complexity": "XS",
+    "estimatedMinutes": 15,
+    "budgets": {
+      "maxImplementationFiles": 3,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add root-level gate configs adapted from the koru/redsl templates to the data2dsl src-layout plus one generated testql CLI smoke scenario.",
+      "components": [
+        {
+          "name": "quality-gates",
+          "paths": [
+            "regix.yaml",
+            "wup.yaml",
+            "testql-scenarios/**"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Remove the three added gate files; application source remains unchanged."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh",
+          "git diff --check"
+        ],
+        "evidence": "The bounded ticket and gate configs pass the repository governance gate."
+      }
+    ]
+  }
+}
