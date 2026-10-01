@@ -95,6 +95,15 @@ analysis-generated `project/README.md`.
 | **ticket-088** | [`README.md`](./ticket-088/README.md) | [`preprompt.md`](./ticket-088/preprompt.md) | - |  [`ai-gemini.md`](./ticket-088/ai-gemini.md) |  [`ai-gemini-logs.txt`](./ticket-088/ai-gemini-logs.txt) | [`changelog.md`](./ticket-088/changelog.md) |
 | **ticket-089** | [`README.md`](./ticket-089/README.md) | [`preprompt.md`](./ticket-089/preprompt.md) | - |  [`ai-ai-cursor-auto.md`](./ticket-089/ai-ai-cursor-auto.md) |  [`ai-ai-cursor-auto-logs.txt`](./ticket-089/ai-ai-cursor-auto-logs.txt) | [`changelog.md`](./ticket-089/changelog.md) |
 | **ticket-091** | [`README.md`](./ticket-091/README.md) | [`preprompt.md`](./ticket-091/preprompt.md) | - |  [`ai-devin.md`](./ticket-091/ai-devin.md) |  [`ai-devin-logs.txt`](./ticket-091/ai-devin-logs.txt) | [`changelog.md`](./ticket-091/changelog.md) |
-| **ticket-094** | [`README.md`](./ticket-094/README.md) | [`preprompt.md`](./ticket-094/preprompt.md) | - |  [`ai-codex.md`](./ticket-094/ai-codex.md)  [`ai-opencode.md`](./ticket-094/ai-opencode.md) |  [`ai-codex-logs.txt`](./ticket-094/ai-codex-logs.txt) | [`changelog.md`](./ticket-094/changelog.md) |
+| **ticket-093** | [`README.md`](./ticket-093/README.md) | [`preprompt.md`](./ticket-093/preprompt.md) | - |  [`ai-codex.md`](./ticket-093/ai-codex.md) |  [`ai-codex-logs.txt`](./ticket-093/ai-codex-logs.txt) | [`changelog.md`](./ticket-093/changelog.md) |
+| **ticket-094** | [`README.md`](./ticket-094/README.md) | [`preprompt.md`](./ticket-094/preprompt.md) | - |  [`ai-codex.md`](./ticket-094/ai-codex.md) [`ai-opencode.md`](./ticket-094/ai-opencode.md) |  [`ai-codex-logs.txt`](./ticket-094/ai-codex-logs.txt) | [`changelog.md`](./ticket-094/changelog.md) |
+| **ticket-095** | [`README.md`](./ticket-095/README.md) | [`preprompt.md`](./ticket-095/preprompt.md) | - |  [`ai-devin.md`](./ticket-095/ai-devin.md) |  [`ai-devin-logs.txt`](./ticket-095/ai-devin-logs.txt) | [`changelog.md`](./ticket-095/changelog.md) |
+| **ticket-096** | [`README.md`](./ticket-096/README.md) | - | - | - | - | - |
+| **ticket-097** | [`README.md`](./ticket-097/README.md) | - | - | - | - | - |
+| **ticket-098** | [`README.md`](./ticket-098/README.md) | - | - | - | - | - |
+| **ticket-099** | [`README.md`](./ticket-099/README.md) | - | - | - | - | - |
+| **ticket-100** | [`README.md`](./ticket-100/README.md) | - | - | - | - | - |
+| **ticket-101** | [`README.md`](./ticket-101/README.md) | - | - | - | - | - |
 | **ticket-102** | [`README.md`](./ticket-102/README.md) | - | - | - | - | - |
+| **ticket-103** | [`README.md`](./ticket-103/README.md) | - | - |  [`ai-codex.md`](./ticket-103/ai-codex.md) | - | - |
 <!-- AUTO:TICKET_INDEX:END -->
